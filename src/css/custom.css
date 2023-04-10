@@ -1,0 +1,256 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  @apply dark:bg-brand !important;
+}
+
+/*MermaidJS*/
+rect {
+    @apply fill-brand-10 stroke-brand-50 !important;
+}
+polygon {
+    @apply fill-brand-40 stroke-brand !important;
+}
+.docusaurus-mermaid-container {
+    @apply mb-6
+}
+
+.edgeLabel {
+    @apply bg-brand-20 text-brand-80 w-auto stroke-brand-50 !important;
+}
+
+
+:root {
+    --ifm-footer-link-color: #5A6269;
+    --ifm-footer-title-color: #424B54;
+    --ifm-footer-background-color: #F8F8F9;
+    --ifm-spacing-horizontal: 3rem;
+    --ifm-navbar-padding-horizontal: 1rem;
+    --ifm-navbar-background-color: #131E29;
+    --ifm-font-family-base: "Source Sans Pro";
+    --ifm-font-weight: "light";
+    --ifm-font-color-base: #131E29;
+    --ifm-navbar-link-color: #F8F8F9;
+    --ifm-breadcrumb-item-background-active: #F8F8F9;
+    --ifm-breadcrumb-color-active: #131E29;
+    --ifm-background-color: #F8F8F9;
+}
+
+html[data-theme='dark'] {
+    --ifm-background-color: #131E29;
+    --ifm-font-color-base: #F8F8F9;
+    --ifm-spacing-horizontal: 3rem;
+    --ifm-navbar-padding-horizontal: 1rem;
+    --ifm-font-family-base: "Source Sans Pro";
+    --ifm-font-weight: "light";
+    --ifm-navbar-link-color: #F8F8F9;
+    --ifm-footer-background-color: #131e29;
+    --ifm-footer-title-color: #F8F8F9;
+    --ifm-footer-link-color: #E7E9EA;
+}
+
+#particles-js {
+    position: relative;
+    left: 0px;
+    top: 0px;
+    z-index: -100;
+}
+
+code {
+    @apply rounded-none px-1 py-0.5 border-none bg-brand-10 dark:bg-brand-80 dark:text-brand-3
+}
+
+.alert {
+    @apply rounded-none shadow-none !important
+}
+
+.navbar {
+    @apply bg-brand dark:bg-brand-90 !important
+}
+
+.navbar__items--right > div > button {
+    @apply text-white !important;
+}
+
+.navbar__toggle {
+    @apply text-white !important;
+}
+
+.navbar-sidebar__item {
+    @apply text-white !important;
+}
+
+.navbar-sidebar {
+    @apply text-white !important;
+}
+
+.main {
+    margin-left: 4rem !important;
+}
+
+.padding-top--md {
+    padding-top: 4rem !important;
+}
+
+.footer {
+    @apply bg-brand-5 dark:bg-brand-90;
+    z-index: 0;
+}
+
+.navbar-sidebar {
+    @apply bg-white
+}
+
+.navbar-sidebar__brand {
+    @apply bg-brand;
+}
+
+.navbar-sidebar__back {
+    @apply text-brand hidden;
+}
+
+.menu__list-item-collapsible {
+    @apply mt-0 rounded-none !important;
+}
+
+.menu__list {
+    @apply m-0 !important
+}
+
+.menu__list-item {
+    @apply mt-0 rounded-none border-l !important;
+}
+
+.menu__link {
+    @apply rounded-none p-2.5 text-brand-80 dark:text-brand-5 hover:text-brand;
+}
+
+.menu__link--active {
+    @apply bg-brand-10 dark:bg-brand-90 text-brand dark:text-white font-semibold !important;
+}
+
+.breadcrumbs__item {
+    @apply rounded-none bg-brand-3 dark:bg-brand !important
+}
+
+.breadcrumbs__link {
+    @apply rounded-none dark:bg-brand text-brand dark:text-brand-3 !important
+}
+
+.breadcrumbs__item--active {
+    @apply bg-transparent !important;
+}
+
+.pagination-nav__link {
+    @apply rounded-none hover:bg-brand-10 border-none !important
+}
+
+@font-face {
+    font-family: 'Source Sans Pro';
+    src: local('Source Sans Pro Bold Italic'), local('SourceSansPro-BoldItalic'),
+    url('/static/fonts/SourceSansPro-BoldItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Source Sans Pro';
+    src: local('Source Sans Pro Light'), local('SourceSansPro-Light'),
+    url('/static/fonts/SourceSansPro-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Source Sans Pro';
+    src: local('Source Sans Pro Light Italic'), local('SourceSansPro-LightItalic'),
+    url('/static/fonts/SourceSansPro-LightItalic.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Source Sans Pro';
+    src: local('Source Sans Pro ExtraLight Italic'), local('SourceSansPro-ExtraLightItalic'),
+    url('/static/fonts/SourceSansPro-ExtraLightItalic.ttf') format('truetype');
+    font-weight: 200;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Source Sans Pro';
+    src: local('Source Sans Pro SemiBold'), local('SourceSansPro-SemiBold'),
+    url('/static/fonts/SourceSansPro-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Source Sans Pro';
+    src: local('Source Sans Pro'), local('SourceSansPro-Regular'),
+    url('/static/fonts/SourceSansPro-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Source Sans Pro';
+    src: local('Source Sans Pro SemiBold Italic'), local('SourceSansPro-SemiBoldItalic'),
+    url('/static/fonts/SourceSansPro-SemiBoldItalic.ttf') format('truetype');
+    font-weight: 600;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Source Sans Pro';
+    src: local('Source Sans Pro Bold'), local('SourceSansPro-Bold'),
+    url('/static/fonts/SourceSansPro-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Source Sans Pro';
+    src: local('Source Sans Pro ExtraLight'), local('SourceSansPro-ExtraLight'),
+    url('/static/fonts/SourceSansPro-ExtraLight.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Source Sans Pro';
+    src: local('Source Sans Pro Black'), local('SourceSansPro-Black'),
+    url('/static/fonts/SourceSansPro-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Source Sans Pro';
+    src: local('Source Sans Pro Italic'), local('SourceSansPro-Italic'),
+    url('/static/fonts/SourceSansPro-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Source Sans Pro';
+    src: local('Source Sans Pro Black Italic'), local('SourceSansPro-BlackItalic'),
+    url('/static/fonts/SourceSansPro-BlackItalic.ttf') format('truetype');
+    font-weight: 900;
+    font-style: italic;
+    font-display: swap;
+}

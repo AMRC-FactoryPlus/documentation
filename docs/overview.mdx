@@ -1,0 +1,158 @@
+---
+sidebar_position: 2
+---
+
+# 🚧 Overview
+
+Factory+ ultimately establishes a robust, scalable MQTT/Sparkplug pipeline, complete with supporting components, that leverages normalised data models (schemas) and standardised interfaces to consume data. To achieve this end-goal, Factory+ adopts several key principals:
+
+- **MQTT**: The [MQTT](https://mqtt.org/) protocol is a lightweight messaging protocol designed for low-bandwidth, high-latency, or unreliable networks. MQTT does not provide a rich information modelling representation like OPC UA, which historically results in each vendor implementing MQTT in their own way, reducing compatibility and interoperability between devices. This is where Sparkplug (below) comes in.
+- **Sparkplug**: [Sparkplug](https://sparkplug.eclipse.org/) is an open-source specification that provides a framework for MQTT-enabled devices and applications to communicate in a standardised manner. It builds on the MQTT specification, defining how best to utilise MQTT in real-time, mission critical industrial applications and addresses many of the limitations of using MQTT in an industrial setting outlined above.
+- **Data normalisation**: Normalised [data schemas](/docs/schemas) are utilised for ingested data to ensure consistent data representation across the framework. This promotes interoperability and simplifies data processing and analysis.
+- **Standardised interfaces**: Standardised interfaces are used to facilitate communication and data exchange between devices, applications, and components within the framework. This enables seamless integration of new devices and components and reduces the complexity of managing the overall system.
+- **Modular architecture**: Factory+ is based on the principal of a [modular architecture](/docs/framework-components/overview), allowing for easy expansion and customisation of the framework and prevents vendor lock-in. This ensures that the architecture can scale to accommodate growth and changing requirements over time.
+- **Security**: Factory+ was built upon industry-standard security practices to safeguard data and communications both within the framework and at the point of consumption. These measures include encryption, authentication, and access control, ensuring that sensitive information is well-protected and access is granted only to authorised users.
+- **Documentation and specifications**: Comprehensive documentation and specifications are provided for developers and users to understand how to get started with the framework, integrate devices, applications, and plugin components, and to promote the development of compatible solutions.
+- **Open-source and community-driven**: An [open-source approach](https://github.com/AMRC-FactoryPlus/amrc-connectivity-stack) is being embraced, and a community-driven development process is being fostered, enabling continuous improvements and innovations within the framework.
+
+## Foundations
+
+For a truly scalable and efficient IIoT architecture, it is essential to adopt a communication framework that focuses on **edge-driven**, **infrastructure-centric design**, and **report-by-exception** approaches.
+
+### Edge-driven
+Edge-driven communication offers several key benefits in the context of the Internet of Things (IoT) and Industrial Internet of Things (IIoT). One of these benefits is reduced latency, which enables faster response times and real-time decision-making by initiating data transfer when data is available. Energy efficiency is another advantage, as this approach minimises the need for constant data polling, allowing devices to conserve energy when there is no new data to report.
+
+Additionally, edge-driven communication helps reduce the load on central servers or control systems, leading to improved overall system performance and stability. Lastly, this communication method enhances security by eliminating the need to open inbound ports for polling, thereby reducing the potential attack surface for malicious actors and minimising the risk of unauthorised access, ultimately helping maintain a more secure network environment.
+
+### Infrastructure-centric
+
+Infrastructure-centric design is an approach that focuses on connecting devices and applications to a central infrastructure, rather than directly to each other. This method reduces the number of point-to-point connections within the system, streamlining communication and improving overall efficiency.
+
+By utilising an infrastructure-centric design, the $N^2$ problem can also be mitigated. The $N^2$ problem refers to the exponential increase in the number of point-to-point connections required as a system scales. In a system with $N$ devices or components, each one would need a direct connection to every other device, resulting in $N * (N-1) / 2$ total connections. This leads to a significant growth in complexity and the potential for difficulties in managing, securing, troubleshooting, and maintaining the system as the number of devices increases.
+
+#### Problem
+
+Consider the following scenario, in which a relatively simple representative architecture comprising seven edge devices is connected to multiple systems, including a Historian, OEE calculations, and MES.
+
+```mermaid
+%%{init: {'flowchart' : {'curve' : 'linear'}}}%%
+graph LR
+  A[MES] -->C[Historian]
+  A -->D[Dashboard]
+  A -->E[Digital Twin]
+  A -->c1[Edge Device 1]
+  B[OEE] -->C
+  B -->C
+  B -->D
+  B -->E
+  B -->c2[Edge Device 2]
+  C -->D
+  C -->E
+  C -->c3[Edge Device 3]
+  D -->E
+  D -->c4[Edge Device 4]
+  E -->c5[Edge Device 5]
+  F[Energy Monitoring] -->c6[Edge Device 6]
+  F -->c7[Edge Device 7]
+  c1 --> C
+  c2 --> C
+  c3 --> C
+  c4 --> C
+  c5 --> C
+  c6 --> C
+  c7 --> C
+  c1 --> A
+  c2 --> A
+  c3 --> A
+  c4 --> A
+  c5 --> A
+  c6 --> A
+  c7 --> A
+```
+
+It is evident that expanding this system by adding more edge devices or data-consuming applications quickly becomes prohibitively challenging. Such an architecture is typical in organisations that have organically grown and adopted technology as it has become available, essentially piecing together solutions to address individual problems. Although the bolted-on, disparate systems solve the problem at hand, they ultimately result in a slow accumulation of technical debt (costs that arise from choosing a quick and easy solution over a potentially better and more complex one that would take more time and resources to implement).
+
+#### Solution
+
+The "connect to infrastructure" approach leveraged by Factory+ solves this problem. From the perspective of edge connectivity, a single connection is required for each new edge device, utilising a standard protocol and connection process, which greatly reduces onboarding, leading to increased efficiency and faster deployment. Consuming applications (and the core components themselves) can then utilise the Sparkplug and/or HTTP APIs to access both live data and configurations, files, historical data or anything else that a component may provide in a scalable, standardised, discoverable way.
+
+```mermaid
+graph TB
+    subgraph Legend
+      direction LR
+      start1[ ] -. "MQTT (Report by Exception)" .-> stop1[ ]
+      style start1 height:0px;
+      style stop1 height:0px;
+      start2[ ] -- "REST (Poll/Response)" --> stop2[ ]
+      style start2 height:0px;
+      style stop2 height:0px;
+    end
+    subgraph Factory+
+        direction LR
+        A[Directory]
+        B[Config Store]
+        C[MQTT]
+        D[Manager]
+        E[Commands]
+        G[Data Warehouse]
+    end
+    subgraph Data Consumers
+        direction LR
+        ds[Dashboard]
+        dt[Digital Twin]
+        mes[MES]
+        em[Energy Monitoring]
+        ...[etc.]
+    end
+    subgraph Edge Devices
+        direction LR
+        c1
+        c2
+        c3
+        c4
+        c5
+        c6
+        c7
+    end
+  m{{Factory+ Sparkplug APIs}}<.->C
+  m<.->A
+  m<.->B
+  m<.->D
+  m<.->E
+  m<.->G
+  C<.->c1[Edge Device 1]
+  C<.->c2[Edge Device 2]
+  C<.->c3[Edge Device 3]
+  C<.->c4[Edge Device 4]
+  C<.->c5[Edge Device 5]
+  C<.->c6[Edge Device 6]
+  C<.->c7[Edge Device 7]
+  A --> r{{Factory+ REST APIs}}
+  B --> r
+  D --> r
+  E --> r
+  G --> r
+  dt <.-> m
+  dt <--> r
+  ds <.-> m
+  ds <--> r
+  mes <.-> m
+  mes <--> r
+  em <.-> m
+  em <--> r
+  ... <.-> m
+  ... <--> r
+```
+
+To ensure that scalability is not impacted when communicating over REST, the components are designed to enable efficient connection management and discovery by utilising the Factory+ [Component Specification](/docs/framework-components/specification) to provide Sparkplug and REST interfaces that scale. See the [Component Overview](/docs/framework-components/component-overview) section for the components that Factory+ provides and how they utilise these interfaces.
+
+### Report by Exception
+> Reword this
+
+```mermaid
+graph LR
+  subgraph "Edge"
+    A[Device] -- "OPC UA (Poll/Response)" --> B[Cell Gateway]
+  end
+  B -. "MQTT (Report by Exception)" .-> C[MQTT]
+```
