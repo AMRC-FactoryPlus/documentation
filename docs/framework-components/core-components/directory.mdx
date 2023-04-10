@@ -3,10 +3,10 @@ sidebar_position: 2
 ---
 
 import useBaseUrl from "@docusaurus/useBaseUrl";
-
-# 🚧️ Directory
-
 import OpenAPISpecRenderer from "../../../src/components/OpenAPISpecRenderer";import {OpenSourceExample} from "../../../src/components/OpenSourceExample";
+
+# Directory
+
 
 export const ComponentOverview = () => (
     <div className="mb-10 mx-auto text-center w-full flex justify-center">
@@ -29,7 +29,7 @@ export const ComponentOverview = () => (
     </div>
 );
 
-The Directory component is designed to help applications, users, and other components find the devices and services they require. By monitoring for birth and death messages, it keeps a comprehensive registry of devices and services, including their current status, schemas, and endpoints, making it easier for consuming applications to locate them. Instructions on how consuming applications should locate and connect to the Directory Service is outlined in the [examples](#examples) section.
+The Directory component is designed to help applications, users, and other components find the devices and services they require. By monitoring for birth and death messages, it keeps a comprehensive registry of devices and services, including their current status, schemas, and endpoints, making it easier for consuming applications to locate them. Instructions on how consuming applications should locate and connect to the Directory is outlined in the [examples](#examples) section.
 
 <OpenSourceExample buttonText={'ACS Directory Component'} repoUrl={'https://github.com/AMRC-FactoryPlus/acs-directory'}></OpenSourceExample>
 
@@ -43,25 +43,25 @@ Devices lacking an `Instance_UUID` in their birth certificate will be unable to 
 
 ## Discovery
 
-As per the [Component Specification](/docs/framework-components/specification), the Directory component provides a Sparkplug interface and a HTTP REST API and uses `af4a1d66-e6f7-43c4-8a67-0fa3be2b1cf9` as the `Service_UUID`.
+As per the [Component Specification](/docs/framework-components/specification), the Directory component provides a MQTT/Sparkplug interface and a HTTP interface. The Authorisation component uses `af4a1d66-e6f7-43c4-8a67-0fa3be2b1cf9` as the `Service_UUID`.
 
-## MQTT Interface
+## MQTT/Sparkplug Interface
 
 The Directory component Sparkplug interface **MUST** use the well-known address `[ORGANISATION]-Service-DIR-Directory/Directory`. This allows the Directory to be located over MQTT without using the HTTP API.
 
 To conform with the [Component Specification](/docs/framework-components/specification), the Directory component **MUST** publish the following metrics:
 
-| Metric           | Type   | Description                                                                                                                                                                                                                                                      |
-|------------------|--------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `Schema_UUID`    | UUID   | Identifies this as a service provider                                                                                                                                                                                                                            |
-| `Instance_UUID`  | UUID   | The UUID of this device                                                                                                                                                                                                                                          |
-| `Service_UUID`   | UUID   | The well-known UUID of the directory service function                                                                                                                                                                                                            |
-| `Service_URL`    | string | The URL of the HTTP API                                                                                                                                                                                                                                          |
-| `Last_Changed`   | folder | A folder of change-notify metrics, containing metrics which are published to every time something relevant changes on the network. By subscribing to the Directory Service and watching the values of these metrics applications can avoid polling the HTTP API. |
-| `Device_UUID`    | UUID   | Published when a device has come on or offline                                                                                                                                                                                                                   |
-| `Device_Address` | string | Published when a device has come on or offline                                                                                                                                                                                                                   |
-| `Schema_Usage`   | UUID   | Published when the list of devices advertising a schema has changed                                                                                                                                                                                              |
-| `Service`        | UUID   | Published when the list of devices advertising a service has changed                                                                                                                                                                                             |
+| Metric           | Type   | Description                                                                                                                                                                                                                                              |
+|------------------|--------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `Schema_UUID`    | UUID   | Identifies this as a service provider                                                                                                                                                                                                                    |
+| `Instance_UUID`  | UUID   | The UUID of this device                                                                                                                                                                                                                                  |
+| `Service_UUID`   | UUID   | The well-known UUID of the directory service function                                                                                                                                                                                                    |
+| `Service_URL`    | string | The URL of the HTTP API                                                                                                                                                                                                                                  |
+| `Last_Changed`   | folder | A folder of change-notify metrics, containing metrics which are published to every time something relevant changes on the network. By subscribing to the Directory and watching the values of these metrics applications can avoid polling the HTTP API. |
+| `Device_UUID`    | UUID   | Published when a device has come on or offline                                                                                                                                                                                                           |
+| `Device_Address` | string | Published when a device has come on or offline                                                                                                                                                                                                           |
+| `Schema_Usage`   | UUID   | Published when the list of devices advertising a schema has changed                                                                                                                                                                                      |
+| `Service`        | UUID   | Published when the list of devices advertising a service has changed                                                                                                                                                                                     |
 
 ## HTTP Interface
 
@@ -87,69 +87,87 @@ All requests must supply HTTP authentication; the following mechanisms are suppo
             description={''}
             uuid={'4db4c39a-f18d-4e83-aeb0-5af2c14ddc2b'}></Permission>
 
+---
+
+<Permission name={'Override Service Advertisement Permissions'}
+            description={''}
+            uuid={'3bda2ab2-4128-463d-83c9-16b976a8d83e'}></Permission>
+
+---
+
+<Permission name={'Manage Service Advertisement for Owner'}
+            description={''}
+            uuid={'97dcf2a1-7f4b-476c-b561-e40fc42440ee'}></Permission>
+
+---
+
+<Permission type={'Permission Group'} name={'Directory Permissions'}
+            description={'A permission group that contains all of the above permissions'}
+            uuid={'58b5da47-d098-44f7-8c1d-6e4bd800e718'}></Permission>
+
+
 ## Examples
 ### Listing All Devices
 
-> A list of all known devices can be obtained by making a `GET` request to `/v1/device`, which returns an array of device UUIDs.
+A list of all known devices can be obtained by making a `GET` request to `/v1/device`, which returns an array of device UUIDs.
 
-### Finding a Device via its Instance UUID
+### Finding a Device via its Instance_UUID
 
-> If the `Instance_UUID` of a device is known then it can be queried with a `/v1/device/{Instance_UUID}` request to the Directory Service. This returns a JSON
+If the `Instance_UUID` of a device is known then it can be queried with a `/v1/device/{Instance_UUID}` request to the Directory. This returns a JSON
 object with the following properties:
 
-| Property      | Description                                              |
-|---------------|----------------------------------------------------------|
-| `uuid`        | The device's top-level `Instance_UUID`.                  |
-| `group_id`    | The Sparkplug Group ID this device last used.            |
-| `node_id`     | The Sparkplug Edge Node ID this device last used.        |
-| `device_id`   | The Sparkplug Device ID this device last used.           |
-| `online`      | A boolean indicating if this device is currently online. |
-| `last_change` | The time this device last went on or offline.            |
-| `schemas`     | An array of the schemas supported by this device.        |
-| `top_schema`  | The top-level schema this device advertises.             |
+| Property      | Description                                             |
+|---------------|---------------------------------------------------------|
+| `uuid`        | The device's top-level `Instance_UUID`                  |
+| `group_id`    | The Sparkplug Group ID this device last used            |
+| `node_id`     | The Sparkplug Edge Node ID this device last used        |
+| `device_id`   | The Sparkplug Device ID this device last used           |
+| `online`      | A boolean indicating if this device is currently online |
+| `last_change` | The time this device last went on or offline            |
+| `schemas`     | An array of the schemas supported by this device        |
+| `top_schema`  | The top-level schema this device advertises             |
 
-> If the `device_id` property is missing or an string then the device is a Sparkplug Edge-Node device that uses `NBIRTH`, `NDATA`, `NDEATH` topics. Otherwise it is a Sparkplug Device and uses `DBIRTH`, `DDATA`, `DDEATH` topics. A particular device may change from being to a Node to a Device or vice versa, depending on operational changes.
+If the `device_id` property is missing or an string then the device is a Sparkplug Edge-Node device that uses `NBIRTH`, `NDATA`, `NDEATH` topics. Otherwise it is a Sparkplug Device and uses `DBIRTH`, `DDATA`, `DDEATH` topics. A particular device may change from being to a Node to a Device or vice versa, depending on operational changes.
 
-> The schemas reported are those present in the device's most recent birth certificate. If the device does not support the Factory+ schema spec, or doesn't publish a `Schema_UUID` at the top of its metric tree, then `top_schema` will be reported as `null`.
+The schemas reported are those present in the device's most recent birth certificate. If the device does not publish a `Schema_UUID` at the top of its metric tree, then `top_schema` will be reported as `null`.
 
 ### Finding a Device via its Sparkplug Address
 
-> If the Sparkplug address of a device is known (`group_id`, `node_id`, `device_id`) then it can be queried with request to the Directory Service as outlined below.
+If the Sparkplug address of a device is known (`group_id`, `node_id`, `device_id`) then it can be queried with request to the Directory as outlined below.
 
 ```
-/v1/address/{group_id}/{node_id}
-/v1/address/{group_id}/{node_id}/{device_id}
+GET /v1/address/{group_id}/{node_id}
+GET /v1/address/{group_id}/{node_id}/{device_id}
 ```
 
-> This returns a JSON object with the following properties:
+This returns a JSON object with the following properties:
 
-| Property   | Description                                             |
-|------------|---------------------------------------------------------|
-| `address`  | The address queries, as a single string.                |
-| `uuid`     | The UUID of the most recent device to use this address. |
-| `children` | An array of the Devices seen under this Node.           |
+| Property   | Description                                            |
+|------------|--------------------------------------------------------|
+| `address`  | The address queries, as a single string                |
+| `uuid`     | The UUID of the most recent device to use this address |
+| `children` | An array of the Devices seen under this node           |
 
-> The `children` array is only present for a request containing no devices (`/v1/address/{group_id}/{node_id}`) and contains the `device_id` for every device ever seen under that Node.
+The `children` array is only present for a request containing no devices (`/v1/address/{group_id}/{node_id}`) and contains the `device_id` for every device ever seen under that Node.
 
-### Finding Devices That Use a Schema
+### Finding Devices that use a Schema
 
-> A request can be made to the `/v1/schema` endpoint that returns a JSON array listing all the `Schema_UUID`s the Directory has ever seen.
+A `GET` request can be made to the `/v1/schema` endpoint that returns a JSON array listing all the `Schema_UUID`s the Directory has ever seen.
 
-> Given a particular `Schema_UUID`, a request to `/v1/schema/{Schema_UUID}/devices` returns a JSON array listing the device UUIDs of all devices that reported that schema in their most recent birth certificate.
+Given a particular `Schema_UUID`, a `GET` request to `/v1/schema/{Schema_UUID}/devices` returns a JSON array listing the `Device_UUID`s of all devices that reported that schema in their most recent birth certificate.
 
 ### Discovering Services
 
-> A request to `/v1/service` returns a JSON array listing all service UUIDs that Directory Service knows about.
+A `GET` request to `/v1/service` returns a JSON array listing all `Service_UUID`s that Directory knows about.
 
-> Once a `Service_UUID` is obtained a request to `/v1/service/{Service_UUID}` returns a JSON array of objects, one for each device providing the given service. Each object has the following properties:
+Once a `Service_UUID` is obtained, a `GET` request to `/v1/service/{Service_UUID}` returns a JSON array of objects, one for each device providing the given service. Each object has the following properties:
 
-| Property  | Description                                            |
-|-----------|--------------------------------------------------------|
-| `service` | The service UUID queried.                              |
-| `device`  | The device UUID of a device providing this service.    |
-| `url`     | A URL on which the device provides additional service. |
+| Property  | Description                                           |
+|-----------|-------------------------------------------------------|
+| `service` | The service UUID queried                              |
+| `device`  | The device UUID of a device providing this service    |
+| `url`     | A URL on which the device provides additional service |
 
 ## Known Issues
-> This is indicative of a more general problem: since we have no reliability mechanism (no STATE support), whenever the directory service goes offline its picture of the network starts to diverge from reality. Missed death certificates are particularly damaging, as they cannot be detected, and will only be resolved when/if the device in question comes back online.
-
-> If bad data is received via Sparkplug it will be recorded and returned. In particular, if two devices publish on the same Sparkplug address at the same time the data returned from the directory will be very confusing.
+- In the absence of a reliability mechanism (specifically, no STATE support), the directory service's view of the network begins to deviate from the actual state when it becomes unavailable. This can lead to significant repercussions, particularly in the case of missed death certificates which cannot be identified and will only be rectified upon the eventual reconnection of the affected device.
+- If bad data is received via Sparkplug it will be recorded and returned. In the event of two devices simultaneously publishing on the same Sparkplug address, the data returned from the directory will be highly ambiguous.

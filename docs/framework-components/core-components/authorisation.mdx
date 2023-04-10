@@ -102,7 +102,9 @@ Groups can contain other groups, allowing for a hierarchical structure that simp
 
 ## Discovery
 
-The Authorisation component, like all others, uses the Directory to advertise its services to interested parties. Since this service has no MQTT component service discovery will return a `null` Device UUID. The `Service_UUID` for the Authentication component is `cab2642a-f7d9-42e5-8845-8f35affe1fd4`.
+As per the [Component Specification](/docs/framework-components/specification), the Authorisation component provides a MQTT/Sparkplug interface and a HTTP interface. The Authorisation component uses `cab2642a-f7d9-42e5-8845-8f35affe1fd4` as the `Service_UUID`.
+
+## HTTP Interface
 
 ### Authentication
 
