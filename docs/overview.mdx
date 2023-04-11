@@ -94,7 +94,9 @@ graph TB
         C[MQTT]
         D[Manager]
         E[Commands]
+        F[Authorisation]
         G[Data Warehouse]
+        H[Identity]
     end
     subgraph Data Consumers
         direction LR
@@ -119,7 +121,9 @@ graph TB
   m<.->B
   m<.->D
   m<.->E
+  m<.->F
   m<.->G
+  m<.->H
   C<.->c1[Edge Device 1]
   C<.->c2[Edge Device 2]
   C<.->c3[Edge Device 3]
@@ -131,7 +135,9 @@ graph TB
   B --> r
   D --> r
   E --> r
+  F --> r
   G --> r
+  H --> r
   dt <.-> m
   dt <--> r
   ds <.-> m
@@ -149,7 +155,7 @@ To ensure that scalability is not impacted when communicating over REST, the com
 ### Report by Exception
 A core principal of Factory+ is to adopt report by exception at the point of ingestion into the framework. Report-by-exception is a communication strategy where information is only reported or shared when there's a deviation from the expected or normal behavior. In the context of transmitting data from edge devices, this means that data is only sent when there is a change in its value or status. Instead of constantly asking for updates on the status of a device across the entire architecture, sometimes hundreds of times per second with no change, the polling is kept to the edge and updates are only broadcast when a change from the previous value occurs. This approach helps reduce network traffic, save bandwidth, and optimize the transmission of meaningful changes.
 
-Although Factory+ uses established and widely recognized protocols for connecting to devices and retrieving data (often through poll/response method, such as OPC UA), it promotes pushing the poll/response behavior as close to the edge as feasible in order to maximize the benefits of report by exception. This typically entails the deployment of an edge-of-network node, also known as a "Cell Gateway," adjacent to the device. The Cell Gateway communicates "southbound" with the device over a short, point-to-point link, using widely adopted protocols and "northbound" with Factory+ via Sparkplug-encoded MQTT packets employing a report-by-exception approach.
+Although Factory+ uses established and widely recognized protocols for connecting to devices and retrieving data (often through poll/response method, such as OPC UA), it promotes restricting the poll/response behavior as close to the edge as feasible in order to maximize the benefits of report by exception. This typically entails the deployment of an edge-of-network node, also known as a "Cell Gateway," adjacent to the device. The Cell Gateway communicates "southbound" with the device over a short, point-to-point link, using widely adopted protocols, and "northbound" with Factory+ via Sparkplug-encoded MQTT packets employing a report-by-exception approach.
 
 ```mermaid
 graph LR
