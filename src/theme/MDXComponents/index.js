@@ -14,6 +14,7 @@ import {RestParameters, RestRequest, RestResponse} from "../../components/RestUt
 import {Permission} from "../../components/PermissionUtils";
 import {OpenAPISpec} from "../../components/OpenAPISpec";
 import OpenAPISpecRenderer from "../../components/OpenAPISpecRenderer";
+import {WellKnownUUID} from "../../components/WellKnownUUID";
 const MDXComponents = {
   head: MDXHead,
   code: MDXCode,
@@ -36,6 +37,7 @@ const MDXComponents = {
   RestResponse,
   Permission,
   OpenAPISpec,
-  OpenAPISpecRenderer
+  OpenAPISpecRenderer,
+  WellKnownUUID
 };
 export default MDXComponents;
