@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# 🚧 Overview
+# Overview
 
 Factory+ ultimately establishes a robust, scalable MQTT/Sparkplug pipeline, complete with supporting components, that leverages normalised data models (schemas) and standardised interfaces to consume data. To achieve this end-goal, Factory+ adopts several key principals:
 
@@ -147,7 +147,9 @@ graph TB
 To ensure that scalability is not impacted when communicating over REST, the components are designed to enable efficient connection management and discovery by utilising the Factory+ [Component Specification](/docs/framework-components/specification) to provide Sparkplug and REST interfaces that scale. See the [Component Overview](/docs/framework-components/component-overview) section for the components that Factory+ provides and how they utilise these interfaces.
 
 ### Report by Exception
-> Reword this
+A core principal of Factory+ is to adopt report by exception at the point of ingestion into the framework. Report-by-exception is a communication strategy where information is only reported or shared when there's a deviation from the expected or normal behavior. In the context of transmitting data from edge devices, this means that data is only sent when there is a change in its value or status. Instead of constantly asking for updates on the status of a device across the entire architecture, sometimes hundreds of times per second with no change, the polling is kept to the edge and updates are only broadcast when a change from the previous value occurs. This approach helps reduce network traffic, save bandwidth, and optimize the transmission of meaningful changes.
+
+Although Factory+ uses established and widely recognized protocols for connecting to devices and retrieving data (often through poll/response method, such as OPC UA), it promotes pushing the poll/response behavior as close to the edge as feasible in order to maximize the benefits of report by exception. This typically entails the deployment of an edge-of-network node, also known as a "Cell Gateway," adjacent to the device. The Cell Gateway communicates "southbound" with the device over a short, point-to-point link, using widely adopted protocols and "northbound" with Factory+ via Sparkplug-encoded MQTT packets employing a report-by-exception approach.
 
 ```mermaid
 graph LR
