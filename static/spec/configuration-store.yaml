@@ -18,7 +18,7 @@ security:
 paths:
   /object:
     get:
-      summary: List objects
+      summary: List all objects in the Configuration Store
       responses:
         "200":
           description: Get a list of all registered objects
