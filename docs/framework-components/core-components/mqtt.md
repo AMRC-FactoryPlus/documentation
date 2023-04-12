@@ -6,6 +6,14 @@ sidebar_position: 8
 
 ## Well known UUIDs
 
+<WellKnownUUID type='Permission Group' name='MQTT permissions'
+    uuid='a637134a-d06b-41e7-ad86-4bf62fde914a'
+    description='All MQTT permissions need to be in this group.'/>
+
+Any UUIDs created representing MQTT permissions need to be added to this
+group in the Auth service, otherwise the MQTT plugin will not be able to
+see the ACEs.
+
 <WellKnownUUID type='Application' name='MQTT Permission Template' 
     uuid='1266ddf1-156c-4266-9808-d6949418b185'
     description='Expands a permission recognised by the MQTT plugin to an MQTT ACL.'/>

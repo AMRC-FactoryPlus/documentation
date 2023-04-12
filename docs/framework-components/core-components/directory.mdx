@@ -196,13 +196,37 @@ UUIDs listed below.
             description='Permission to advertise a given service.'
             uuid={'4db4c39a-f18d-4e83-aeb0-5af2c14ddc2b'}></Permission>
 
-<Permission name={'Override Service Advertisement Permissions'}
-            description=''
-            uuid={'3bda2ab2-4128-463d-83c9-16b976a8d83e'}></Permission>
+This grants permission for a given account to advertise the given
+service.
 
 <Permission name={'Manage Service Advertisement for Owner'}
-            description=''
+            description="Permission to advertise a service on another account's behalf"
             uuid={'97dcf2a1-7f4b-476c-b561-e40fc42440ee'}></Permission>
+
+This grants the 'principal' account (normally an administrator account,
+or an operator account performing this specific function) permission to
+advertise services for the 'target', which also represents an account.
+This allows use of the `/v1/service/{service}/advertisment/{owner}`
+endpoint.
+
+In addition to the 'principal' account having this permission on the
+'target account, either
+
+* the 'target' account must have 'Advertise Service', or
+
+* the 'principal' account must have 'Override Service Advertisment
+Permissions'
+
+on the service function UUID being advertised.
+
+<Permission name={'Override Service Advertisement Permissions'}
+            description='Permission to override advertisment permissions for this service.'
+            uuid={'3bda2ab2-4128-463d-83c9-16b976a8d83e'}></Permission>
+
+This grants an account permission to advertise services on behalf of
+another account that the other account cannot advertise on its own
+behalf. The 'target' of the permission is the service function UUID
+being advertised.
 
 ## Known Issues
 - In the absence of a reliability mechanism (specifically, no STATE support), the directory service's view of the network begins to deviate from the actual state when it becomes unavailable. This can lead to significant repercussions, particularly in the case of missed death certificates which cannot be identified and will only be rectified upon the eventual reconnection of the affected device.

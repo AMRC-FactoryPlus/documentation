@@ -170,11 +170,10 @@ Where an object has a pre-defined Sparkplug address, entries with this
 application can be used to allow this address to be looked up. Under the
 current architecture Sparkplug Nodes have fixed addresses and require
 entries of this type. Sparkplug Devices are discovered via the Directory
-and do not need these entries.
+and do not normally need these entries.
 
 Entries of this type are used by the MQTT service to define ACLs, and by
-the Command Escalation service to authenticate escalation requests over
-MQTT.
+the Command Escalation service to authenticate escalation requests.
 
 Entries have the following properties:
 
@@ -231,13 +230,61 @@ All requests **MUST** supply HTTP authentication; the following mechanisms are s
 
 ## Permissions
 
-<Permission name='Configuration Store' type='Permission Group' description='A permission group that contains all of the Configuration Store permissions' uuid='c43c7157-a50b-4d2a-ac1a-86ff8e8e88c1'></Permission>
+<Permission type='Permission Group' name='Configuration Store'
+    description='A permission group that contains all of the Configuration Store permissions'
+    uuid='c43c7157-a50b-4d2a-ac1a-86ff8e8e88c1'/>
 
-<Permission name='Read Configuration for Application' type='Permission' description='🚨 Complete description 🚨' uuid='4a339562-cd57-408d-9d1a-6529a383ea4b'></Permission>
-<Permission name='Write Configuration for Application' type='Permission' description='🚨 Complete description 🚨' uuid='6c799ccb-d2ad-4715-a2a7-3c8728d6c0bf'></Permission>
-<Permission name='Manage Application Schema' type='Permission' description='🚨 Complete description 🚨' uuid='95c7cbcb-ce60-49ed-aa81-2fe3eec4559d'></Permission>
-<Permission name='Manage Objects' type='Permission' description='🚨 Complete description 🚨' uuid='f0b7917b-d475-4888-9d5a-2af96b3c26b6'></Permission>
-<Permission name='Delete Objects' type='Permission' description='🚨 Complete description 🚨' uuid='6957174b-7b08-45ca-ac5c-c03ab6928a6e'></Permission>
+This group must be set up in the Auth service to contain all the
+permissions below.
+
+<Permission type='Permission' name='Read Configuration for Application'
+    description='Permit reading config entries for the given Application.'
+    uuid='4a339562-cd57-408d-9d1a-6529a383ea4b'/>
+
+This permission grants the right to read config entries. The 'target'
+specifies an Application; all config entries for that Application can be
+read.
+
+<Permission type='Permission' name='Write Configuration for Application'
+    description='Permits writing config entries for the given Application.'
+    uuid='6c799ccb-d2ad-4715-a2a7-3c8728d6c0bf'/>
+
+This permission grants the right to write config entries for a given
+application. Entries can be created, but only against objects which are
+already registered with the Config Store.
+
+<Permission type='Permission' name='Manage Application Schema'
+    description='Upload a JSON schema for a given Application.'
+    uuid='95c7cbcb-ce60-49ed-aa81-2fe3eec4559d'/>
+
+This permission allows the `PUT /v1/app/{app}/config-schema` endpoint to
+be used. This endpoint sets the JSON schema against which an
+Application's entries are validated.
+
+<Permission type='Permission' name='Manage Objects'
+    description='Grants permission to create objects in a given class.'
+    uuid='f0b7917b-d475-4888-9d5a-2af96b3c26b6'/>
+
+This permission allows objects to be created. The object must be created
+in a class which has been granted as target of the permission; or the
+permission may be granted wildcard to allow any class.
+
+This permission also grants the right to list the classes in question.
+
+This permission does not allow objects to be deleted; that is
+destructive and is not normally appropriate, so it has a separate
+permission.
+
+<Permission type='Permission' name='Delete Objects'
+    description='Grants permission to delete objects.'
+    uuid='6957174b-7b08-45ca-ac5c-c03ab6928a6e'/>
+
+This permission grants the right to delete an object. It should be
+granted sparingly; normally once a UUID has been allocated to a given
+object it is worth keeping a permanent record of that fact.
+
+The target of the permission must be the object to be deleted (or an
+Auth service group containing that object).
 
 ## Examples
 

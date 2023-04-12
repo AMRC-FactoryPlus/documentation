@@ -204,7 +204,7 @@ in that group on the given targets.
 These UUIDs represent groups of accounts which need to be granted
 permissions in common. These appear in the 'principal' field of an ACE.
 
-## Permissions
+### Permissions
 
 <Permission type={'Permission Group'} name={'Authorisation Permissions'}
             description={'Permissions needed by the Auth service'}
@@ -212,37 +212,53 @@ permissions in common. These appear in the 'principal' field of an ACE.
 
 This group must be set up to contain all the permissions UUIDs below.
 
-<Permission name={'Read ACL Entry'} description={'Grant permission to read ACLs for the target permission group'}
-            uuid={'ba566181-0e8a-405b-b16e-3fb89130fbee'}></Permission>
+<Permission name={'Read ACL Entry'}
+    description={'Grant permission to read ACLs for the target permission group'}
+    uuid={'ba566181-0e8a-405b-b16e-3fb89130fbee'}/>
 
----
+This permission allows a service account to read the ACLs it needs to
+read. The 'target' of the permission should be the permission group the
+service application will request from the Auth service.
 
 <Permission name={'Read Kerberos Mappings'}
-            description={'Grants permission to read Kerberos mappings for the target Principal. To search for a principal by Kerberos principal name this must be granted as a wildcard.'}
-            uuid={'e8c9c0f7-0d54-4db2-b8d6-cd80c45f6a5c'}></Permission>
+    description='Grants permission to read Kerberos mappings for the target Principal.'
+    uuid={'e8c9c0f7-0d54-4db2-b8d6-cd80c45f6a5c'}/>
 
----
+This permission grants the right to look up the Kerberos principal
+corresponding to the 'target', which also represents a principal.
+
+To search for a principal by Kerberos principal name this must be
+granted as a wildcard.
 
 <Permission name={'Read Effective Permissions'}
-            description={'Grants permission to read effective permissions. This must always be granted as a wildcard.'}
-            uuid={'35252562-51e5-4dd8-84cd-ba0fafa62669'}></Permission>
+    description='Grants permission to read effective permissions.'
+    uuid={'35252562-51e5-4dd8-84cd-ba0fafa62669'}/>
 
----
+This must always be granted as a wildcard. This is intended only for
+administrators.
 
 <Permission name={'Manage ACLs'}
-            description={'Grants permission to manage ACL entries affecting the target permission. If this is not granted as a wildcard then the only endpoint that can be used is POST /authz/ace.'}
-            uuid={'3a41f5ce-fc08-4669-9762-ec9e71061168'}></Permission>
+    description='Grants permission to manage ACL entries affecting the target permission.'
+    uuid={'3a41f5ce-fc08-4669-9762-ec9e71061168'}/>
 
----
+The 'target' of this permission should be either the UUID of the
+permission that can be managed, or the wildcard.
+
+If this is not granted as a wildcard then the only endpoint that can be
+used is `POST /authz/ace`.
 
 <Permission name={'Manage Group'}
-            description={'Permits the PUT and DELETE requests to edit group membership on the target group.'}
-            uuid={'be9b6d47-c845-49b2-b9d5-d87b83f11c3b'}></Permission>
+    description={'Grants permission to edit group membership.'}
+    uuid={'be9b6d47-c845-49b2-b9d5-d87b83f11c3b'}/>
 
----
+The 'target' of this permission is the group which can be edited. This
+permission also implicitly grants the right to create the group in the
+Auth service, as groups exist when and only when they have members.
 
-<Permission name={'Manage Kerberos Mappings'} description={'Permits managing Kerberos mappings for the target principal.'}
-            uuid={'327c4cc8-9c46-4e1e-bb6b-257ace37b0f6'}></Permission>
+<Permission name={'Manage Kerberos Mappings'}
+    description={'Permits managing Kerberos mappings for the target principal.'}
+    uuid={'327c4cc8-9c46-4e1e-bb6b-257ace37b0f6'}/>
 
----
-
+The 'target' of this permission is the UUID of another principal, or the
+wildcard. This grants permission to add, change or remove the Kerberos
+principal mapping.
