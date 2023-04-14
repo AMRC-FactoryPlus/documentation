@@ -43,7 +43,11 @@ Devices lacking an `Instance_UUID` in their birth certificate will be unable to 
 
 ## Discovery
 
-As per the [Component Specification](/docs/framework-components/specification), the Directory component provides a MQTT/Sparkplug interface and a HTTP interface. The Authorisation component uses `af4a1d66-e6f7-43c4-8a67-0fa3be2b1cf9` as the `Service_UUID`.
+As per the [Component Specification](/docs/framework-components/specification), the Directory component provides a MQTT/Sparkplug interface and a HTTP interface.
+
+<WellKnownUUID type='Service Function' name='Directory'
+    uuid='af4a1d66-e6f7-43c4-8a67-0fa3be2b1cf9'
+    description='Directory service specification.'/>
 
 ## MQTT/Sparkplug Interface
 
@@ -81,29 +85,6 @@ All requests must supply HTTP authentication; the following mechanisms are suppo
 
 <OpenAPISpecRenderer url={useBaseUrl('/spec/directory.yaml')} text={'the Directory component'} />
 
-## Permissions
-
-<Permission name={'Advertise Service'}
-            description={''}
-            uuid={'4db4c39a-f18d-4e83-aeb0-5af2c14ddc2b'}></Permission>
-
----
-
-<Permission name={'Override Service Advertisement Permissions'}
-            description={''}
-            uuid={'3bda2ab2-4128-463d-83c9-16b976a8d83e'}></Permission>
-
----
-
-<Permission name={'Manage Service Advertisement for Owner'}
-            description={''}
-            uuid={'97dcf2a1-7f4b-476c-b561-e40fc42440ee'}></Permission>
-
----
-
-<Permission type={'Permission Group'} name={'Directory Permissions'}
-            description={'A permission group that contains all of the above permissions'}
-            uuid={'58b5da47-d098-44f7-8c1d-6e4bd800e718'}></Permission>
 
 
 ## Examples
@@ -167,6 +148,85 @@ Once a `Service_UUID` is obtained, a `GET` request to `/v1/service/{Service_UUID
 | `service` | The service UUID queried                              |
 | `device`  | The device UUID of a device providing this service    |
 | `url`     | A URL on which the device provides additional service |
+
+## Well-Known UUIDs
+
+### Services
+
+The Directory service itself only defines the UUID for the Directory
+service function. However the other Service Function UUIDs defined by
+the Factory+ spec are listed below for convenience.
+
+<WellKnownUUID type='Service Function' name='Config Store'
+    uuid='af15f175-78a0-4e05-97c0-2a0bb82b9f3b'
+    description='Config Store service specification.'/>
+<WellKnownUUID type='Service Function' name='Command Escalation'
+    uuid='78ea7071-24ac-4916-8351-aa3e549d8ccd'
+    description='Command Escalation service specification.'/>
+<WellKnownUUID type='Service Function' name='Directory'
+    uuid='af4a1d66-e6f7-43c4-8a67-0fa3be2b1cf9'
+    description='Directory service specification.'/>
+<WellKnownUUID type='Service Function' name='Authorisation'
+    uuid='cab2642a-f7d9-42e5-8845-8f35affe1fd4'
+    description='Authorisation service specification.'/>
+<WellKnownUUID type='Service Function' name='MQTT'
+    uuid='feb27ba3-bd2c-4916-9269-79a61ebc4a47'
+    description='MQTT service function UUID.'/>
+
+### Metric Schemas
+
+<WellKnownUUID type='Metric Schema' name='Service V1'
+    uuid='05688a03-730e-4cda-9932-172e2c62e45c'
+    description='Schema recognised by the Directory as containing a service advertisment.'/>
+
+If a Sparkplug device includes this schema in its Birth Certificate, the
+Directory will recognise it as a service advertisment and publish the
+supplied URL over HTTP.
+
+### Permissions
+
+<Permission type={'Permission Group'} name={'Directory Permissions'}
+            description={'Permissions recognised by the Directory.'}
+            uuid={'58b5da47-d098-44f7-8c1d-6e4bd800e718'}></Permission>
+
+This group must be created in the Auth service containing the permission
+UUIDs listed below.
+
+<Permission name={'Advertise Service'}
+            description='Permission to advertise a given service.'
+            uuid={'4db4c39a-f18d-4e83-aeb0-5af2c14ddc2b'}></Permission>
+
+This grants permission for a given account to advertise the given
+service.
+
+<Permission name={'Manage Service Advertisement for Owner'}
+            description="Permission to advertise a service on another account's behalf"
+            uuid={'97dcf2a1-7f4b-476c-b561-e40fc42440ee'}></Permission>
+
+This grants the 'principal' account (normally an administrator account,
+or an operator account performing this specific function) permission to
+advertise services for the 'target', which also represents an account.
+This allows use of the `/v1/service/{service}/advertisment/{owner}`
+endpoint.
+
+In addition to the 'principal' account having this permission on the
+'target account, either
+
+* the 'target' account must have 'Advertise Service', or
+
+* the 'principal' account must have 'Override Service Advertisment
+Permissions'
+
+on the service function UUID being advertised.
+
+<Permission name={'Override Service Advertisement Permissions'}
+            description='Permission to override advertisment permissions for this service.'
+            uuid={'3bda2ab2-4128-463d-83c9-16b976a8d83e'}></Permission>
+
+This grants an account permission to advertise services on behalf of
+another account that the other account cannot advertise on its own
+behalf. The 'target' of the permission is the service function UUID
+being advertised.
 
 ## Known Issues
 - In the absence of a reliability mechanism (specifically, no STATE support), the directory service's view of the network begins to deviate from the actual state when it becomes unavailable. This can lead to significant repercussions, particularly in the case of missed death certificates which cannot be identified and will only be rectified upon the eventual reconnection of the affected device.

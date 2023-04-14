@@ -120,42 +120,145 @@ All requests must supply HTTP authentication; the following mechanisms are suppo
 
 <OpenAPISpecRenderer url={useBaseUrl('/spec/authorisation.yaml')} text={'the Authorisation component'} />
 
-## Permissions
+## Well-Known UUIDs
 
-<Permission name={'Read ACL Entry'} description={'Grant permission to read ACLs for the target permission group'}
-            uuid={'ba566181-0e8a-405b-b16e-3fb89130fbee'}></Permission>
+The Auth component defines several well-known UUIDs. These all need to
+be registered with the Config Store component under the appropriate
+classes.
 
----
+### Class Defintions
 
-<Permission name={'Read Kerberos Mappings'}
-            description={'Grants permission to read Kerberos mappings for the target Principal. To search for a principal by Kerberos principal name this must be granted as a wildcard.'}
-            uuid={'e8c9c0f7-0d54-4db2-b8d6-cd80c45f6a5c'}></Permission>
+#### Principals
 
----
+UUIDs under these classes are typically used in the 'principal' slot of
+an ACE, though sometimes they may be used as 'target' representing e.g.
+the Sparkplug Node address associated with the account.
 
-<Permission name={'Read Effective Permissions'}
-            description={'Grants permission to read effective permissions. This must always be granted as a wildcard.'}
-            uuid={'35252562-51e5-4dd8-84cd-ba0fafa62669'}></Permission>
+<WellKnownUUID type='Class Definition' name='Service Account'
+    uuid='e463b4ae-a322-46cc-8976-4ba76838e908'
+    description='Accounts for services.'/>
 
----
+UUIDs under this class represent particular service instances running on
+particular ACS installations. They are used to grant the service
+instance permissions appropriate to its role.
 
-<Permission name={'Manage ACLs'}
-            description={'Grants permission to manage ACL entries affecting the target permission. If this is not granted as a wildcard then the only endpoint that can be used is POST /authz/ace.'}
-            uuid={'3a41f5ce-fc08-4669-9762-ec9e71061168'}></Permission>
+Where a service has a Sparkplug interface, the service account UUID also
+serves as the service instance's Device UUID.
 
----
+<WellKnownUUID type='Class Definition' name='User Account'
+    uuid='8b3e8f35-78e5-4f93-bf21-7238bcb2ba9d'
+    description='Accounts for human users.'/>
 
-<Permission name={'Manage Group'}
-            description={'Permits the PUT and DELETE requests to edit group membership on the target group.'}
-            uuid={'be9b6d47-c845-49b2-b9d5-d87b83f11c3b'}></Permission>
+These UUIDs are used to define accounts for human users.
 
----
+<WellKnownUUID type='Class Definition' name='Cell Gateway'
+    uuid='00da3c0b-f62b-4761-a689-39ad0c33f864'
+    description='Accounts for physical edge devices.'/>
 
-<Permission name={'Manage Kerberos Mappings'} description={'Permits managing Kerberos mappings for the target principal.'}
-            uuid={'327c4cc8-9c46-4e1e-bb6b-257ace37b0f6'}></Permission>
+These UUIDs are used for machine accounts used by physical edge devices.
 
----
+<WellKnownUUID type='Class Definition' name='Soft Gateway'
+    uuid='5bee4d24-32e1-44f8-b953-1f86ff4b3e87'
+    description='Accounts for virtual edge devices.'/>
+
+These UUIDs are used for machine accounts used by virtual edge devices
+running on the core cluster VMs. These typically perform translation to
+Sparkplug from an existing centralised data acquisition network where it
+is not convenient to push that translation to the edge.
+
+#### Permissions
+
+<WellKnownUUID type='Class Definition' name='Permission'
+    uuid='8ae784bb-c4b5-4995-9bf6-799b3c7f21ad'
+    description='Well-known UUIDs used as permissions in the Auth service.'/>
+
+UUIDs of this class are used in the 'permission' field of ACL entries.
+They represent particular permissions that can be granted to accounts as
+needed. The meaning of any individual permission UUID is defined by the
+service that implements that permission.
+
+#### Groups
+
+<WellKnownUUID type='Class Definition' name='Permission Group'
+    uuid='ac0d5288-6136-4ced-a372-325fbbcdd70d'
+    description='Well-known UUIDs representing permissions for a particular application.'/>
+
+These UUIDs are hardcoded into applications, and each one represents the
+set of permissions that application needs to query. As part of
+bootstrapping a service onto the system it is necessary to ensure that
+the permission group is set up appropriately, containing the permissions
+documented in the service specification.
+
+<WellKnownUUID type='Class Definition' name='Client Role'
+    uuid='1c567e3c-5519-4418-8682-6086f22fbc13'
+    description='Groups of permissions that can be granted to accounts.'/>
+
+UUIDs of this class represent groups of permissions. The group UUID will
+be used in the 'permission' field of an ACE, and grants all permissions
+in that group on the given targets.
+
+<WellKnownUUID type='Class Definition' name='User Group'
+    uuid='f1fabdd1-de90-4399-b3da-ccf6c2b2c08b'
+    description='Groups of accounts'/>
+
+These UUIDs represent groups of accounts which need to be granted
+permissions in common. These appear in the 'principal' field of an ACE.
+
+### Permissions
 
 <Permission type={'Permission Group'} name={'Authorisation Permissions'}
-            description={'A permission group that contains all of the above permissions'}
+            description={'Permissions needed by the Auth service'}
             uuid={'50b727d4-3faa-40dc-b347-01c99a226c58'}></Permission>
+
+This group must be set up to contain all the permissions UUIDs below.
+
+<Permission name={'Read ACL Entry'}
+    description={'Grant permission to read ACLs for the target permission group'}
+    uuid={'ba566181-0e8a-405b-b16e-3fb89130fbee'}/>
+
+This permission allows a service account to read the ACLs it needs to
+read. The 'target' of the permission should be the permission group the
+service application will request from the Auth service.
+
+<Permission name={'Read Kerberos Mappings'}
+    description='Grants permission to read Kerberos mappings for the target Principal.'
+    uuid={'e8c9c0f7-0d54-4db2-b8d6-cd80c45f6a5c'}/>
+
+This permission grants the right to look up the Kerberos principal
+corresponding to the 'target', which also represents a principal.
+
+To search for a principal by Kerberos principal name this must be
+granted as a wildcard.
+
+<Permission name={'Read Effective Permissions'}
+    description='Grants permission to read effective permissions.'
+    uuid={'35252562-51e5-4dd8-84cd-ba0fafa62669'}/>
+
+This must always be granted as a wildcard. This is intended only for
+administrators.
+
+<Permission name={'Manage ACLs'}
+    description='Grants permission to manage ACL entries affecting the target permission.'
+    uuid={'3a41f5ce-fc08-4669-9762-ec9e71061168'}/>
+
+The 'target' of this permission should be either the UUID of the
+permission that can be managed, or the wildcard.
+
+If this is not granted as a wildcard then the only endpoint that can be
+used is `POST /authz/ace`.
+
+<Permission name={'Manage Group'}
+    description={'Grants permission to edit group membership.'}
+    uuid={'be9b6d47-c845-49b2-b9d5-d87b83f11c3b'}/>
+
+The 'target' of this permission is the group which can be edited. This
+permission also implicitly grants the right to create the group in the
+Auth service, as groups exist when and only when they have members.
+
+<Permission name={'Manage Kerberos Mappings'}
+    description={'Permits managing Kerberos mappings for the target principal.'}
+    uuid={'327c4cc8-9c46-4e1e-bb6b-257ace37b0f6'}/>
+
+The 'target' of this permission is the UUID of another principal, or the
+wildcard. This grants permission to add, change or remove the Kerberos
+principal mapping.
