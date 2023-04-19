@@ -69,18 +69,21 @@ The Factory+ Authorisation component can be broken down into the following eleme
 
 
 ### Linking Identity
-The Authorisation component in Factory+ plays a crucial role in managing the relationship between internal Principal UUIDs and [identities](/docs/framework-components/core-components/identity). The Authorisation component maintains a mapping table that links each Principal UUID to its corresponding Kerberos principal, ensuring that access control requests from authenticated entities can be resolved. With the Principal UUID and the associated ACL information, the Authorisation component can evaluate the user's permissions on the requested resources, ensuring that only authorised actions are allowed.
+The Authorisation component in Factory+ plays a crucial role in managing the relationship between internal Principal UUIDs and [Identities](/docs/framework-components/core-components/identity). The Authorisation component maintains a mapping table that links each Principal UUID to its corresponding Kerberos principal, ensuring that access control requests from authenticated entities can be resolved. With the Principal UUID and the associated ACL information, the Authorisation component can evaluate the user's permissions on the requested resources, ensuring that only authorised actions are allowed.
 
 ### Access Control Entries (ACEs)
 
 An Access Control Entry (ACE) is a fundamental building block of the Factory+ Authorisation component. It defines the relationship
 between three key elements: a principal, a permission, and a target:
 
-- **Principal (UUID)**: The principal is an entity (user, service, or application) that requests access to a resource. It is represented by a UUID, which uniquely identifies the principal within the system.
-- **Permission (UUID)**: The permission specifies the type of action that the principal is allowed to perform on the target resource. It is also represented by a UUID, which helps to maintain a consistent and standardised set of permissions across the system.
-- **Target (UUID)**: The target is the resource that the principal is trying to access. It is represented by a UUID to ensure that each resource in the system can be uniquely identified and referenced.
+- **Principal UUID**: The principal is an entity (user, service, or application) that requests access to a resource. It is represented by a UUID, which uniquely identifies the principal within the system.
+- **Permission UUID**: The permission specifies the type of action that the principal is allowed to perform on the target resource. It is also represented by a UUID, which helps to maintain a consistent and standardised set of permissions across the system.
+- **Target UUID**: The target is the resource that the principal is trying to access. It is represented by a UUID to ensure that each resource in the system can be uniquely identified and referenced.
 
-The semantics of an ACE can be summarised as: "This principal (UUID) has this permission (UUID) on this target (UUID)." The access control system checks the ACEs in the Access Control List (ACL) to determine if a principal is authorised to perform a particular action on a target resource. If a matching ACE is found in the ACL, the principal is granted access; otherwise, access is denied.
+The semantics of an ACE can be summarised as:
+> "This Principal UUID has this Permission UUID on this Target UUID."
+
+The access control system checks the ACEs in the ACL to determine if a principal is authorised to perform a particular action on a target resource. If a matching ACE is found in the ACL, the principal is granted access; otherwise, access is denied.
 
 #### Deny-by-default
 In Factory+, the access control system uses allow-only ACEs and follows a deny-by-default permission model. This approach ensures that access to resources is denied unless explicitly granted by an ACE, providing a higher level of security.
@@ -102,7 +105,7 @@ Groups can contain other groups, allowing for a hierarchical structure that simp
 
 ## Discovery
 
-As per the [Component Specification](/docs/framework-components/specification), the Authorisation component provides a HTTP interface. It does not provide a Sparkplug Interface. The Authorisation component uses `cab2642a-f7d9-42e5-8845-8f35affe1fd4` as the `Service_UUID`.
+As per the [Component Specification](/docs/framework-components/specification), the Authorisation component provides an HTTP interface. It does not provide a Sparkplug Interface. The Authorisation component uses `cab2642a-f7d9-42e5-8845-8f35affe1fd4` as the `Service_UUID`.
 
 ## HTTP Interface
 
@@ -118,7 +121,7 @@ All requests must supply HTTP authentication; the following mechanisms are suppo
 
 ### Specification
 
-<OpenAPISpecRenderer url={useBaseUrl('/spec/authorisation.yaml')} text={'the Authorisation component'} />
+<OpenAPISpecRenderer url={useBaseUrl('/spec/t.yaml')} text={'the Authorisation component'} />
 
 ## Well-Known UUIDs
 
@@ -126,7 +129,7 @@ The Auth component defines several well-known UUIDs. These all need to
 be registered with the Config Store component under the appropriate
 classes.
 
-### Class Defintions
+### Class Definitions
 
 #### Principals
 
