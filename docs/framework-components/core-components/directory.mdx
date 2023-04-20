@@ -29,7 +29,7 @@ export const ComponentOverview = () => (
     </div>
 );
 
-The Directory component is designed to help applications, users, and other components find the devices and services they require. By monitoring for birth and death messages, it keeps a comprehensive registry of devices and services, including their current status, schemas, and endpoints, making it easier for consuming applications to locate them. Instructions on how consuming applications should locate and connect to the Directory is outlined in the [examples](#examples) section.
+The Directory component is designed to help applications, users, and other components find the devices and services they require. By monitoring Sparkplug birth and death messages, it keeps a comprehensive registry of devices and services, including their current status, schemas, and endpoints, making it easier for consuming applications to locate them. Instructions on how consuming applications should locate and connect to the Directory is outlined in the [examples](#examples) section.
 
 <OpenSourceExample buttonText={'ACS Directory Component'} repoUrl={'https://github.com/AMRC-FactoryPlus/acs-directory'}></OpenSourceExample>
 
@@ -51,7 +51,7 @@ As per the [Component Specification](/docs/framework-components/specification), 
 
 ## MQTT/Sparkplug Interface
 
-The Directory component Sparkplug interface **MUST** use the well-known address `[ORGANISATION]-Service-DIR-Directory/Directory`. This allows the Directory to be located over MQTT without using the HTTP API.
+The Directory component Sparkplug interface **MUST** use the well-known address `[ORGANISATION]-Service-DIR-Directory/Directory`, where `[ORGANISATION]-Service-DIR-Directory/Directory` is the group name and `Directory` is the node name. This allows the Directory to be located over MQTT without using the HTTP API.
 
 To conform with the [Component Specification](/docs/framework-components/specification), the Directory component **MUST** publish the following metrics:
 
@@ -62,8 +62,8 @@ To conform with the [Component Specification](/docs/framework-components/specifi
 | `Service_UUID`   | UUID   | The well-known UUID of the directory service function                                                                                                                                                                                                    |
 | `Service_URL`    | string | The URL of the HTTP API                                                                                                                                                                                                                                  |
 | `Last_Changed`   | folder | A folder of change-notify metrics, containing metrics which are published to every time something relevant changes on the network. By subscribing to the Directory and watching the values of these metrics applications can avoid polling the HTTP API. |
-| `Device_UUID`    | UUID   | Published when a device has come on or offline                                                                                                                                                                                                           |
-| `Device_Address` | string | Published when a device has come on or offline                                                                                                                                                                                                           |
+| `Device_UUID`    | UUID   | Published when a device has come online or gone offline                                                                                                                                                                                                           |
+| `Device_Address` | string | Published when a device has come online or gone offline                                                                                                                                                                                                           |
 | `Schema_Usage`   | UUID   | Published when the list of devices advertising a schema has changed                                                                                                                                                                                      |
 | `Service`        | UUID   | Published when the list of devices advertising a service has changed                                                                                                                                                                                     |
 
@@ -108,7 +108,7 @@ object with the following properties:
 | `schemas`     | An array of the schemas supported by this device        |
 | `top_schema`  | The top-level schema this device advertises             |
 
-If the `device_id` property is missing or an string then the device is a Sparkplug Edge-Node device that uses `NBIRTH`, `NDATA`, `NDEATH` topics. Otherwise it is a Sparkplug Device and uses `DBIRTH`, `DDATA`, `DDEATH` topics. A particular device may change from being to a Node to a Device or vice versa, depending on operational changes.
+If the `device_id` property is missing or is an empty string then the device is a Sparkplug Node device that uses `NBIRTH`, `NDATA`, `NDEATH` topics. Otherwise it is a Sparkplug Device and uses `DBIRTH`, `DDATA`, `DDEATH` topics. A particular device may change from being to a Node to a Device or vice versa, depending on operational changes.
 
 The schemas reported are those present in the device's most recent birth certificate. If the device does not publish a `Schema_UUID` at the top of its metric tree, then `top_schema` will be reported as `null`.
 

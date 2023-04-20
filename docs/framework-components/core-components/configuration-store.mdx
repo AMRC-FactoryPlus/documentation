@@ -28,7 +28,7 @@ export const ComponentOverview = () => (
     </div>
 );
 
-The Configuration Store component serves as a framework-aware centralised repository for applications utilising Factory+ to store data, settings and other information associated with Factory+ entities. Storing data centrally facilitates the sharing of metadata among applications without duplicating definitions within applications and eliminates the need to incorporate the information in the birth certificate, which would result in size increments with each new metadata addition.
+The Configuration Store component serves as a framework-aware centralised repository for applications utilising Factory+ to store data, settings and other information associated with Factory+ entities. Storing data centrally facilitates the sharing of metadata among applications without duplicating definitions within applications and eliminates the need to incorporate the information in the Sparkplug birth certificate, which would result in size increments with each new metadata addition.
 
 <OpenSourceExample buttonText={'ACS Configuration Store Component'} repoUrl={'https://github.com/AMRC-FactoryPlus/acs-configdb'}></OpenSourceExample>
 
@@ -128,7 +128,7 @@ different classes.
 
 ### Applications
 
-<WellKnownUUID type='Application' name='Object registration' 
+<WellKnownUUID type='Application' name='Object registration'
     uuid='cb40bed5-49ad-4443-a7f5-08c75009da8f'
     description='Registration of a UUID within the Configuration Store.'/>
 
@@ -146,7 +146,7 @@ These are intended for display to human users in user interfaces to help
 the user understand what object is being referred to and should be brief
 (no more than a few words).
 
-Entries **MUST** have at least the following properties (this is likely to be extended in the future). 
+Entries **MUST** have at least the following properties (this is likely to be extended in the future).
 
 | Property   | Type   | Required | Description                         |
 |------------|--------|----------|-------------------------------------|
@@ -201,7 +201,7 @@ To conform with the [Component Specification](/docs/framework-components/specifi
 | Metric      | Type | A config entry has changed for: |
 |-------------|------|---------------------------------|
 | Application | UUID | An application                  |
-| Device      | UUID | An device                       |
+| Device      | UUID | A device                       |
 | Schema      | UUID | A schema                        |
 
 The `Application` metric will have `A` published to it for updates to both `/v1/app/A/...` and `/v1/app/.../app/A`, i.e. both updates to this app's configuration and updates to configuration about this app.
@@ -332,7 +332,7 @@ There is currently no endpoint to delete applications. This is potentially a ver
 ### Application Configuration Schemas
 
 #### Getting Schemas
-The schema used by an application to store its configuration entries can be accessed my making a request to the following endpoint. This request will return `404` if no configuration schema has been registered for a particular application.
+The schema used by an application to store its configuration entries can be accessed by making a request to the following endpoint. This request will return `404` if no configuration schema has been registered for a particular application.
 
 ```javascript
 // Get the schema for an application's configuration

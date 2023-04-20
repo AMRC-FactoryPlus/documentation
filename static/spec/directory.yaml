@@ -197,7 +197,7 @@ paths:
     parameters:
       - { $ref: "#/components/parameters/service" }
     get:
-      summary: Fetch my service advertisment
+      summary: Fetch service advertisment
       responses:
         "200":
           description: Current service advertisment
