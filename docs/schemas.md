@@ -108,7 +108,7 @@ More information on the specifics of Factory+ Schemas such as [how metrics are d
 
 Every schema must contain a unique `Schema_UUID` property that is used to identify the schema when parsing instances. It must be represented by a RFC4122 UUID string and placed at the top of the `properties` object on the Schema.
 
-When a new schema is created it must be manually assigned a [v4 UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier#Version_4_(random)). UUIDs can be generated using whatever tooling is available, however online tools such as https://www.uuidgenerator.net/ are useful if none are available.
+When a new schema is created it must be manually assigned a v4 UUID. UUIDs can be generated using whatever tooling is available, however online tools such as https://www.uuidgenerator.net/ are useful if none are available.
 
 ```json
 {
