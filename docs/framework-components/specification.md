@@ -28,7 +28,7 @@ The HTTP interface is designed to handle bulk request-response communication tha
 
 ### Sparkplug Interface
 
-* A component **MUST** coply to the Sparkplug specification and publish a birth certificate over MQTT. The birth certificate identifies the provided component and publishes the URL of the HTTP endpoint (`Service_URL`). Each birth certificate can register only one component function with the Directory component, regardless of whether the component is a Sparkplug Node or Device. If a single software process intends to provide multiple components, it can publish multiple Device birth certificates to achieve this.
+* A component **MUST** publish a birth certificate over MQTT. The birth certificate identifies the component and publishes the URL of the HTTP endpoint (`Service_URL`). Each birth certificate can register only one component function with the Directory component, regardless of whether the component is a Sparkplug Node or Device. If a single software process intends to provide multiple components, it can publish multiple Device birth certificates to achieve this.
 
 * The component's birth certificate **MUST** adhere to the [Factory+ Schema specification](/docs/schemas). Specifically, the `uuid` field at the top level of the Sparkplug packet **MUST** be set exactly to the value `11ad7b32-1d32-4c4a-b0c9-fa049208939a`. Furthermore, the component **MUST** publish a `Schema_UUID` metric at the top level of the packet, with the value `05688a03-730e-4cda-9932-172e2c62e45c`, identifying this node as a component. This schema **MUST** include the following metrics:
 
