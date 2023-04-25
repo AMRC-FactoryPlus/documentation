@@ -1,0 +1,116 @@
+openapi: 3.0.0
+info:
+  title: Factory+ Commands
+  description: Factory+ Commands
+  version: 1.0.0
+
+servers:
+  - url: /v1
+
+security:
+  - basic: [ ]
+  - gssapi: [ ]
+  - bearer: [ ]
+
+# NOTE: This API is rooted at /v1 on its server. The servers: entry
+# above records this. This means that the URLs passed to the server are
+# actually /v1/config and so on.
+paths:
+  /address/{group}/{node}:
+    parameters:
+      - $ref: "#/components/parameters/group"
+      - $ref: "#/components/parameters/node"
+    post:
+      summary: Submit a command escalation request
+      requestBody:
+        description: Command escalation request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommandEscalationRequest"
+      responses:
+        "200":
+          description: Success
+        "403":
+          description: Unauthorized
+        "404":
+          description: Metric does not exist
+        "409":
+          description: Incorrect node type
+        "503":
+          description: The device is offline
+  /address/{group}/{node}/{device}:
+    parameters:
+      - $ref: "#/components/parameters/group"
+      - $ref: "#/components/parameters/node"
+      - $ref: "#/components/parameters/device"
+    post:
+      summary: Submit a command escalation request
+      requestBody:
+        description: Command escalation request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommandEscalationRequest"
+      responses:
+        "200":
+          description: Success
+        "403":
+          description: Unauthorized
+        "404":
+          description: Metric does not exist
+        "409":
+          description: Incorrect node type
+        "503":
+          description: The device is offline
+components:
+  securitySchemes:
+    basic:
+      type: http
+      description: User/password HTTP Basic auth
+      scheme: Basic
+    gssapi:
+      type: http
+      description: GSSAPI/Kerberos HTTP auth
+      scheme: Negotiate
+    bearer:
+      type: http
+      description: Token HTTP auth
+      scheme: Bearer
+  parameters:
+    group:
+      description: The Sparkplug Group ID
+      name: group
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    node:
+      description: The Sparkplug Node ID
+      name: node
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    device:
+      description: The Sparkplug Device ID
+      name: device
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+  schemas:
+    CommandEscalationRequest:
+      description: Command escalation request
+      type: object
+      required: [ name, value ]
+      properties:
+        name:
+          description: The command to execute
+          type: string
+        type:
+          description: The metric type. Must be specified by name, using the names in the Sparkplug spec. If the type is not specified then the type from the ACL entry will be used, or Boolean. Note that if the root principal override is being used then the type must be specified.
+          type: array
+          items: { type: string }
+        value:
+          description: The metric value. Must be an appropriate type to be converted to the Sparkplug type requested.
+          type: number

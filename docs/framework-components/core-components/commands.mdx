@@ -23,7 +23,7 @@ export const ComponentOverview = () => (
             <div className="p-4 bg-brand-80 dark:bg-brand-40 text-white dark:text-brand flex items-center justify-center">Commands</div>
             <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Data Warehouse</div>
             <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">MQTT</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">Edge Agent</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">Edge Agents</div>
         </div>
     </div>
 );
@@ -36,14 +36,6 @@ The Commands Component offers a mechanism for clients to request Sparkplug CMD m
 ## Overview
 
 <ComponentOverview></ComponentOverview>
-
-
-## Discovery
-
-As per the [Component Specification](/docs/framework-components/specification), the Commands component provides a MQTT Interface and a HTTP interface.
-
-<WellKnownUUID type='Service Function' name='Configuration Store' uuid='78ea7071-24ac-4916-8351-aa3e549d8cc' description='Commands service specification'/>
-
 
 ## MQTT Interface
 
@@ -128,17 +120,48 @@ All requests **MUST** supply HTTP authentication; the following mechanisms are s
 
 <OpenAPISpecRenderer url={useBaseUrl('/spec/commands.yaml')} text={'the Configuration Store component'} />
 
-## Permissions
+## Well-Known UUIDs
 
-<WellKnownUUID type='Permission Group' name='Commands'
-               uuid='9584ee09-a35a-4278-bc13-21a8be1f007c'
-               description='A group that contains the below permissions recognised by the Commands component'/>
+These well-known UUIDs are part of the core framework and all **MUST** to be registered with the Configuration Store component under the appropriate classes.
+
+### Identity
+
+<WellKnownUUID type='Service Function' name='Commands'
+               uuid='78ea7071-24ac-4916-8351-aa3e549d8ccd'
+               description='Commands Component service function'/>
+
+---
+
+<WellKnownUUID type='Service Account' name='Commands'
+               uuid='23d4e8f9-76c0-49d5-addc-00b6ac05ee58'
+               description='The client identity of the Commands Component used to communicate with other services'/>
+
+---
+
+### Permission Groups
+
+<Permission type='Permission Group' name='Commands'
+            description='A permission group that contains all of the Commands permissions'
+            uuid='9584ee09-a35a-4278-bc13-21a8be1f007c'/>
 
 This well-known UUID represents the list of permissions the Command Escalation component will request from the Authorisation component. It is important that any permission UUIDs created to grant rights to request particular commands are added to this group.
 
+---
+
+### Permissions
+
+The Commands component supports an expandable set of permissions, where each permission represents a particular set of metrics that can be authorised. The target of the permission in every case is the device receiving the command.
+
+All permissions for the Commands component **MUST** be members of the above `Commands` permission group. Each permission **MUST** have an entry in the Configuration Store under
+the `Commands` application. This entry defines the metrics which are permitted, and consists of an array of objects with `name` and `type` fields. The name is required, and gives the metric name. The type is optional, and should be specified as one of the type names defined in the Sparkplug spec.
+
+If the `type` is not specified, any type may be sent. It is up to the receiving device to decide what to do if the type is not correct. Escalation requests not specifying a type (including all received via MQTT) will default to Boolean if no type is specified in the ACL entry.
+
+---
+
 <WellKnownUUID type='Permission' name='Rebirth'
                uuid='fbb9c25d-386d-4966-a325-f16471d9f7be'
-               description='Allow requesting a Sparkplug rebirth'/>
+               description='Allow a Sparkplug rebirth request to be sent to the target'/>
 
 This well-known permission grants access to request a rebirth from a Sparkplug Node or Device. This needs to be created with a `Command Escalation` Configuration Store entry as follows:
 
@@ -155,9 +178,11 @@ This well-known permission grants access to request a rebirth from a Sparkplug N
 ]
 ```
 
+---
+
 <WellKnownUUID type='Permission' name='Reload Edge Agent Config'
                uuid='fbb9c25d-386d-4966-a325-f16471d9f7be'
-               description='Allow requesting a Sparkplug rebirth'/>
+               description='Allow the request of an edge agent to reload its configuration'/>
 
 This well-known permission grants access to request an edge agent to reload its configuration, usually because the configuration has changed. This needs to be created with a `Command Escalation` Configuration Store entry as follows:
 
@@ -170,18 +195,28 @@ This well-known permission grants access to request an edge agent to reload its 
 ]
 ```
 
-## Well-Known UUIDs
+### Roles
 
-<WellKnownUUID type='Service Function' name='Commands'
-               uuid='78ea7071-24ac-4916-8351-aa3e549d8ccd'
-               description='Commands Component service function'/>
+<Permission type='Role' name='Commands'
+            description='A Role for the commands component'
+            uuid='dbd0c099-6c59-4bc6-aa92-4ba8a9b543f4'/>
+
+The `Commands` role **MUST** be granted to the `Commands` Service Account (`23d4e8f9-76c0-49d5-addc-00b6ac05ee58`) and have the following Permissions:
+
+| Permission                       | UUID                                   |
+|----------------------------------|----------------------------------------|
+| Subscribe & Read Whole Namespace | `81833dbb-1150-4078-b1db-978c646ba73e` |
+| Issue Global Commands            | `50f1e694-7e18-4930-aa59-97cc90a6a1ec` |
+
+---
+
+### Applications
 
 <WellKnownUUID type='Application' name='Commands'
                uuid='60e99f28-67fe-4344-a6ab-b1edb8b8e810'
                description='A Configuration Store Application that stores the commands permitted by a given permission'/>
 
-UUIDs created to grant Commands permissions require a Configuration Store entry of this type to define the meaning of the permission. All
-such permissions need to be added to the `Commands permissions` group defined below or the Commands component will not see the ACEs.
+UUIDs created to grant Commands permissions require a Configuration Store entry of this type to define the meaning of the permission. All such permissions **MUST** be added to the `Commands` permission group defined above or the Commands component will not see the ACEs.
 
 Entries **MUST** take the form of a JSON array of objects. Each entry in the array specifies a particular Sparkplug metric which may be updated by the client granted the permission. The object for each metric may have the following properties:
 
@@ -191,6 +226,8 @@ Entries **MUST** take the form of a JSON array of objects. Each entry in the arr
 | `type`   | string | No       | The Sparkplug type of the metric |
 
 The `type` is represented as one of the names used for metric types in the Sparkplug specification. If the type is omitted, any type may be sent.
+
+---
 
 <WellKnownUUID type='Application' name='Sparkplug Address Information'
                uuid='8e32801b-f35a-4cbf-a5c3-2af64d3debd7'

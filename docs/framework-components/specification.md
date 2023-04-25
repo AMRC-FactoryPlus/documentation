@@ -16,7 +16,7 @@ In order for a component to establish contact with another component, it must be
 
 ## Interface Requirements
 
-Factory+ components should provide a Sparkplug interface and a HTTP interface where appropriate.
+Factory+ components **SHOULD** provide a Sparkplug interface and a HTTP interface where appropriate.
 
 The Sparkplug interface allows components to:
 - Register themselves with the Directory component, enabling clients to discover and interact with the components.

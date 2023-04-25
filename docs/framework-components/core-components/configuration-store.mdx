@@ -23,7 +23,7 @@ export const ComponentOverview = () => (
             <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Commands</div>
             <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Data Warehouse</div>
             <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">MQTT</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">Edge Agent</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">Edge Agents</div>
         </div>
     </div>
 );
@@ -54,17 +54,6 @@ Within the Configuration Store component, an entry can be stored for any object 
 * Schemas **MUST** include an `$id` field with the value `urn:uuid:{Application_UUID}`, (e.g. `"$id": "urn:uuid:64a8bfa9-7772-45c4-9d1a-9e6290690957"`).
 * Schemas should also include a `title` and `description` for the whole schema, and a `description` for every property, as this information may be used in future to build an editing interface for the config information.
 * It is advisable to include `"additionalProperties": false` on object definitions otherwise the schema will allow random extra properties. This will make extending the schema in the future without invalidating existing data much harder.
-
-## Discovery
-
-As per the [Component
-Specification](/docs/framework-components/specification), the
-Configuration Store component provides a MQTT Interface and a
-HTTP interface.
-
-<WellKnownUUID type='Service Function' name='Configuration Store'
-    uuid='af15f175-78a0-4e05-97c0-2a0bb82b9f3b'
-    description='Configuration Store service specification'/>
 
 ## MQTT Interface
 
@@ -107,14 +96,73 @@ These well-known UUIDs are part of the core framework and all **MUST** to be reg
 ### Identity
 
 <WellKnownUUID type='Service Function' name='Configuration Store'
-               uuid=''
+               uuid='af15f175-78a0-4e05-97c0-2a0bb82b9f3b'
                description='The server identity of the Configuration Store Component that provides the service'/>
 
 ---
 
 <WellKnownUUID type='Service Account' name='Configuration Store'
-               uuid=''
-               description='The client identity of Configuration Store Component used to communicate with other services'/>
+               uuid='36861e8d-9152-40c4-8f08-f51c2d7e3c25'
+               description='The client identity of the Configuration Store Component used to communicate with other services'/>
+
+---
+
+### Permission Groups
+
+<Permission type='Permission Group' name='Configuration Store'
+    description='A permission group that contains all of the Configuration Store permissions'
+    uuid='c43c7157-a50b-4d2a-ac1a-86ff8e8e88c1'/>
+
+This group must be set up in the Authorisation Component to contain all the
+permissions below.
+
+---
+
+### Permissions
+
+<Permission type='Permission' name='Read Configuration for Application'
+    description='Permit reading config entries for the given Application'
+    uuid='4a339562-cd57-408d-9d1a-6529a383ea4b'/>
+
+This permission grants the right to read config entries. The `target` specifies an Application; all config entries for that Application can be read.
+
+---
+
+<Permission type='Permission' name='Write Configuration for Application'
+    description='Permits writing config entries for the given Application'
+    uuid='6c799ccb-d2ad-4715-a2a7-3c8728d6c0bf'/>
+
+This permission grants the right to write config entries for a given application. Entries can be created, but only against objects which are already registered with the Configuration Store.
+
+---
+
+<Permission type='Permission' name='Manage Application Schema'
+    description='Upload a JSON schema for a given Application'
+    uuid='95c7cbcb-ce60-49ed-aa81-2fe3eec4559d'/>
+
+This permission allows the `PUT /v1/app/{app}/config-schema` endpoint to be used. This endpoint sets the JSON schema against which an Application's entries are validated.
+
+---
+
+<Permission type='Permission' name='Manage Objects'
+    description='Grants permission to create objects in a given class'
+    uuid='f0b7917b-d475-4888-9d5a-2af96b3c26b6'/>
+
+This permission allows objects to be created. The object must be created in a class which has been granted as target of the permission; or the permission may be granted wildcard to allow any class.
+
+This permission also grants the right to list the classes in question.
+
+This permission does not allow objects to be deleted; that is destructive and is not normally appropriate, so it has a separate permission.
+
+---
+
+<Permission type='Permission' name='Delete Objects'
+    description='Grants permission to delete objects'
+    uuid='6957174b-7b08-45ca-ac5c-c03ab6928a6e'/>
+
+This permission grants the right to delete an object. It should be granted sparingly; normally once a UUID has been allocated to a given object it is worth keeping a permanent record of that fact.
+
+The target of the permission must be the object to be deleted (or an Authorisation Component group containing that object).
 
 ---
 
@@ -217,65 +265,6 @@ Entries have the following properties:
 | `group_id`  | string | Yes      | The Sparkplug Group ID  |
 | `node_id`   | string | Yes      | The Sparkplug Node ID   |
 | `device_id` | string | No       | The Sparkplug Device ID |
-
----
-
-### Permission Groups
-
-<Permission type='Permission Group' name='Configuration Store'
-    description='A permission group that contains all of the Configuration Store permissions'
-    uuid='c43c7157-a50b-4d2a-ac1a-86ff8e8e88c1'/>
-
-This group must be set up in the Authorisation Component to contain all the
-permissions below.
-
----
-
-### Permissions
-
-<Permission type='Permission' name='Read Configuration for Application'
-    description='Permit reading config entries for the given Application'
-    uuid='4a339562-cd57-408d-9d1a-6529a383ea4b'/>
-
-This permission grants the right to read config entries. The `target` specifies an Application; all config entries for that Application can be read.
-
----
-
-<Permission type='Permission' name='Write Configuration for Application'
-    description='Permits writing config entries for the given Application'
-    uuid='6c799ccb-d2ad-4715-a2a7-3c8728d6c0bf'/>
-
-This permission grants the right to write config entries for a given application. Entries can be created, but only against objects which are already registered with the Configuration Store.
-
----
-
-<Permission type='Permission' name='Manage Application Schema'
-    description='Upload a JSON schema for a given Application'
-    uuid='95c7cbcb-ce60-49ed-aa81-2fe3eec4559d'/>
-
-This permission allows the `PUT /v1/app/{app}/config-schema` endpoint to be used. This endpoint sets the JSON schema against which an Application's entries are validated.
-
----
-
-<Permission type='Permission' name='Manage Objects'
-    description='Grants permission to create objects in a given class'
-    uuid='f0b7917b-d475-4888-9d5a-2af96b3c26b6'/>
-
-This permission allows objects to be created. The object must be created in a class which has been granted as target of the permission; or the permission may be granted wildcard to allow any class.
-
-This permission also grants the right to list the classes in question.
-
-This permission does not allow objects to be deleted; that is destructive and is not normally appropriate, so it has a separate permission.
-
----
-
-<Permission type='Permission' name='Delete Objects'
-    description='Grants permission to delete objects'
-    uuid='6957174b-7b08-45ca-ac5c-c03ab6928a6e'/>
-
-This permission grants the right to delete an object. It should be granted sparingly; normally once a UUID has been allocated to a given object it is worth keeping a permanent record of that fact.
-
-The target of the permission must be the object to be deleted (or an Authorisation Component group containing that object).
 
 ---
 

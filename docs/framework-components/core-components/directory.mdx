@@ -71,14 +71,6 @@ As described in the Factory+ Schemas specification, every device participating i
 
 Devices lacking an `Instance_UUID` in their birth certificate will be unable to publish their own UUID. In such cases, the Directory will allocate a UUID to the device and associate it with the Sparkplug address. Subsequent usage of the same Sparkplug address will result in the assignment of the same UUID. However, providing a Factory+ compliant birth certificate with an `Instance_UUID` will override this behaviour.
 
-## Discovery
-
-As per the [Component Specification](/docs/framework-components/specification), the Directory component provides a MQTT Interface and a HTTP interface.
-
-<WellKnownUUID type='Service Function' name='Directory'
-               uuid='af4a1d66-e6f7-43c4-8a67-0fa3be2b1cf9'
-               description='Directory Component service function'/>
-
 ## MQTT Interface
 
 The Directory component Sparkplug interface **MUST** use the well-known address `[ORGANISATION]-Service-DIR-Directory/Directory`, where `[ORGANISATION]-Service-DIR-Directory/Directory` is the group name and `Directory` is the node name. This allows the Directory to be located over MQTT without using the HTTP API.
@@ -130,7 +122,7 @@ These well-known UUIDs are part of the core framework and all **MUST** to be reg
 
 <WellKnownUUID type='Service Account' name='Directory'
                uuid='5cc3b068-938f-4bb2-8ceb-64338a02fbeb'
-               description='The client identity of Directory Component used to communicate with other services'/>
+               description='The client identity of the Directory Component used to communicate with other services'/>
 
 ---
 
