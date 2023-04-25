@@ -1,0 +1,54 @@
+openapi: 3.0.0
+
+info:
+  title: Factory+ Manager Specification
+  version: 1.0.0
+  description: The primary function of the Factory+ Manager component is to offer an interface for configuring, storing, and delivering edge agent configurations to the respective edge agents.
+
+servers:
+  - url: /api
+
+paths:
+  /edge-agent-config:
+    get:
+      summary: Get the configuration for an edge agent
+      operationId: getEdgeAgentConfig
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/edge-agent-config" }
+      responses:
+        "200":
+          description: The validated configuration for the edge agent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: The status of the request as friendly text
+                    example: "success"
+                  data:
+                    type: string
+                    description: The configuration for the edge agent as an escaped JSON string with all sensitive information redacted (e.g. The MQTT password must be replaced with `__mqtt-password__`)
+                    example: "{\"$schema\":\"https://raw.githubusercontent.com/AMRC-FactoryPlus/schemas/main/Edge_Agent_Config.json\",\"sparkplug\":{\"serverUrl\":\"mqtt://mqtt.myDomain:1883\",\"groupId\":\"AMRC-Demo-April\",\"edgeNode\":\"Soft_Gateway\",\"username\":\"nd1-amrc-demo-april-soft_gateway@MYDOMAIN\",\"password\":\"__mqtt-password__\",\"asyncPubMode\":true},\"deviceConnections\":[{\"name\":\"MQTT Broker\",\"connType\":\"MQTT\",\"MQTTConnDetails\":{\"host\":\"sourceMqttServer.test\",\"protocol\":\"mqtt\",\"port\":1883,\"useSSL\":false,\"clientId\":\"AMRC-Demo-Device-0860DD04-08A9-A67D-64AF-AE69C65D3E4B\",\"username\":\"\",\"password\":\"\",\"cleanSession\":true,\"keepAlive\":60},\"pollInt\":1000,\"payloadFormat\":\"JSON\",\"devices\":[{\"deviceId\":\"Device\",\"deviceType\":\"481dbce2-cabc-4fb1-b402-ee51f49f62b0\",\"templates\":[],\"tags\":[{\"Name\":\"Device_Information/MAC_Address\",\"type\":\"String\",\"method\":\"GET\",\"address\":\"MetricTopic/Device1/DeviceInfo\",\"path\":\"$.mac\",\"docs\":\"MAC Address\",\"recordToDB\":true},{\"Name\":\"Device_Information/Model\",\"type\":\"String\",\"method\":\"GET\",\"address\":\"MetricTopic/Device1/DeviceInfo\",\"path\":\"$.model\",\"docs\":\"Model name of device\",\"recordToDB\":true},{\"type\":\"UUID\",\"method\":\"GET\",\"value\":\"2dd093e9-1450-44c5-be8c-c0d78e48219b\",\"Name\":\"Device_Information/Schema_UUID\",\"docs\":\"A reference to the schema used for this object.\",\"recordToDB\":true},{\"type\":\"UUID\",\"method\":\"GET\",\"value\":\"ef02bdce-9a70-4193-ac87-3627cac7819c\",\"Name\":\"Device_Information/Instance_UUID\",\"docs\":\"A reference to the instance of this object.\",\"recordToDB\":true},{\"Name\":\"Phases/1/True_RMS_Current\",\"type\":\"FloatLE\",\"method\":\"GET\",\"address\":\"MetricTopic/Device1/Metrics\",\"path\":\"$.current\",\"engUnit\":\"A\",\"engHigh\":13,\"docs\":\"Current measured \",\"recordToDB\":true},{\"Name\":\"Phases/1/Active_Power\",\"type\":\"FloatLE\",\"method\":\"GET\",\"address\":\"MetricTopic/Device1/Metrics\",\"path\":\"$.power\",\"engUnit\":\"W\",\"docs\":\"Socket in use\",\"recordToDB\":true},{\"Name\":\"Phases/1/True_RMS_Voltage\",\"type\":\"FloatLE\",\"method\":\"GET\",\"address\":\"MetricTopic/Device1/Metrics\",\"path\":\"$.voltage\",\"engUnit\":\"V\",\"engHigh\":250,\"docs\":\"Voltage measured in socket\",\"recordToDB\":true},{\"type\":\"UUID\",\"method\":\"GET\",\"value\":\"d16b825d-4660-4c41-bebd-c3ac7a90a86c\",\"Name\":\"Phases/1/Schema_UUID\",\"docs\":\"A reference to the schema used for this object.\",\"recordToDB\":true},{\"type\":\"UUID\",\"method\":\"GET\",\"value\":\"3e29301b-cbca-45e8-b86e-e808e5460f3b\",\"Name\":\"Phases/1/Instance_UUID\",\"docs\":\"A reference to the instance of this object.\",\"recordToDB\":true},{\"Name\":\"In_Use\",\"type\":\"Boolean\",\"method\":\"GET\",\"address\":\"MetricTopic/Device1/Metrics\",\"path\":\"$.inUse\",\"docs\":\"Socket in use\",\"recordToDB\":true},{\"Name\":\"Relay_Closed\",\"type\":\"Boolean\",\"method\":\"GET\",\"address\":\"MetricTopic/Device1/Metrics\",\"path\":\"$.plugRelayActive\",\"docs\":\"Relay state\",\"recordToDB\":true},{\"Name\":\"Status\",\"type\":\"String\",\"method\":\"GET\",\"address\":\"MetricTopic/Device1/Status\",\"path\":\"$.status\",\"docs\":\"Device status\",\"recordToDB\":true},{\"type\":\"UUID\",\"method\":\"GET\",\"value\":\"481dbce2-cabc-4fb1-b402-ee51f49f62b0\",\"Name\":\"Schema_UUID\",\"docs\":\"A reference to the schema used for this object.\",\"recordToDB\":true},{\"type\":\"UUID\",\"method\":\"GET\",\"value\":\"e10ce7b3-6b2a-4d58-a4c0-c6812ee06b7a\",\"Name\":\"Instance_UUID\",\"docs\":\"A reference to the instance of this object.\",\"recordToDB\":true}],\"pollInt\":1000,\"payloadFormat\":\"JSON\"}]},{\"name\":\"MQTT\",\"connType\":\"MQTT\",\"MQTTConnDetails\":{\"host\":\"192.168.0.4\",\"protocol\":\"mqtt\",\"port\":1883,\"useSSL\":false,\"clientId\":\"AMRC-Demo-April-Soft_Gateway-Data-C16A2B81-B657-F91D-2582-8C98EE404002\",\"username\":\"\",\"password\":\"\",\"cleanSession\":true,\"keepAlive\":60},\"pollInt\":1000,\"payloadFormat\":\"JSON\",\"devices\":[{\"deviceId\":\"Data\",\"deviceType\":\"abaaabad-ccfd-4a93-8ad6-1aca9f863ee8\",\"templates\":[],\"tags\":[{\"Name\":\"Temperature\",\"type\":\"FloatLE\",\"method\":\"GET\",\"address\":\"metrics/mymetrics\",\"path\":\"$.temperatures\",\"docs\":\"The temperature measured by the sensor\",\"recordToDB\":true},{\"type\":\"UUID\",\"method\":\"GET\",\"value\":\"abaaabad-ccfd-4a93-8ad6-1aca9f863ee8\",\"Name\":\"Schema_UUID\",\"docs\":\"A reference to the schema used for this object.\",\"recordToDB\":true},{\"type\":\"UUID\",\"method\":\"GET\",\"value\":\"63923901-0323-4e56-aecc-87fb72021c05\",\"Name\":\"Instance_UUID\",\"docs\":\"A reference to the instance of this object.\",\"recordToDB\":true}],\"pollInt\":1000,\"payloadFormat\":\"JSON\"}]}]}"
+                  status_code:
+                    type: integer
+                    description: The status code of the request
+                    example: 200
+        "401": { description: "Unauthorised" }
+        "403": { description: "Forbidden" }
+        "422": { description: "Unprocessable Entity. Response will include more information about error." }
+components:
+  schemas:
+    edge-agent-config:
+      type: object
+      properties:
+        node_id:
+          type: string
+          description: The UUID of the Node
+        config_password:
+          type: string
+          description: The password for the edge agent principal

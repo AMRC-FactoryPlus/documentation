@@ -3,35 +3,65 @@ sidebar_position: 2
 ---
 
 import useBaseUrl from "@docusaurus/useBaseUrl";
-import OpenAPISpecRenderer from "../../../src/components/OpenAPISpecRenderer";import {OpenSourceExample} from "../../../src/components/OpenSourceExample";
+import OpenAPISpecRenderer from "../../../src/components/OpenAPISpecRenderer";import {
+    OpenSourceExample
+} from "../../../src/components/OpenSourceExample";
 
 # Directory
 
 
 export const ComponentOverview = () => (
     <div className="mb-10 mx-auto text-center w-full flex justify-center">
-        <div className="p-4 bg-brand-20 dark:bg-brand-90 w-[3vw] flex items-center justify-end dark:text-brand opacity-40" style={{writingMode: "vertical-lr"}}>Identity</div>
+        <div
+            className="p-4 bg-brand-20 dark:bg-brand-90 w-[3vw] flex items-center justify-end dark:text-brand opacity-40"
+            style={{writingMode: "vertical-lr"}}>Identity
+        </div>
         <div className="flex flex-col">
             <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-brand h-[3vw] opacity-40"></div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 opacity-40 dark:text-white flex-1 mt-2 ml-2 w-[3vw] flex items-center justify-end text-brand" style={{writingMode: "vertical-lr"}}>Authorisation</div>
+            <div
+                className="p-4 bg-brand-20 dark:bg-brand-90 opacity-40 dark:text-white flex-1 mt-2 ml-2 w-[3vw] flex items-center justify-end text-brand"
+                style={{writingMode: "vertical-lr"}}>Authorisation
+            </div>
         </div>
         <div className="grid grid-cols-5 gap-2">
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-brand col-span-full h-[3vw] flex items-center justify-end opacity-40">Identity</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 opacity-40 dark:text-white col-span-full h-[3vw] flex items-center justify-end text-brand">Authorisation</div>
-            <div className="p-4 bg-brand-80 dark:bg-brand-40 text-white dark:text-brand flex items-center justify-center ml-2 ">Directory</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Configuration Store</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Manager</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Commands</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Data Warehouse</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">MQTT</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">Edge Agent</div>
+            <div
+                className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-brand col-span-full h-[3vw] flex items-center justify-end opacity-40">Identity
+            </div>
+            <div
+                className="p-4 bg-brand-20 dark:bg-brand-90 opacity-40 dark:text-white col-span-full h-[3vw] flex items-center justify-end text-brand">Authorisation
+            </div>
+            <div
+                className="p-4 bg-brand-80 dark:bg-brand-40 text-white dark:text-brand flex items-center justify-center ml-2 ">Directory
+            </div>
+            <div
+                className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Configuration
+                Store
+            </div>
+            <div
+                className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Manager
+            </div>
+            <div
+                className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Commands
+            </div>
+            <div
+                className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Data
+                Warehouse
+            </div>
+            <div
+                className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">MQTT
+            </div>
+            <div
+                className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">Edge
+                Agent
+            </div>
         </div>
     </div>
 );
 
 The Directory component is designed to help applications, users, and other components find the devices and services they require. By monitoring Sparkplug birth and death messages, it keeps a comprehensive registry of devices and services, including their current status, schemas, and endpoints, making it easier for consuming applications to locate them. Instructions on how consuming applications should locate and connect to the Directory is outlined in the [examples](#examples) section.
 
-<OpenSourceExample buttonText={'ACS Directory Component'} repoUrl={'https://github.com/AMRC-FactoryPlus/acs-directory'}></OpenSourceExample>
+<OpenSourceExample buttonText={'ACS Directory Component'}
+                   repoUrl={'https://github.com/AMRC-FactoryPlus/acs-directory'}></OpenSourceExample>
 
 ## Overview
 
@@ -43,13 +73,13 @@ Devices lacking an `Instance_UUID` in their birth certificate will be unable to 
 
 ## Discovery
 
-As per the [Component Specification](/docs/framework-components/specification), the Directory component provides a MQTT/Sparkplug interface and a HTTP interface.
+As per the [Component Specification](/docs/framework-components/specification), the Directory component provides a MQTT Interface and a HTTP interface.
 
 <WellKnownUUID type='Service Function' name='Directory'
-    uuid='af4a1d66-e6f7-43c4-8a67-0fa3be2b1cf9'
-    description='Directory service specification.'/>
+               uuid='af4a1d66-e6f7-43c4-8a67-0fa3be2b1cf9'
+               description='Directory Component service function'/>
 
-## MQTT/Sparkplug Interface
+## MQTT Interface
 
 The Directory component Sparkplug interface **MUST** use the well-known address `[ORGANISATION]-Service-DIR-Directory/Directory`, where `[ORGANISATION]-Service-DIR-Directory/Directory` is the group name and `Directory` is the node name. This allows the Directory to be located over MQTT without using the HTTP API.
 
@@ -62,8 +92,8 @@ To conform with the [Component Specification](/docs/framework-components/specifi
 | `Service_UUID`   | UUID   | The well-known UUID of the directory service function                                                                                                                                                                                                    |
 | `Service_URL`    | string | The URL of the HTTP API                                                                                                                                                                                                                                  |
 | `Last_Changed`   | folder | A folder of change-notify metrics, containing metrics which are published to every time something relevant changes on the network. By subscribing to the Directory and watching the values of these metrics applications can avoid polling the HTTP API. |
-| `Device_UUID`    | UUID   | Published when a device has come online or gone offline                                                                                                                                                                                                           |
-| `Device_Address` | string | Published when a device has come online or gone offline                                                                                                                                                                                                           |
+| `Device_UUID`    | UUID   | Published when a device has come online or gone offline                                                                                                                                                                                                  |
+| `Device_Address` | string | Published when a device has come online or gone offline                                                                                                                                                                                                  |
 | `Schema_Usage`   | UUID   | Published when the list of devices advertising a schema has changed                                                                                                                                                                                      |
 | `Service`        | UUID   | Published when the list of devices advertising a service has changed                                                                                                                                                                                     |
 
@@ -83,9 +113,74 @@ All requests must supply HTTP authentication; the following mechanisms are suppo
 
 ### Specification
 
-<OpenAPISpecRenderer url={useBaseUrl('/spec/directory.yaml')} text={'the Directory component'} />
+<OpenAPISpecRenderer url={useBaseUrl('/spec/directory.yaml')} text={'the Directory component'}/>
 
 
+## Well-Known UUIDs
+
+These well-known UUIDs are part of the core framework and all **MUST** to be registered with the Configuration Store component under the appropriate classes.
+
+### Identity
+
+<WellKnownUUID type='Service Function' name='Directory'
+               uuid='af4a1d66-e6f7-43c4-8a67-0fa3be2b1cf9'
+               description='The server identity of the Directory Component that provides the service'/>
+
+---
+
+<WellKnownUUID type='Service Account' name='Directory'
+               uuid='5cc3b068-938f-4bb2-8ceb-64338a02fbeb'
+               description='The client identity of Directory Component used to communicate with other services'/>
+
+---
+
+### Permission Groups
+
+<Permission type={'Permission Group'} name={'Directory Permissions'}
+            description={'Permissions recognised by the Directory'}
+            uuid={'58b5da47-d098-44f7-8c1d-6e4bd800e718'}></Permission>
+
+This group must be created in the Authorisation Component containing the permission UUIDs listed below.
+
+---
+
+### Permissions
+
+<Permission name={'Advertise Service'}
+            description='Permission to advertise a given service'
+            uuid={'4db4c39a-f18d-4e83-aeb0-5af2c14ddc2b'}></Permission>
+
+This grants permission for a given account to advertise the given service.
+
+<Permission name={'Manage Service Advertisement for Owner'}
+            description="Permission to advertise a service on another account's behalf"
+            uuid={'97dcf2a1-7f4b-476c-b561-e40fc42440ee'}></Permission>
+
+This grants the `principal` account (normally an administrator account, or an operator account performing this specific function) permission to advertise services for the `target`, which also represents an account. This allows use of the `/v1/service/{service}/advertisment/{owner}` endpoint.
+
+In addition to the `principal` account having this permission on the target account, either
+- The `target` account must have `Advertise Service`, or
+- The `principal` account must have `Override Service Advertisment Permissions`
+
+on the service function UUID being advertised.
+
+---
+
+<Permission name={'Override Service Advertisement Permissions'}
+            description='Permission to override advertisment permissions for this service'
+            uuid={'3bda2ab2-4128-463d-83c9-16b976a8d83e'}></Permission>
+
+This grants an account permission to advertise services on behalf of another account that the other account cannot advertise on its own behalf. The `target` of the permission is the service function UUID being advertised.
+
+### Metric Schemas
+
+<WellKnownUUID type='Metric Schema' name='Service V1'
+               uuid='05688a03-730e-4cda-9932-172e2c62e45c'
+               description='Schema recognised by the Directory as containing a service advertisment'/>
+
+If a Sparkplug device includes this schema in its Birth Certificate, the Directory will recognise it as a service advertisement and publish the supplied URL over HTTP.
+
+---
 
 ## Examples
 ### Listing All Devices
@@ -148,85 +243,6 @@ Once a `Service_UUID` is obtained, a `GET` request to `/v1/service/{Service_UUID
 | `service` | The service UUID queried                              |
 | `device`  | The device UUID of a device providing this service    |
 | `url`     | A URL on which the device provides additional service |
-
-## Well-Known UUIDs
-
-### Services
-
-The Directory service itself only defines the UUID for the Directory
-service function. However the other Service Function UUIDs defined by
-the Factory+ spec are listed below for convenience.
-
-<WellKnownUUID type='Service Function' name='Config Store'
-    uuid='af15f175-78a0-4e05-97c0-2a0bb82b9f3b'
-    description='Config Store service specification.'/>
-<WellKnownUUID type='Service Function' name='Command Escalation'
-    uuid='78ea7071-24ac-4916-8351-aa3e549d8ccd'
-    description='Command Escalation service specification.'/>
-<WellKnownUUID type='Service Function' name='Directory'
-    uuid='af4a1d66-e6f7-43c4-8a67-0fa3be2b1cf9'
-    description='Directory service specification.'/>
-<WellKnownUUID type='Service Function' name='Authorisation'
-    uuid='cab2642a-f7d9-42e5-8845-8f35affe1fd4'
-    description='Authorisation service specification.'/>
-<WellKnownUUID type='Service Function' name='MQTT'
-    uuid='feb27ba3-bd2c-4916-9269-79a61ebc4a47'
-    description='MQTT service function UUID.'/>
-
-### Metric Schemas
-
-<WellKnownUUID type='Metric Schema' name='Service V1'
-    uuid='05688a03-730e-4cda-9932-172e2c62e45c'
-    description='Schema recognised by the Directory as containing a service advertisment.'/>
-
-If a Sparkplug device includes this schema in its Birth Certificate, the
-Directory will recognise it as a service advertisment and publish the
-supplied URL over HTTP.
-
-### Permissions
-
-<Permission type={'Permission Group'} name={'Directory Permissions'}
-            description={'Permissions recognised by the Directory.'}
-            uuid={'58b5da47-d098-44f7-8c1d-6e4bd800e718'}></Permission>
-
-This group must be created in the Auth service containing the permission
-UUIDs listed below.
-
-<Permission name={'Advertise Service'}
-            description='Permission to advertise a given service.'
-            uuid={'4db4c39a-f18d-4e83-aeb0-5af2c14ddc2b'}></Permission>
-
-This grants permission for a given account to advertise the given
-service.
-
-<Permission name={'Manage Service Advertisement for Owner'}
-            description="Permission to advertise a service on another account's behalf"
-            uuid={'97dcf2a1-7f4b-476c-b561-e40fc42440ee'}></Permission>
-
-This grants the 'principal' account (normally an administrator account,
-or an operator account performing this specific function) permission to
-advertise services for the 'target', which also represents an account.
-This allows use of the `/v1/service/{service}/advertisment/{owner}`
-endpoint.
-
-In addition to the 'principal' account having this permission on the
-'target account, either
-
-* the 'target' account must have 'Advertise Service', or
-
-* the 'principal' account must have 'Override Service Advertisment
-Permissions'
-
-on the service function UUID being advertised.
-
-<Permission name={'Override Service Advertisement Permissions'}
-            description='Permission to override advertisment permissions for this service.'
-            uuid={'3bda2ab2-4128-463d-83c9-16b976a8d83e'}></Permission>
-
-This grants an account permission to advertise services on behalf of
-another account that the other account cannot advertise on its own
-behalf. The 'target' of the permission is the service function UUID
-being advertised.
 
 ## Known Issues
 - In the absence of a reliability mechanism (specifically, no STATE support), the directory service's view of the network begins to deviate from the actual state when it becomes unavailable. This can lead to significant repercussions, particularly in the case of missed death certificates which cannot be identified and will only be rectified upon the eventual reconnection of the affected device.

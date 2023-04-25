@@ -55,146 +55,18 @@ Within the Configuration Store component, an entry can be stored for any object 
 * Schemas should also include a `title` and `description` for the whole schema, and a `description` for every property, as this information may be used in future to build an editing interface for the config information.
 * It is advisable to include `"additionalProperties": false` on object definitions otherwise the schema will allow random extra properties. This will make extending the schema in the future without invalidating existing data much harder.
 
-## Well-Known UUIDs
-
-Some UUIDs have been reserved that are required for core Factory+ functionality. These UUIDS **MUST** be present and correct in all Factory+ deployments.
-
-### Class Definitions
-
-Class definitions are the core building blocks of the Configuration
-Store component. Every object known to the Store belongs to exactly one
-class; there is no inheritance. The class indicates what kind of
-real-world object the UUID represents; often this indicates to
-applications and services consuming the UUID what operations can be
-performed on that object.
-
-Some classes of UUID are used internally by the Config Store. Some
-others are also defined here as they are generally useful across all
-services.
-
-<WellKnownUUID type='Class Definition' name='Class Definition'
-    uuid='04a1c90d-2295-4cbe-b33a-74eded62cbf1'
-    description='Classes of UUID known to the Config Store.'/>
-
-The class definition for the Class Definition class itself. All other
-class definitions belong to this class.
-
-<WellKnownUUID type='Class Definition' name='Wildcard'
-    uuid='00000000-0000-0000-0000-000000000000'
-    description='The wildcard UUID.'/>
-
-It is useful to be able to register configuration against this UUID,
-even though it doesn't represent any real-world object. As such it is
-defined as a class definition.
-
-No objects should ever be created using this class.
-
-<WellKnownUUID type='Class Definition' name='Application'
-    uuid='d319bd87-f42b-4b66-be4f-f82ff48b93f0'
-    description='Application UUIDs used by the Config Store.'/>
-
-UUIDs registered with this class can be used in the `/app/{app}`
-endpoints to store config information. A UUID of this class represents a
-particular schema of config information.
-
-<WellKnownUUID type='Class Definition' name='Service Function'
-    uuid='265d481f-87a7-4f93-8fc6-53fa64dc11bb'
-    description='Well-known UUIDs representing F+ service definitions.'/>
-
-These UUIDs represent the Factory+ service specifications. Service
-implementations publish these UUIDs to indicate that they conform to a
-particular specification.
-
-If we have two ACS installations running side-by-side, both with a
-Config Store component, then those two Config Stores both advertise the
-Config Store Service Function UUID. This indicates they both conform to
-the Config Store specification.
-
-<WellKnownUUID type='Class Definition' name='Metric Schema'
-    uuid='83ee28d4-023e-4c2c-ab86-12c24e86372c'
-    description='Factory+ Metric Schema.'/>
-
-UUIDs of this class represent metric schemas defined under the Factory+
-Data Schemas specification.
-
-<WellKnownUUID type='Class Definition' name='Sparkplug Device'
-    uuid='18773d6d-a70d-443a-b29a-3f1583195290'
-    description='Compatibility class.'/>
-
-Requests to the `/v1/app/{app}/device` compatibility endpoint are mapped
-to this class. This should not be used any more; the objects formerly
-represented as 'Sparkplug Devices' are now divided up into several
-different classes.
-
-### Applications
-
-<WellKnownUUID type='Application' name='Object registration'
-    uuid='cb40bed5-49ad-4443-a7f5-08c75009da8f'
-    description='Registration of a UUID within the Configuration Store.'/>
-
-These entries are created by the `POST /v1/object` endpoint. They cannot
-be created directly, as an entry for the object must exist before the
-`/app/{app}/object` endpoint can be used.
-
-Entries have a single property, `class`, indicating the class of the object.
-
-<WellKnownUUID type='Application' name='General Object Information'
-    uuid='64a8bfa9-7772-45c4-9d1a-9e6290690957'
-    description='Information to help human users identify objects.'/>
-
-These are intended for display to human users in user interfaces to help
-the user understand what object is being referred to and should be brief
-(no more than a few words).
-
-Entries **MUST** have at least the following properties (this is likely to be extended in the future).
-
-| Property   | Type   | Required | Description                         |
-|------------|--------|----------|-------------------------------------|
-| `name`     | string | Yes      | A name for the object               |
-| `location` | string | No       | The physical location of the object |
-| `photo`    | string | No       | A base64-encoded photo              |
-| `contact`  | array  | No       | An array of contact information     |
-
-The `contact` property contains contact information for the people responsible for the object. The array contains objects with these properties:
-
-| Property | Type   | Required | Description                      |
-|----------|--------|----------|----------------------------------|
-| `name`   | string | Yes      | The name of a responsible person |
-| `email`  | string | Yes      | Their email address              |
-
-<WellKnownUUID type='Application' name='Sparkplug Address Information'
-    uuid='8e32801b-f35a-4cbf-a5c3-2af64d3debd7'
-    description='The Sparkplug address used by an object.'/>
-
-Where an object has a pre-defined Sparkplug address, entries with this
-application can be used to allow this address to be looked up. Under the
-current architecture Sparkplug Nodes have fixed addresses and require
-entries of this type. Sparkplug Devices are discovered via the Directory
-and do not normally need these entries.
-
-Entries of this type are used by the MQTT service to define ACLs, and by
-the Command Escalation service to authenticate escalation requests.
-
-Entries have the following properties:
-
-|Property   |Type   |Required   |Description                |
-|---|---|---|---|
-|`group_id` |string |Yes        |The Sparkplug Group-ID     |
-|`node_id`  |string |Yes        |The Sparkplug Node-ID      |
-|`device_id`|string |No         |The Sparkplug Device-ID    |
-
 ## Discovery
 
 As per the [Component
 Specification](/docs/framework-components/specification), the
-Configuration Store component provides a MQTT/Sparkplug interface and a
+Configuration Store component provides a MQTT Interface and a
 HTTP interface.
 
-<WellKnownUUID type='Service Function' name='Config Store'
+<WellKnownUUID type='Service Function' name='Configuration Store'
     uuid='af15f175-78a0-4e05-97c0-2a0bb82b9f3b'
-    description='Config Store service specification.'/>
+    description='Configuration Store service specification'/>
 
-## MQTT/Sparkplug Interface
+## MQTT Interface
 
 To conform with the [Component Specification](/docs/framework-components/specification), the Directory component **MUST** publish the following metrics:
 
@@ -228,63 +100,184 @@ All requests **MUST** supply HTTP authentication; the following mechanisms are s
 
 <OpenAPISpecRenderer url={useBaseUrl('/spec/configuration-store.yaml')} text={'the Configuration Store component'} />
 
-## Permissions
+## Well-Known UUIDs
+
+These well-known UUIDs are part of the core framework and all **MUST** to be registered with the Configuration Store component under the appropriate classes.
+
+### Identity
+
+<WellKnownUUID type='Service Function' name='Configuration Store'
+               uuid=''
+               description='The server identity of the Configuration Store Component that provides the service'/>
+
+---
+
+<WellKnownUUID type='Service Account' name='Configuration Store'
+               uuid=''
+               description='The client identity of Configuration Store Component used to communicate with other services'/>
+
+---
+
+### Class Definitions
+
+Class definitions are the core building blocks of the Configuration Store component. Every object known to the Store belongs to exactly one class; there is no inheritance. The class indicates what kind of real-world object the UUID represents; often this indicates to applications and services consuming the UUID what operations can be performed on that object.
+
+Some classes of UUID are used internally by the Configuration Store. Some others are also defined here as they are generally useful across all components.
+
+<WellKnownUUID type='Class Definition' name='Class Definition'
+               uuid='04a1c90d-2295-4cbe-b33a-74eded62cbf1'
+               description='Classes of UUID known to the Configuration Store'/>
+
+The class definition for the Class Definition class itself. All other class definitions belong to this class.
+
+---
+
+<WellKnownUUID type='Class Definition' name='Wildcard'
+               uuid='00000000-0000-0000-0000-000000000000'
+               description='The wildcard UUID'/>
+
+It is useful to be able to register configuration against this UUID, even though it doesn't represent any real-world object. As such it is defined as a class definition.
+
+Objects must **NEVER** be created using this class.
+
+---
+
+<WellKnownUUID type='Class Definition' name='Application'
+               uuid='d319bd87-f42b-4b66-be4f-f82ff48b93f0'
+               description='Application UUIDs used by the Configuration Store'/>
+
+UUIDs registered with this class can be used in the `/app/{app}` endpoints to store config information. A UUID of this class represents a particular schema of config information.
+
+---
+
+<WellKnownUUID type='Class Definition' name='Service Function'
+               uuid='265d481f-87a7-4f93-8fc6-53fa64dc11bb'
+               description='Well-known UUIDs representing F+ service definitions'/>
+
+These UUIDs represent the Factory+ Components. Component implementations publish these UUIDs to indicate that they conform to a particular component specification.
+
+---
+
+<WellKnownUUID type='Class Definition' name='Metric Schema'
+               uuid='83ee28d4-023e-4c2c-ab86-12c24e86372c'
+               description='Factory+ Metric Schema'/>
+
+UUIDs of this class represent metric schemas defined under the Factory+ Data Schemas specification.
+
+---
+
+### Applications
+
+<WellKnownUUID type='Application' name='Object Registration'
+               uuid='cb40bed5-49ad-4443-a7f5-08c75009da8f'
+               description='Registration of a UUID within the Configuration Store'/>
+
+These entries are created by the `POST /v1/object` endpoint. They cannot be created directly, as an entry for the object must exist before the `/app/{app}/object` endpoint can be used.
+
+Entries have a single property, `class`, indicating the class of the object.
+
+---
+
+<WellKnownUUID type='Application' name='General Object Information'
+               uuid='64a8bfa9-7772-45c4-9d1a-9e6290690957'
+               description='Information to help human users identify objects'/>
+
+These are intended for display to human users in user interfaces to help the user understand what object is being referred to and should be brief (no more than a few words).
+
+Entries **MUST** have at least the following properties (this is likely to be extended in the future).
+
+| Property   | Type   | Required | Description                         |
+|------------|--------|----------|-------------------------------------|
+| `name`     | string | Yes      | A name for the object               |
+| `location` | string | No       | The physical location of the object |
+| `photo`    | string | No       | A base64-encoded photo              |
+| `contact`  | array  | No       | An array of contact information     |
+
+The `contact` property contains contact information for the people responsible for the object. The array contains objects with these properties:
+
+| Property | Type   | Required | Description                      |
+|----------|--------|----------|----------------------------------|
+| `name`   | string | Yes      | The name of a responsible person |
+| `email`  | string | Yes      | Their email address              |
+
+---
+
+<WellKnownUUID type='Application' name='Sparkplug Address Information'
+               uuid='8e32801b-f35a-4cbf-a5c3-2af64d3debd7'
+               description='The Sparkplug address used by an object'/>
+
+Where an object has a pre-defined Sparkplug address, entries with this application can be used to allow this address to be looked up. Under the current architecture Sparkplug Nodes have fixed addresses and require entries of this type. Sparkplug Devices are discovered via the Directory and do not normally need these entries.
+
+Entries of this type are used by the MQTT component to define ACLs, and by the Commands component to authenticate escalation requests.
+
+Entries have the following properties:
+
+| Property    | Type   | Required | Description             |
+|-------------|--------|----------|-------------------------|
+| `group_id`  | string | Yes      | The Sparkplug Group ID  |
+| `node_id`   | string | Yes      | The Sparkplug Node ID   |
+| `device_id` | string | No       | The Sparkplug Device ID |
+
+---
+
+### Permission Groups
 
 <Permission type='Permission Group' name='Configuration Store'
     description='A permission group that contains all of the Configuration Store permissions'
     uuid='c43c7157-a50b-4d2a-ac1a-86ff8e8e88c1'/>
 
-This group must be set up in the Auth service to contain all the
+This group must be set up in the Authorisation Component to contain all the
 permissions below.
 
+---
+
+### Permissions
+
 <Permission type='Permission' name='Read Configuration for Application'
-    description='Permit reading config entries for the given Application.'
+    description='Permit reading config entries for the given Application'
     uuid='4a339562-cd57-408d-9d1a-6529a383ea4b'/>
 
-This permission grants the right to read config entries. The 'target'
-specifies an Application; all config entries for that Application can be
-read.
+This permission grants the right to read config entries. The `target` specifies an Application; all config entries for that Application can be read.
+
+---
 
 <Permission type='Permission' name='Write Configuration for Application'
-    description='Permits writing config entries for the given Application.'
+    description='Permits writing config entries for the given Application'
     uuid='6c799ccb-d2ad-4715-a2a7-3c8728d6c0bf'/>
 
-This permission grants the right to write config entries for a given
-application. Entries can be created, but only against objects which are
-already registered with the Config Store.
+This permission grants the right to write config entries for a given application. Entries can be created, but only against objects which are already registered with the Configuration Store.
+
+---
 
 <Permission type='Permission' name='Manage Application Schema'
-    description='Upload a JSON schema for a given Application.'
+    description='Upload a JSON schema for a given Application'
     uuid='95c7cbcb-ce60-49ed-aa81-2fe3eec4559d'/>
 
-This permission allows the `PUT /v1/app/{app}/config-schema` endpoint to
-be used. This endpoint sets the JSON schema against which an
-Application's entries are validated.
+This permission allows the `PUT /v1/app/{app}/config-schema` endpoint to be used. This endpoint sets the JSON schema against which an Application's entries are validated.
+
+---
 
 <Permission type='Permission' name='Manage Objects'
-    description='Grants permission to create objects in a given class.'
+    description='Grants permission to create objects in a given class'
     uuid='f0b7917b-d475-4888-9d5a-2af96b3c26b6'/>
 
-This permission allows objects to be created. The object must be created
-in a class which has been granted as target of the permission; or the
-permission may be granted wildcard to allow any class.
+This permission allows objects to be created. The object must be created in a class which has been granted as target of the permission; or the permission may be granted wildcard to allow any class.
 
 This permission also grants the right to list the classes in question.
 
-This permission does not allow objects to be deleted; that is
-destructive and is not normally appropriate, so it has a separate
-permission.
+This permission does not allow objects to be deleted; that is destructive and is not normally appropriate, so it has a separate permission.
+
+---
 
 <Permission type='Permission' name='Delete Objects'
-    description='Grants permission to delete objects.'
+    description='Grants permission to delete objects'
     uuid='6957174b-7b08-45ca-ac5c-c03ab6928a6e'/>
 
-This permission grants the right to delete an object. It should be
-granted sparingly; normally once a UUID has been allocated to a given
-object it is worth keeping a permanent record of that fact.
+This permission grants the right to delete an object. It should be granted sparingly; normally once a UUID has been allocated to a given object it is worth keeping a permanent record of that fact.
 
-The target of the permission must be the object to be deleted (or an
-Auth service group containing that object).
+The target of the permission must be the object to be deleted (or an Authorisation Component group containing that object).
+
+---
 
 ## Examples
 

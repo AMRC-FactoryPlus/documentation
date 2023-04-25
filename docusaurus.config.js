@@ -9,7 +9,7 @@ const katex = require('rehype-katex');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Factory+',
-  tagline: 'Factory+ provides an open framework to standardise and simplify the way that data is extracted, transported, stored, processed, consumed and protected across a manufacturing organisation.',
+  tagline: 'Factory+ provides an open framework to standardise and simplify the way that data is extracted, transported, stored, processed, consumed and protected across a manufacturing organisation',
   favicon: 'img/favicon.png',
 
   markdown: {

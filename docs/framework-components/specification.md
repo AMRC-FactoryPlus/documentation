@@ -60,4 +60,4 @@ The HTTP interface is designed to handle bulk request-response communication tha
   | `device`  | The Device UUID of this component's Sparkplug interface |
   | `version` | A version number string                                 |
 
-  * This endpoint **MUST** send a `401` response status code to any client that is not authorised to access any other part of the API. This mechanism allows clients to verify that they possess valid credentials for accessing the component's resources and functionalities.
+* This endpoint **MUST** send a `401` response status code to any client that is not authorised to access any other part of the API. This mechanism allows clients to verify that they possess valid credentials for accessing the component's resources and functionalities.

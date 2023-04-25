@@ -21,6 +21,14 @@ polygon {
     @apply bg-brand-20 text-brand-80 w-auto stroke-brand-50 !important;
 }
 
+.codeBlockContainer_node_modules-\@docusaurus-theme-classic-lib-theme-CodeBlock-Container-styles-module {
+    @apply rounded-none shadow-none !important;
+}
+
+.codeBlock_node_modules-\@docusaurus-theme-classic-lib-theme-CodeBlock-Content-styles-module {
+    @apply rounded-none bg-brand-5 !important;
+}
+
 
 :root {
     --ifm-footer-link-color: #5A6269;

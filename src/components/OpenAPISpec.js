@@ -1,6 +1,5 @@
 import React from 'react';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faGithub} from "@fortawesome/free-brands-svg-icons/faGithub";
 import Link from "@docusaurus/Link";
 import {faCode} from "@fortawesome/free-solid-svg-icons";
 

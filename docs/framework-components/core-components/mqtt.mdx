@@ -2,25 +2,66 @@
 sidebar_position: 8
 ---
 
-# ⚠️ MQTT
+# MQTT
 
-## Well known UUIDs
+export const ComponentOverview = () => (
+    <div className="mb-10 mx-auto text-center w-full flex justify-center">
+        <div className="p-4 bg-brand-20 dark:bg-brand-90 w-[3vw] flex items-center justify-end dark:text-brand opacity-40" style={{writingMode: "vertical-lr"}}>Identity</div>
+        <div className="flex flex-col">
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-brand h-[3vw] opacity-40"></div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 opacity-40 dark:text-white flex-1 mt-2 ml-2 w-[3vw] flex items-center justify-end text-brand" style={{writingMode: "vertical-lr"}}>Authorisation</div>
+        </div>
+        <div className="grid grid-cols-5 gap-2">
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-brand col-span-full h-[3vw] flex items-center justify-end opacity-40">Identity</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 opacity-40 dark:text-white col-span-full h-[3vw] flex items-center justify-end text-brand">Authorisation</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 ml-2">Directory</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Configuration Store</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Manager</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Commands</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Data Warehouse</div>
+            <div className="p-4 bg-brand-80 dark:bg-brand-40 text-white dark:text-brand flex items-center justify-center col-span-full ml-2">MQTT</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">Edge Agent</div>
+        </div>
+    </div>
+);
+
+[Exec summary]
+
+<OpenSourceExample buttonText={'ACS MQTT Component'} repoUrl={'https://github.com/AMRC-FactoryPlus/hivemq-krb'}></OpenSourceExample>
+
+## Overview
+
+<ComponentOverview></ComponentOverview>
+
+## Discovery
+
+## MQTT Interface
+
+## HTTP Interface
+
+## Permissions
+
+## Well-Known UUIDs
+
+<WellKnownUUID type='Service Function' name='MQTT'
+               uuid='feb27ba3-bd2c-4916-9269-79a61ebc4a47'
+               description='MQTT Component service function'/>
 
 <WellKnownUUID type='Permission Group' name='MQTT permissions'
     uuid='a637134a-d06b-41e7-ad86-4bf62fde914a'
-    description='All MQTT permissions need to be in this group.'/>
+    description='All MQTT permissions need to be in this group'/>
 
 Any UUIDs created representing MQTT permissions need to be added to this
-group in the Auth service, otherwise the MQTT plugin will not be able to
+group in the Authorisation Component, otherwise the MQTT plugin will not be able to
 see the ACEs.
 
 <WellKnownUUID type='Application' name='MQTT Permission Template' 
     uuid='1266ddf1-156c-4266-9808-d6949418b185'
-    description='Expands a permission recognised by the MQTT plugin to an MQTT ACL.'/>
+    description='Expands a permission recognised by the MQTT plugin to an MQTT ACL'/>
 
-UUIDs representing MQTT permissions need to have a Config Store entry of
+UUIDs representing MQTT permissions need to have a Configuration Store entry of
 this type. This entry serves as a template for the MQTT permissions
-granted when the given permission UUID is granted in the Auth service.
+granted when the given permission UUID is granted in the Authorisation Component.
 
 The entry **MUST** be a JSON object. Keys represent MQTT topics; values
 represent the access granted to that topic. Values **MUST** be strings,
@@ -60,7 +101,7 @@ does not implement `s`.
 
 <WellKnownUUID type='Application' name='Sparkplug Address Information'
     uuid='8e32801b-f35a-4cbf-a5c3-2af64d3debd7'
-    description='The Sparkplug address used by an object.'/>
+    description='The Sparkplug address used by an object'/>
 
-This Application is described more fully in the Config Store
+This Application is described more fully in the Configuration Store
 specification.

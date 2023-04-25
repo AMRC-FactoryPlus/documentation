@@ -9,6 +9,7 @@ import {OpenAPISpec} from "./OpenAPISpec";
 const OpenAPISpecRenderer = ({url, text}) => {
     const [paths, setPaths] = useState(null);
     const [refs, setRefs] = useState(null);
+    const [servers, setServers] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -18,6 +19,7 @@ const OpenAPISpecRenderer = ({url, text}) => {
                 const parsedSpec = yaml.load(text);
                 setPaths(parsedSpec.paths);
                 setRefs(parsedSpec.components);
+                setServers(parsedSpec.servers?.[0]?.url === '/' ? '' : parsedSpec.servers?.[0]?.url);
             } catch (error) {
                 console.error(`Error fetching OpenAPI spec from ${url}: ${error.message}`);
             }
@@ -36,7 +38,7 @@ const OpenAPISpecRenderer = ({url, text}) => {
                             <div className={'flex flex-col-rev'} key={method}>
                                 <div>
                                     {(
-                                        <RestRequest key={path+'-req-'+method} type={method} url={path} description={methodInfo.summary}></RestRequest>
+                                        <RestRequest key={path+'-req-'+method} type={method} url={servers+path} description={methodInfo.summary}></RestRequest>
                                     )}
                                 </div>
                             </div>

@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  title: Factory+ Config Store
-  description: Factory+ Config Store
+  title: Factory+ Configuration Store
+  description: Factory+ Configuration Store
   version: 1.0.0
 
 servers:

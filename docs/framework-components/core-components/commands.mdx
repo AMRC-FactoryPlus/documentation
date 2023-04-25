@@ -1,0 +1,202 @@
+---
+sidebar_position: 6
+---
+
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import OpenAPISpecRenderer from "../../../src/components/OpenAPISpecRenderer";import {OpenSourceExample} from "../../../src/components/OpenSourceExample";
+
+# Commands
+
+export const ComponentOverview = () => (
+    <div className="mb-10 mx-auto text-center w-full flex justify-center">
+        <div className="p-4 bg-brand-20 dark:bg-brand-90 w-[3vw] flex items-center justify-end dark:text-brand opacity-40" style={{writingMode: "vertical-lr"}}>Identity</div>
+        <div className="flex flex-col">
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-brand h-[3vw] opacity-40"></div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 opacity-40 dark:text-white flex-1 mt-2 ml-2 w-[3vw] flex items-center justify-end text-brand" style={{writingMode: "vertical-lr"}}>Authorisation</div>
+        </div>
+        <div className="grid grid-cols-5 gap-2">
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-brand col-span-full h-[3vw] flex items-center justify-end opacity-40">Identity</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 opacity-40 dark:text-white col-span-full h-[3vw] flex items-center justify-end text-brand">Authorisation</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 ml-2">Directory</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Configuration Store</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Manager</div>
+            <div className="p-4 bg-brand-80 dark:bg-brand-40 text-white dark:text-brand flex items-center justify-center">Commands</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Data Warehouse</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">MQTT</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">Edge Agent</div>
+        </div>
+    </div>
+);
+
+The Commands Component offers a mechanism for clients to request Sparkplug CMD messages be issued to other clients, given appropriate authorisation. The Sparkplug specification indicates that only the Primary Application is responsible for transmitting CMDs but the precise methodology and timing for this process are not explicitly defined. It is inferred that applications must interface with the Primary Application to request CMDs and as such the Commands component provides the implementation for this specific aspect of the Primary Application's functionality.
+
+
+<OpenSourceExample buttonText={'ACS Commands Component'} repoUrl={'https://github.com/AMRC-FactoryPlus/acs-cmdesc'}></OpenSourceExample>
+
+## Overview
+
+<ComponentOverview></ComponentOverview>
+
+
+## Discovery
+
+As per the [Component Specification](/docs/framework-components/specification), the Commands component provides a MQTT Interface and a HTTP interface.
+
+<WellKnownUUID type='Service Function' name='Configuration Store' uuid='78ea7071-24ac-4916-8351-aa3e549d8cc' description='Commands service specification'/>
+
+
+## MQTT Interface
+
+:::caution Ensure topic ACLs are configured correctly
+Command requests via the Sparkplug interface are authenticated on the basis of the Node address they are sent from. The address is looked up in the Configuration Store, and the UUID of the entry is treated as the principal to authorise. This relies utterly on the MQTT ACLs being set up appropriately (e.g. if Node A has permission to publish to the `DDATA`/`NDATA` topics of Device B then it could imitate a command request).
+:::
+
+### Specification
+- The Commands component **MUST** listen to all DATA topics
+- Any DATA packet containing a metric named `Execute_Remote_Command` (at the top level) **MUST** be treated as a command escalation request
+- Any Node that wishes to publish the `Execute_Remote_Command` metric **MUST** advertise it in its birth certificate
+- DATA packets **MUST NOT** use aliases
+- Requests **MUST** be sent entirely in a single Sparkplug packet
+
+### Requests
+
+The metric **MUST** be of `Template` type. The Commands component **SHOULD NOT** check the `templateRef` or `version` fields. The template **MUST** have the following fields:
+
+| Name                     | Type     | Value                                              |
+|--------------------------|----------|----------------------------------------------------|
+| `Receivers_Group_ID`     | String   | Group ID to send a command to                      |
+| `Receivers_Edge_Node_ID` | String   | Node ID to send a command to                       |
+| `Receivers_Device_ID`    | String   | Device ID to send a command to, or an empty string |
+| `Tag_Path`               | String   | Metric name to send in the command                 |
+| `Tag_Value`              | String   | Stringified metric value to send                   |
+| `Command_Timestamp`      | DateTime | Timestamp the request was sent                     |
+
+Publishing the `Command_Timestamp` metric should be considered the point at which the request is actually submitted; i.e. the timestamp metric should be sent last.
+
+### Results
+
+The command is authorised on the basis of the Node address it was received from. The principal of the command requester **MUST** be looked up in the Configuration Store under the
+Sparkplug Address application (`8e32801b-f35a-4cbf-a5c3-2af64d3debd7`) and the resulting UUID sent to the Authorisation component as a principal.
+
+- If the command is [authorised](#permissions) then a Sparkplug `CMD` **MUST** be sent to the requested device
+- The ACL entry **MUST** include a type
+- The Commands component **MUST** issue a `CMD` to the requester updating the metrics `Remote_Command_Response` and `Remote_Command_Response_JSON`.
+
+#### `Remote_Command_Response`
+
+A `Template` type, with a `templateRef` of `Command_Response_Template` and the following fields:
+
+| Name                     | Type     | Value                                                  |
+|--------------------------|----------|--------------------------------------------------------|
+| `Receivers_Group_ID`     | String   | Group ID of the requested command                      |
+| `Receivers_Edge_Node_ID` | String   | Node ID of the requested command                       |
+| `Receivers_Device_ID`    | String   | Device ID of the requested command, or an empty string |
+| `Tag_Path`               | String   | Metric name of the requested command                   |
+| `Response`               | String   | Response message                                       |
+| `Command_Timestamp`      | DateTime | A new timestamp for this response                      |
+
+- The `Response` field **MUST** be `OK` if a command was successfully sent. Other values for `Response` **MUST NOT** be depended on. Note that the
+timestamp is new; it cannot be used to match up requests and responses.
+- The timestamp field **MUST** be sent last; setting the timestamp indicates the other fields are all valid.
+
+#### `Remote_Command_Response_JSON`
+
+A String type, sent as a JSON object with the fields above. The timestamp is sent as milliseconds since the Epoch.
+
+### Limitations
+
+The Sparkplug interface of the Commands component has the following known limitations:
+
+* The component will not notice or care if the requesting Node has not advertised the request or response metrics in its birth certificate
+* The component will not notice or care if the receiving device is offline or if it has not advertised the requested metric
+
+## HTTP Interface
+
+Except for the `/ping` endpoint, all endpoints for the Configuration Store component are located under the `/v1` path to allow for forwards compatibility.
+
+### Authentication
+
+All requests **MUST** supply HTTP authentication; the following mechanisms are supported:
+
+| Mechanism | Authentication info required                                   |
+|-----------|----------------------------------------------------------------|
+| Negotiate | A Kerberos GSSAPI token.                                       |
+| Basic     | Username and password for a password-based Kerberos principal. |
+| Bearer    | A token from the `/token` endpoint.                            |
+
+### Specification
+
+<OpenAPISpecRenderer url={useBaseUrl('/spec/commands.yaml')} text={'the Configuration Store component'} />
+
+## Permissions
+
+<WellKnownUUID type='Permission Group' name='Commands'
+               uuid='9584ee09-a35a-4278-bc13-21a8be1f007c'
+               description='A group that contains the below permissions recognised by the Commands component'/>
+
+This well-known UUID represents the list of permissions the Command Escalation component will request from the Authorisation component. It is important that any permission UUIDs created to grant rights to request particular commands are added to this group.
+
+<WellKnownUUID type='Permission' name='Rebirth'
+               uuid='fbb9c25d-386d-4966-a325-f16471d9f7be'
+               description='Allow requesting a Sparkplug rebirth'/>
+
+This well-known permission grants access to request a rebirth from a Sparkplug Node or Device. This needs to be created with a `Command Escalation` Configuration Store entry as follows:
+
+```json
+[
+    {
+        "name": "Node Control/Rebirth",
+        "type": "Boolean"
+    },
+    {
+        "name": "Device Control/Rebirth",
+        "type": "Boolean"
+    }
+]
+```
+
+<WellKnownUUID type='Permission' name='Reload Edge Agent Config'
+               uuid='fbb9c25d-386d-4966-a325-f16471d9f7be'
+               description='Allow requesting a Sparkplug rebirth'/>
+
+This well-known permission grants access to request an edge agent to reload its configuration, usually because the configuration has changed. This needs to be created with a `Command Escalation` Configuration Store entry as follows:
+
+```json
+[
+    {
+        "name": "Node Control/Reload Edge Agent Config",
+        "type": "Boolean"
+    }
+]
+```
+
+## Well-Known UUIDs
+
+<WellKnownUUID type='Service Function' name='Commands'
+               uuid='78ea7071-24ac-4916-8351-aa3e549d8ccd'
+               description='Commands Component service function'/>
+
+<WellKnownUUID type='Application' name='Commands'
+               uuid='60e99f28-67fe-4344-a6ab-b1edb8b8e810'
+               description='A Configuration Store Application that stores the commands permitted by a given permission'/>
+
+UUIDs created to grant Commands permissions require a Configuration Store entry of this type to define the meaning of the permission. All
+such permissions need to be added to the `Commands permissions` group defined below or the Commands component will not see the ACEs.
+
+Entries **MUST** take the form of a JSON array of objects. Each entry in the array specifies a particular Sparkplug metric which may be updated by the client granted the permission. The object for each metric may have the following properties:
+
+| Property | Type   | Required | Description                      |
+|----------|--------|----------|----------------------------------|
+| `name`   | string | Yes      | The full metric name             |
+| `type`   | string | No       | The Sparkplug type of the metric |
+
+The `type` is represented as one of the names used for metric types in the Sparkplug specification. If the type is omitted, any type may be sent.
+
+<WellKnownUUID type='Application' name='Sparkplug Address Information'
+               uuid='8e32801b-f35a-4cbf-a5c3-2af64d3debd7'
+               description='A Configuration Store Application that stores the Sparkplug address used by an object'/>
+
+The `target` of an ACE will be looked up in the Configuration Store under this application. This means static entries will need to be created for
+Sparkplug Devices intended as Commands targets.
+
+This application is documented more fully in the [Configuration Store](/docs/framework-components/core-components/configuration-store#applications) documentation.
