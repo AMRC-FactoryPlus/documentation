@@ -25,7 +25,7 @@ export const ComponentOverview = () => (
     </div>
 );
 
-The Edge Agent is the workhorse of Factory+, operating at the periphery, gathering data from devices, normalising it into Schemas, converting the packets into Sparkplug messages, and transmitting them to the MQTT component.
+The Edge Agent is the workhorse of Factory+, operating at the periphery, gathering data from devices, normalising it into [Data Schemas](/docs/schemas), converting the packets into Sparkplug messages, and transmitting them to the [MQTT Component](/docs/framework-components/core-components/mqtt).
 
 <OpenSourceExample buttonText={'ACS Edge Agent Component'} repoUrl={'https://github.com/AMRC-FactoryPlus/acs-edge'}></OpenSourceExample>
 
@@ -34,11 +34,16 @@ The Edge Agent is the workhorse of Factory+, operating at the periphery, gatheri
 <ComponentOverview></ComponentOverview>
 
 Although the Edge Agent plays a crucial role in the framework there are few moving parts because all configuration is authored in the [Manager Component](/docs/framework-components/core-components/manager); the Edge Agent simply follows orders.
-
+  
+ ```mermaid
+graph LR
+  A[Device] -- "OPC UA (Poll/Response)" --> B[Cell Gateway + Edge Agent]
+  B -. "MQTT (Report by Exception)" .-> C[MQTT]
+  D[Manager] -- "Configuration" --> B
 Implementations of Edge Agents:
 - **MUST** conform to the [Sparkplug V3 specification](https://sparkplug.eclipse.org/specification/version/3.0/) (i.e. they **MUST** utilise the Sparkplug payload model **MUST** publish to the correct Sparkplug topics, they **MUST** encode packets using Protocol Buffers and they **MUST** register/publish `DDEATH`/`NDEATH` and `DBIRTH`/`NBIRTH` messages).
 - **SHOULD** be ephemeral, immutable and idempotent
-- **MUST** immediately request their configuration from the [Manager Component](/docs/framework-components/core-components/manager) using the `/api/edge-agent-config` endpoint when it starts. The configuration returned will have been validated by the manager to ensure that it conforms to the [Edge Agent Configuration Schema](https://github.com/AMRC-FactoryPlus/schemas/blob/main/Edge_Agent_Config.json), but Edge Agents **SHOULD** also validate that this is the case before they load the configuration.
+- **MUST** immediately request their configuration from the [Manager Component](/docs/framework-components/core-components/manager) using the `/api/edge-agent-config` endpoint when it starts. The configuration returned will have been validated by the Manager to ensure that it conforms to the [Edge Agent Configuration Schema](https://github.com/AMRC-FactoryPlus/schemas/blob/main/Edge_Agent_Config.json), but Edge Agents **SHOULD** also validate that this is the case before they load the configuration.
 
 
 Before the configuration is loaded, all sensitive information placeholders **MUST** be replaced with the real values, which **MUST** be made available to the Edge Agent at runtime.
@@ -51,7 +56,7 @@ Once the configuration has been processed, the Edge Agent:
 - **MUST** use the credentials in the configuration to connect to the MQTT component
 - **MUST** publish `NBIRTH` and `DBIRTH` messages as appropriate
 - **MUST** publish metrics on a report-by-exception basis, that is, only when a value has changed
-- **MUST** publish metric names as a slash (`/`) delimited string of the nested metric name (e.g. `/Phases/1/Voltage`), which **MUST** conform to the schema for the specific device
+- **MUST** publish metric names as a slash (`/`) delimited string of the nested metric name (e.g. `/Phases/1/Voltage`), which **MUST** conform to the [schema](/docs/schemas) for the specific device
 - **MUST NOT** publish metrics that do not conform to a device schema
-- **MUST** respond to `Node Control/Reload Edge Agent Config` NCMDs messages, which **MUST** instruct the Edge Agent to fetch a fresh configuration from the Manager
+- **MUST** respond to `Node Control/Reload Edge Agent Config` NCMDs messages, which **MUST** instruct the Edge Agent to fetch the latest configuration from the Manager
 - **MUST** respond to `Node Control/Rebirth` NCMDs messages, which **MUST** republish the `NBIRTH` and `DBIRTH` messages for the Node and all associated Devices

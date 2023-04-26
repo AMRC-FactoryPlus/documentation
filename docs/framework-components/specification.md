@@ -19,7 +19,7 @@ In order for a component to establish contact with another component, it must be
 Factory+ components **SHOULD** provide a Sparkplug interface and a HTTP interface where appropriate.
 
 The Sparkplug interface allows components to:
-- Register themselves with the Directory component, enabling clients to discover and interact with the components.
+- Register themselves with the [Directory](/docs/framework-components/core-components/directory) component, enabling clients to discover and interact with the components.
 - Provide asynchronous notifications to clients, which is particularly useful for real-time updates, status changes, or event-driven communication. As MQTT is a lightweight and low-latency protocol, it's well-suited for this purpose.
 
 The HTTP interface is designed to handle bulk request-response communication that may not be suitable for transmission over multicast mediums like MQTT. This interface is particularly useful for:
