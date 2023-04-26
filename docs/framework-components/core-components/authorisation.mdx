@@ -52,7 +52,7 @@ export const ComponentOverview = () => (
     </div>
 );
 
-The Authorisation component is an essential part Factory+, as it ensures that access to resources is controlled and restricted based on the permissions assigned to various principals or actors in the system. Access Control Lists (ACLs) are used to manage these permissions and provide a flexible way to define and manage access control policies.
+The Authorisation component is an essential part Factory+, as it ensures that access to resources is controlled and restricted based on the permissions assigned to various principals or actors in the architecture. Access Control Lists (ACLs) are used to manage these permissions and provide a flexible way to define and manage access control policies.
 
 <OpenSourceExample buttonText={'ACS Authorisation Component'} repoUrl={'https://github.com/AMRC-FactoryPlus/acs-auth'}></OpenSourceExample>
 
@@ -63,8 +63,8 @@ The Authorisation component is an essential part Factory+, as it ensures that ac
 The Factory+ Authorisation component can be broken down into the following elements:
 
 - **Principals**: Principals are the entities (users, services, or applications) that interact with the architecture and request access to its resources. Each principal is identified using a unique ID, referred to as a UUID (Universally Unique Identifier) that conforms to RFC4122. The [Identity](/docs/framework-components/core-components/identity) component is responsible for managing the principals.
-- **Access Control Lists (ACLs)**: ACLs are data structures that specify the access permissions for resources in the system. Each entry in an ACL defines a particular action that a principal is allowed or denied to perform on a specific resource. ACLs use UUIDs to reference both the principals and the resources.
-- **Resource Management**: The resources in the system are managed by different components, and each component is responsible for defining its own ACLs. This allows for a decentralised approach to access control, where each component can define its own rules based on its unique requirements.
+- **Access Control Lists (ACLs)**: ACLs are data structures that specify the access permissions for resources in the architecture. Each entry in an ACL defines a particular action that a principal is allowed or denied to perform on a specific resource. ACLs use UUIDs to reference both the principals and the resources.
+- **Resource Management**: The resources in the architecture are managed by different components, and each component is responsible for defining its own ACLs. This allows for a decentralised approach to access control, where each component can define its own rules based on its unique requirements.
 - **Access Control Enforcement**: When a principal attempts to access a resource, the Authorisation component checks the corresponding ACLs to determine if the action is allowed. If the principal's UUID is found in the ACL with the appropriate permissions, access is granted; otherwise, access is denied.
 
 
@@ -76,17 +76,17 @@ The Authorisation component in Factory+ plays a crucial role in managing the rel
 An Access Control Entry (ACE) is a fundamental building block of the Factory+ Authorisation component. It defines the relationship
 between three key elements: a principal, a permission, and a target:
 
-- **Principal UUID**: The principal is an entity (user, service, or application) that requests access to a resource. It is represented by a UUID, which uniquely identifies the principal within the system.
-- **Permission UUID**: The permission specifies the type of action that the principal is allowed to perform on the target resource. It is also represented by a UUID, which helps to maintain a consistent and standardised set of permissions across the system.
-- **Target UUID**: The target is the resource that the principal is trying to access. It is represented by a UUID to ensure that each resource in the system can be uniquely identified and referenced.
+- **Principal UUID**: The principal is an entity (user, service, or application) that requests access to a resource. It is represented by a UUID, which uniquely identifies the principal within the architecture.
+- **Permission UUID**: The permission specifies the type of action that the principal is allowed to perform on the target resource. It is also represented by a UUID, which helps to maintain a consistent and standardised set of permissions across the architecture.
+- **Target UUID**: The target is the resource that the principal is trying to access. It is represented by a UUID to ensure that each resource in the architecture can be uniquely identified and referenced.
 
 The semantics of an ACE can be summarised as:
 > "This Principal UUID has this Permission UUID on this Target UUID."
 
-The access control system checks the ACEs in the ACL to determine if a principal is authorised to perform a particular action on a target resource. If a matching ACE is found in the ACL, the principal is granted access; otherwise, access is denied.
+The access control component checks the ACEs in the ACL to determine if a principal is authorised to perform a particular action on a target resource. If a matching ACE is found in the ACL, the principal is granted access; otherwise, access is denied.
 
 #### Deny-by-default
-In Factory+, the access control system uses allow-only ACEs and follows a deny-by-default permission model. This approach ensures that access to resources is denied unless explicitly granted by an ACE, providing a higher level of security.
+In Factory+, the Authorisation component uses allow-only ACEs and follows a deny-by-default permission model. This approach ensures that access to resources is denied unless explicitly granted by an ACE, providing a higher level of security.
 
 The Permission and Target UUIDs in the ACEs are interpreted and enforced by the individual services that make use of the access control system. Each service defines the semantics of these UUIDs based on its own requirements and resource management policies.
 
