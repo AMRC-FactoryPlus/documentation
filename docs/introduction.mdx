@@ -4,49 +4,11 @@ sidebar_position: 1
 
 # Introduction
 
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faGithub} from "@fortawesome/free-brands-svg-icons/faGithub";
-
-export const ACS = () => (
-    <div className="relative overflow-hidden w-full">
-        <div className="relative flex items-center justify-center">
-            <div className="m-1 flex-1 max-w-7xl grid gap-16 pt-4 px-0">
-                <div className={'mb-8 2xl:mb-0'}>
-                    <div className="flex items-center justify-start mb-2 gap-2">
-                        <div className="text-xl text-gray-700 font-semibold mr-2">AMRC Connectivity Stack</div>
-                        <div className="invisible sm:visible bg-brand px-2 py-1 text-xs uppercase tracking-wide text-white font-bold">NEW</div>
-                        <div className="invisible sm:visible bg-brand-70 px-2 py-1 text-xs uppercase whitespace-nowrap tracking-wide text-white font-bold flex items-center justify-center gap-1">
-                            <FontAwesomeIcon icon={faGithub}/>
-                            <div>OPEN SOURCE</div>
-                        </div>
-                    </div>
-                    <div className="text-gray-400 h-10 mb-6">
-                        The AMRC Connectivity Stack is an open-source reference implementation of the Factory+ Framework
-                    </div>
-                    <Link className={'hover:no-underline'}
-                          to={'https://github.com/AMRC-FactoryPlus/amrc-connectivity-stack'}>
-                        <div className="">
-                            <div
-                                className="flex whitespace-nowrap items-center justify-center bg-white dark:bg-brand hover:bg-brand dark:hover:bg-white dark:hover:text-brand text-brand hover:text-white dark:text-white py-4 text-lg px-10 ring-1 ring-brand dark:ring-white"
-                            >
-                                <span className={'mr-3'}>Deploy the AMRC Connectivity Stack</span>
-                                <FontAwesomeIcon icon={["fas", "rocket"]}/>
-                            </div>
-                        </div>
-                    </Link>
-                </div>
-            </div>
-        </div>
-    </div>
-);
-
 Factory+ is an open and modular framework aimed at simplifying and standardising data management across manufacturing organisations. The framework provides a unified approach to data extraction, transport, storage, processing, consumption, and protection, paving the way for future-proofed integration and communication. Factory+ identifies and defines a core set of interconnected components, laying the groundwork for an Industry 4.0 architecture that is well-suited to the modern industrial landscape.
 
 By fostering a "self-serve" environment for Industry 4.0 data and promoting the culture of incorporating connections to infrastructure during the commissioning phase, Factory+ enables a fundamental culture shift within manufacturing teams, enabling engineers to focus on solving problems rather than spending time on data collection and management by providing instant, secure, standardised access to data in an efficient, familiar way. By addressing the challenges arising from complex organic digital architectures, Factory+ offers a cohesive and future-proofed framework that simplifies connectivity and data consumption and emphasises the establishment of principles, methodologies, and a solid architectural foundation.
 
 While Factory+ serves as an abstract framework, the AMRC has enhanced its practical application by developing the [AMRC Connectivity Stack](https://github.com/AMRC-FactoryPlus/amrc-connectivity-stack) (ACS). The ACS is a collection of open-source services developed by the AMRC to facilitate a comprehensive, end-to-end implementation of the Factory+ framework. The ACS can be easily deployed onto a new or existing [Kubernetes](https://kubernetes.io/) cluster in seconds using [Helm](https://helm.sh/), providing a complete solution to start implementing Factory+.
-
-<ACS></ACS>
 
 ## Motivation & Rationale
 
