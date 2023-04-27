@@ -72,7 +72,7 @@ Sparkplug Address application (`8e32801b-f35a-4cbf-a5c3-2af64d3debd7`) and the r
 
 - If the command is [authorised](#permissions) then a Sparkplug `CMD` **MUST** be sent to the requested device
 - The ACL entry **MUST** include a type
-- The Commands component **MUST** issue a `CMD` to the requester updating the metrics `Remote_Command_Response` and `Remote_Command_Response_JSON`.
+- The Commands component **MUST** issue a `CMD` to the requester updating the metrics `Remote_Command_Response`.
 
 #### `Remote_Command_Response`
 
@@ -85,11 +85,8 @@ A `Template` type, with a `templateRef` of `Command_Response_Template` and the f
 | `Receivers_Device_ID`    | String   | Device ID of the requested command, or an empty string |
 | `Tag_Path`               | String   | Metric name of the requested command                   |
 | `Response`               | String   | Response message                                       |
-| `Command_Timestamp`      | DateTime | A new timestamp for this response                      |
 
-- The `Response` field **MUST** be `OK` if a command was successfully sent. Other values for `Response` **MUST NOT** be depended on. Note that the
-timestamp is new; it cannot be used to match up requests and responses.
-- The timestamp field **MUST** be sent last; setting the timestamp indicates the other fields are all valid.
+- The `Response` field **MUST** be `OK` if a command was successfully sent. Other values for `Response` **MUST NOT** be depended on.
 
 #### `Remote_Command_Response_JSON`
 
