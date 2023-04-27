@@ -152,8 +152,7 @@ This well-known UUID represents the list of permissions the Command Component wi
 
 The Commands component supports an expandable set of permissions, where each permission represents a particular set of metrics that can be authorised. The target of the permission in every case is the device receiving the command.
 
-All permissions for the Commands component **MUST** be members of the above `Commands` permission group. Each permission **MUST** have an entry in the Configuration Store under
-the `Commands` application. This entry defines the metrics which are permitted, and consists of an array of objects with `name` and `type` fields. The name is required, and gives the metric name. The type is optional, and should be specified as one of the type names defined in the Sparkplug spec.
+All permissions for the Commands Component **MUST** be members of the above `Commands` permission group. Each permission **MUST** have an entry in the Configuration Store under the `Commands` application. This entry defines the metrics which are permitted, and consists of an array of objects with `name` and `type` fields. The name is required, and gives the metric name. The type is optional, and should be specified as one of the type names defined in the Sparkplug specification.
 
 If the `type` is not specified, any type may be sent. It is up to the receiving device to decide what to do if the type is not correct. Escalation requests not specifying a type (including all received via MQTT) will default to Boolean if no type is specified in the ACL entry.
 
