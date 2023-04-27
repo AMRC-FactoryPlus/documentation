@@ -127,7 +127,7 @@ export function Header() {
                             <span className="block xl:inline">Factory+</span>
                         </h1>
                         <div className={'mb-10'}>
-                            <a href="/articles/changes"
+                            <a href="/docs/preface#whats-new"
                                className="inline-flex space-x-4 underline-offset-2 !decoration-brand">
                     <span
                         className="bg-brand dark:bg-brand-3 px-2.5 py-1 text-xs font-semibold text-white dark:text-brand tracking-wide uppercase">

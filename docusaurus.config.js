@@ -79,22 +79,22 @@ const config = {
         },
     ],
     plugins: [
-        [
-            '@docusaurus/plugin-content-docs',
-            {
-                id: 'articles',
-                path: 'articles',
-                breadcrumbs: true,
-                routeBasePath: 'articles',
-                include: ['**/*.md', '**/*.mdx'],
-                exclude: [
-                    '**/_*.{js,jsx,ts,tsx,md,mdx}',
-                    '**/_*/**',
-                    '**/*.test.{js,jsx,ts,tsx}',
-                    '**/__tests__/**',
-                ],
-            },
-        ],
+        // [
+        //     '@docusaurus/plugin-content-docs',
+        //     {
+        //         id: 'articles',
+        //         path: 'articles',
+        //         breadcrumbs: true,
+        //         routeBasePath: 'articles',
+        //         include: ['**/*.md', '**/*.mdx'],
+        //         exclude: [
+        //             '**/_*.{js,jsx,ts,tsx,md,mdx}',
+        //             '**/_*/**',
+        //             '**/*.test.{js,jsx,ts,tsx}',
+        //             '**/__tests__/**',
+        //         ],
+        //     },
+        // ],
         async function myPlugin(context, options) {
             return {
                 name: "docusaurus-tailwindcss",

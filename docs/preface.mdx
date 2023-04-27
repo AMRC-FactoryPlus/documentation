@@ -1,23 +1,25 @@
 ---
-title: Foreword
-sidebar_label: 2023 Changes
+sidebar_position: 1
 ---
 
+# Preface
+
 export function Card() {
-  return (
-      <div className="flex mb-10">
-        <div
-            className="flex items-center justify-center">
-          <img className="!h-20 w-20 ring ring-brand-50 ring-offset-2 !rounded-full mr-6" src='/img/alex.png' alt=""/>
-          <div className="flex-1 gap-1">
-            <div className="text-xl font-medium text-brand pb-0!">Alex Godbehere</div>
-            <div className="text-sm truncate text-brand-80">Technical Fellow for Smart Factories</div>
-            <a href={'mailto:alex.godbehere@amrc.co.uk'} className="text-sm text-brand-80 truncate">alex.godbehere@amrc.co.uk</a>
-          </div>
+    return (
+        <div className="flex mb-10">
+            <div
+                className="flex items-center justify-center">
+                <img className="!h-20 w-20 ring ring-brand-50 ring-offset-2 !rounded-full mr-6" src='/img/alex.png' alt=""/>
+                <div className="flex-1 gap-1">
+                    <div className="text-xl font-medium text-brand pb-0!">Alex Godbehere</div>
+                    <div className="text-sm truncate text-brand-80">Technical Fellow for Smart Factories</div>
+                    <a href={'mailto:alex.godbehere@amrc.co.uk'} className="text-sm text-brand-80 truncate">alex.godbehere@amrc.co.uk</a>
+                </div>
+            </div>
         </div>
-      </div>
-  )
+    )
 }
+
 
 <Card></Card>
 
@@ -29,6 +31,6 @@ Factory+ has been extremely well received both inside and outside the AMRC and t
 
 Over the years, Factory has evolved into a diverse mix of concepts, off-the-shelf software, and proprietary developments, making it challenging for anyone other than the AMRC to utilise it effectively.
 
-In 2023, we have not only revamped Factory+ to [outline a comprehensive list of components](docs/framework-components/component-overview) that we deem essential for a state-of-the-art IIoT architecture, but we have also created a complete, MIT-licensed open-source rendition of the framework, dubbed the [AMRC Connectivity Stack](https://github.com/AMRC-FactoryPlus/amrc-connectivity-stack). This stack is provided as a Helm chart for Kubernetes and can be deployed by anyone on any Kubernetes cluster using just a few simple commands.
+In 2023, we have not only revamped Factory+ to [outline a comprehensive list of components](/docs/framework-components/component-overview) that we deem essential for a state-of-the-art IIoT architecture, but we have also created a complete, MIT-licensed open-source rendition of the framework, dubbed the [AMRC Connectivity Stack](https://github.com/AMRC-FactoryPlus/amrc-connectivity-stack). This stack is provided as a Helm chart for Kubernetes and can be deployed by anyone on any Kubernetes cluster using just a few simple commands.
 
 Our aim is for the AMRC Connectivity Stack to considerably lower the hurdles to adopting Factory+ and for its open-source nature, and that of the framework itself, to encourage collaboration and enhancements.
