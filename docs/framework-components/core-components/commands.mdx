@@ -88,9 +88,6 @@ A `Template` type, with a `templateRef` of `Command_Response_Template` and the f
 
 - The `Response` field **MUST** be `OK` if a command was successfully sent. Other values for `Response` **MUST NOT** be depended on.
 
-#### `Remote_Command_Response_JSON`
-
-A String type, sent as a JSON object with the fields above. The timestamp is sent as milliseconds since the Epoch.
 
 ### Limitations
 
@@ -119,7 +116,7 @@ All requests **MUST** supply HTTP authentication; the following mechanisms are s
 
 ## Well-Known UUIDs
 
-These well-known UUIDs are part of the core framework and all **MUST** to be registered with the Configuration Store component under the appropriate classes.
+These well-known UUIDs are part of the core framework and all **MUST** to be registered with the Configuration Store Component under the appropriate classes.
 
 ### Identity
 
