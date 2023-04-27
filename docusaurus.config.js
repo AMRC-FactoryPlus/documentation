@@ -121,7 +121,7 @@ const config = {
                         items: [
                             {
                                 label: 'Alex Godbehere',
-                                href: 'https://www.linkedin.com/in/alex-godbehere-443495a8/',
+                                href: 'https://www.linkedin.com/in/alex-godbehere',
                             },
                             {
                                 label: 'Arturs Grigals',
