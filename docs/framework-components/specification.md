@@ -16,10 +16,10 @@ In order for a component to establish contact with another component, it must be
 
 ## Interface Requirements
 
-Factory+ components should provide a Sparkplug interface and a HTTP interface where appropriate.
+Factory+ components **SHOULD** provide a Sparkplug interface and a HTTP interface where appropriate.
 
 The Sparkplug interface allows components to:
-- Register themselves with the Directory component, enabling clients to discover and interact with the components.
+- Register themselves with the [Directory](/docs/framework-components/core-components/directory) component, enabling clients to discover and interact with the components.
 - Provide asynchronous notifications to clients, which is particularly useful for real-time updates, status changes, or event-driven communication. As MQTT is a lightweight and low-latency protocol, it's well-suited for this purpose.
 
 The HTTP interface is designed to handle bulk request-response communication that may not be suitable for transmission over multicast mediums like MQTT. This interface is particularly useful for:
@@ -28,7 +28,7 @@ The HTTP interface is designed to handle bulk request-response communication tha
 
 ### Sparkplug Interface
 
-* A component **MUST** publish a Sparkplug birth certificate over MQTT, which identifies the provided component and publishes the URL of the HTTP endpoint. Each birth certificate can register only one component function with the Directory component, regardless of whether the component is a Sparkplug Node or Device. If a single software process intends to provide multiple components, it can publish multiple Device birth certificates to achieve this.
+* A component **MUST** publish a birth certificate over MQTT. The birth certificate identifies the component and publishes the URL of the HTTP endpoint (`Service_URL`). Each birth certificate can register only one component function with the Directory component, regardless of whether the component is a Sparkplug Node or Device. If a single software process intends to provide multiple components, it can publish multiple Device birth certificates to achieve this.
 
 * The component's birth certificate **MUST** adhere to the [Factory+ Schema specification](/docs/schemas). Specifically, the `uuid` field at the top level of the Sparkplug packet **MUST** be set exactly to the value `11ad7b32-1d32-4c4a-b0c9-fa049208939a`. Furthermore, the component **MUST** publish a `Schema_UUID` metric at the top level of the packet, with the value `05688a03-730e-4cda-9932-172e2c62e45c`, identifying this node as a component. This schema **MUST** include the following metrics:
 
@@ -48,7 +48,7 @@ The HTTP interface is designed to handle bulk request-response communication tha
 
 * The HTTP interface URL does not have to point to the root of a server. When clients use component API paths, they must ensure that they properly incorporate any path components included in the published component URL. This consideration is crucial for accurately accessing and interacting with the component's resources and functionalities.
 
-* All requests **SHOULD** require and **MUST** accept HTTP Basic Auth, utilising the Identity component to authenticate.
+* All requests **SHOULD** require and **MUST** accept HTTP Basic Auth, utilising the [Identity](/docs/framework-components/core-components/identity) component to authenticate.
 
 * Component API endpoints **SHOULD** use JSON for request and response bodies, unless there is a compelling reason to choose an alternative format.
 
@@ -60,4 +60,4 @@ The HTTP interface is designed to handle bulk request-response communication tha
   | `device`  | The Device UUID of this component's Sparkplug interface |
   | `version` | A version number string                                 |
 
-* This endpoint **MUST** send a `401` response to any client that is not authorised to access any other part of the API. This mechanism allows clients to verify that they possess valid credentials for accessing the component's resources and functionalities.
+* This endpoint **MUST** send a `401` response status code to any client that is not authorised to access any other part of the API. This mechanism allows clients to verify that they possess valid credentials for accessing the component's resources and functionalities.

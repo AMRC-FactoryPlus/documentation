@@ -1,0 +1,88 @@
+---
+sidebar_position: 5
+---
+
+import useBaseUrl from "@docusaurus/useBaseUrl";
+
+# Manager
+
+export const ComponentOverview = () => (
+    <div className="mb-10 mx-auto text-center w-full flex justify-center">
+        <div className="p-4 bg-brand-20 dark:bg-brand-90 w-[3vw] flex items-center justify-end dark:text-brand opacity-40" style={{writingMode: "vertical-lr"}}>Identity</div>
+        <div className="flex flex-col">
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-brand h-[3vw] opacity-40"></div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 opacity-40 dark:text-white flex-1 mt-2 ml-2 w-[3vw] flex items-center justify-end text-brand" style={{writingMode: "vertical-lr"}}>Authorisation</div>
+        </div>
+        <div className="grid grid-cols-5 gap-2">
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-brand col-span-full h-[3vw] flex items-center justify-end opacity-40">Identity</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 opacity-40 dark:text-white col-span-full h-[3vw] flex items-center justify-end text-brand">Authorisation</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 ml-2">Directory</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Configuration Store</div>
+            <div className="p-4 bg-brand-80 dark:bg-brand-40 text-white dark:text-brand flex items-center justify-center">Manager</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Commands</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Data Warehouse</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">MQTT</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">Edge Agents</div>
+        </div>
+    </div>
+);
+
+The primary function of the Factory+ Manager component is to offer an interface for configuring, storing, and delivering edge agent configurations to the respective edge agents. Despite its straightforward API specification, implementations of the Manager component are great places to incorporate user-friendly controls for interacting with other framework components, thereby acting as a central hub for user engagement with the overall architecture. For example, although not required by the specification, Managers may provide a web interface to add and manage roles and permissions for the Authorisation component or a way to manage files via the Files plugin component API.
+
+<OpenSourceExample buttonText={'ACS Manager Component'} repoUrl={'https://github.com/AMRC-FactoryPlus/acs-manager'}></OpenSourceExample>
+
+## Overview
+
+<ComponentOverview></ComponentOverview>
+
+- The Manager **MUST** offer a user interface enabling device configuration, including general information, connectivity, and schema mapping.
+- The Manager **MUST** ensure compliance with the [Edge Agent Configuration Schema](https://github.com/AMRC-FactoryPlus/schemas/blob/main/Edge_Agent_Config.json) prior to considering a configuration valid and being served to an edge agent.
+- The Manager **MUST** exclusively provide configurations to edge agents for devices that meet the selected [Device Schema](/docs/schemas) criteria, and never supply configurations with non-conforming devices.
+- Confidential data **MUST** be removed from the configuration and substituted with a placeholder enclosed by `__` (e.g., `__key__`), with the sensitive data being accessible to the edge agent upon utilisation (e.g., through a Kubernetes Secret).
+- The Manager **MUST** preserve valid configurations in a manner that allows authorised edge agents to retrieve them later.
+- The Manager **MUST** create a principal for the node and grant it the `Edge Node` role.
+
+## HTTP Interface
+
+### Authentication
+
+The Manager exposes a user interface via HTTP. All routes except the call to `/api/edge-agent-config` require an active session established by a previous call to the `/login` route. The session is established by providing a valid username and password. The session is terminated by a call to the `/logout` route. The call to `POST /api/edge-agent-config` does not require a session but does require a valid `node_id` and `config_password` to be present in the request body.
+
+### Specification
+
+<OpenAPISpecRenderer url={useBaseUrl('/spec/manager.yaml')} text={'the Manager component'} />
+
+## Well-Known UUIDs
+
+These well-known UUIDs are part of the core framework and all **MUST** to be registered with the Configuration Store component under the appropriate classes.
+
+### Identity
+
+<WellKnownUUID type='Service Function' name='Manager'
+               uuid='12a5d324-0944-4c7a-a481-6cb01b40fb38'
+               description='Manager Component service function'/>
+
+---
+
+<WellKnownUUID type='Service Account' name='Manager'
+               uuid='2340e706-1280-420c-84a6-016547b55e95'
+               description='The client identity of the Manager Component used to communicate with other services'/>
+
+---
+
+### Roles
+
+<Permission type='Role' name='Manager'
+            description='A Role for the Manager component'
+            uuid='29b569d4-ab5d-40d2-b442-d556d531b25e'/>
+
+The `Manager` role **MUST** be granted to the `Manager` Service Account (`2340e706-1280-420c-84a6-016547b55e95`) and have the following Permissions:
+
+| Permission                                | UUID                                   |
+|-------------------------------------------|----------------------------------------|
+| Auth: Manage Kerberos Mappings            | `327c4cc8-9c46-4e1e-bb6b-257ace37b0f6` |
+| Auth: Read Effective Permissions          | `35252562-51e5-4dd8-84cd-ba0fafa62669` |
+| Auth: Manage ACLs per Permission          | `3a41f5ce-fc08-4669-9762-ec9e71061168` |
+| Config: Write Configuration for App       | `6c799ccb-d2ad-4715-a2a7-3c8728d6c0bf` |
+| Config: Manage Objects                    | `f0b7917b-d475-4888-9d5a-2af96b3c26b6` |
+| Commands: Reload Edge Agent Configuration | `6335f100-e68e-4e4d-b46d-85b42f85a036` |

@@ -52,7 +52,7 @@ export const ComponentOverview = () => (
     </div>
 );
 
-The Authorisation component is an essential part Factory+, as it ensures that access to resources is controlled and restricted based on the permissions assigned to various principals or actors in the system. Access Control Lists (ACLs) are used to manage these permissions and provide a flexible way to define and manage access control policies.
+The Authorisation component is an essential part Factory+, as it ensures that access to resources is controlled and restricted based on the permissions assigned to various principals or actors in the architecture. Access Control Lists (ACLs) are used to manage these permissions and provide a flexible way to define and manage access control policies.
 
 <OpenSourceExample buttonText={'ACS Authorisation Component'} repoUrl={'https://github.com/AMRC-FactoryPlus/acs-auth'}></OpenSourceExample>
 
@@ -63,27 +63,30 @@ The Authorisation component is an essential part Factory+, as it ensures that ac
 The Factory+ Authorisation component can be broken down into the following elements:
 
 - **Principals**: Principals are the entities (users, services, or applications) that interact with the architecture and request access to its resources. Each principal is identified using a unique ID, referred to as a UUID (Universally Unique Identifier) that conforms to RFC4122. The [Identity](/docs/framework-components/core-components/identity) component is responsible for managing the principals.
-- **Access Control Lists (ACLs)**: ACLs are data structures that specify the access permissions for resources in the system. Each entry in an ACL defines a particular action that a principal is allowed or denied to perform on a specific resource. ACLs use UUIDs to reference both the principals and the resources.
-- **Resource Management**: The resources in the system are managed by different components, and each component is responsible for defining its own ACLs. This allows for a decentralised approach to access control, where each component can define its own rules based on its unique requirements.
+- **Access Control Lists (ACLs)**: ACLs are data structures that specify the access permissions for resources in the architecture. Each entry in an ACL defines a particular action that a principal is allowed or denied to perform on a specific resource. ACLs use UUIDs to reference both the principals and the resources.
+- **Resource Management**: The resources in the architecture are managed by different components, and each component is responsible for defining its own ACLs. This allows for a decentralised approach to access control, where each component can define its own rules based on its unique requirements.
 - **Access Control Enforcement**: When a principal attempts to access a resource, the Authorisation component checks the corresponding ACLs to determine if the action is allowed. If the principal's UUID is found in the ACL with the appropriate permissions, access is granted; otherwise, access is denied.
 
 
 ### Linking Identity
-The Authorisation component in Factory+ plays a crucial role in managing the relationship between internal Principal UUIDs and [identities](/docs/framework-components/core-components/identity). The Authorisation component maintains a mapping table that links each Principal UUID to its corresponding Kerberos principal, ensuring that access control requests from authenticated entities can be resolved. With the Principal UUID and the associated ACL information, the Authorisation component can evaluate the user's permissions on the requested resources, ensuring that only authorised actions are allowed.
+The Authorisation component in Factory+ plays a crucial role in managing the relationship between internal Principal UUIDs and [Identities](/docs/framework-components/core-components/identity). The Authorisation component maintains a mapping table that links each Principal UUID to its corresponding Kerberos principal, ensuring that access control requests from authenticated entities can be resolved. With the Principal UUID and the associated ACL information, the Authorisation component can evaluate the user's permissions on the requested resources, ensuring that only authorised actions are allowed.
 
 ### Access Control Entries (ACEs)
 
 An Access Control Entry (ACE) is a fundamental building block of the Factory+ Authorisation component. It defines the relationship
 between three key elements: a principal, a permission, and a target:
 
-- **Principal (UUID)**: The principal is an entity (user, service, or application) that requests access to a resource. It is represented by a UUID, which uniquely identifies the principal within the system.
-- **Permission (UUID)**: The permission specifies the type of action that the principal is allowed to perform on the target resource. It is also represented by a UUID, which helps to maintain a consistent and standardised set of permissions across the system.
-- **Target (UUID)**: The target is the resource that the principal is trying to access. It is represented by a UUID to ensure that each resource in the system can be uniquely identified and referenced.
+- **Principal UUID**: The principal is an entity (user, service, or application) that requests access to a resource. It is represented by a UUID, which uniquely identifies the principal within the architecture.
+- **Permission UUID**: The permission specifies the type of action that the principal is allowed to perform on the target resource. It is also represented by a UUID, which helps to maintain a consistent and standardised set of permissions across the architecture.
+- **Target UUID**: The target is the resource that the principal is trying to access. It is represented by a UUID to ensure that each resource in the architecture can be uniquely identified and referenced.
 
-The semantics of an ACE can be summarised as: "This principal (UUID) has this permission (UUID) on this target (UUID)." The access control system checks the ACEs in the Access Control List (ACL) to determine if a principal is authorised to perform a particular action on a target resource. If a matching ACE is found in the ACL, the principal is granted access; otherwise, access is denied.
+The semantics of an ACE can be summarised as:
+> "This Principal UUID has this Permission UUID on this Target UUID."
+
+The access control component checks the ACEs in the ACL to determine if a principal is authorised to perform a particular action on a target resource. If a matching ACE is found in the ACL, the principal is granted access; otherwise, access is denied.
 
 #### Deny-by-default
-In Factory+, the access control system uses allow-only ACEs and follows a deny-by-default permission model. This approach ensures that access to resources is denied unless explicitly granted by an ACE, providing a higher level of security.
+In Factory+, the Authorisation component uses allow-only ACEs and follows a deny-by-default permission model. This approach ensures that access to resources is denied unless explicitly granted by an ACE, providing a higher level of security.
 
 The Permission and Target UUIDs in the ACEs are interpreted and enforced by the individual services that make use of the access control system. Each service defines the semantics of these UUIDs based on its own requirements and resource management policies.
 
@@ -100,9 +103,7 @@ In Factory+, the use of groups in access control management is a practical way t
 
 Groups can contain other groups, allowing for a hierarchical structure that simplifies access control management. Nested groups are expanded recursively, meaning that all members of a group (including those in nested groups) are considered when evaluating access control policies.
 
-## Discovery
-
-The Authorisation component, like all others, uses the Directory to advertise its services to interested parties. Since this service has no MQTT component service discovery will return a `null` Device UUID. The `Service_UUID` for the Authentication component is `cab2642a-f7d9-42e5-8845-8f35affe1fd4`.
+## HTTP Interface
 
 ### Authentication
 
@@ -118,42 +119,154 @@ All requests must supply HTTP authentication; the following mechanisms are suppo
 
 <OpenAPISpecRenderer url={useBaseUrl('/spec/authorisation.yaml')} text={'the Authorisation component'} />
 
-## Permissions
+## Well-Known UUIDs
 
-<Permission name={'Read ACL Entry'} description={'Grant permission to read ACLs for the target permission group'}
-            uuid={'ba566181-0e8a-405b-b16e-3fb89130fbee'}></Permission>
+These well-known UUIDs are part of the core framework and all **MUST** to be registered with the Configuration Store component under the appropriate classes.
+
+### Identity
+
+<WellKnownUUID type='Service Function' name='Authorisation'
+               uuid='cab2642a-f7d9-42e5-8845-8f35affe1fd4'
+               description='The server identity of the Authorisation Component that provides the service'/>
+
+---
+
+<WellKnownUUID type='Service Account' name='Authorisation'
+               uuid='1e1989ab-14e4-42bd-8171-495230acc406'
+               description='The client identity of the Authorisation Component used to communicate with other services'/>
+
+---
+
+### Permission Groups
+
+<Permission type={'Permission Group'} name={'Authorisation Permissions'}
+            description={'Permissions needed by the Authorisation Component'}
+            uuid={'50b727d4-3faa-40dc-b347-01c99a226c58'}></Permission>
+
+This group must be set up to contain all the permissions UUIDs below.
+
+---
+
+### Permissions
+
+<Permission name={'Read ACL Entry'}
+    description={'Grant permission to read ACLs for the target permission group'}
+    uuid={'ba566181-0e8a-405b-b16e-3fb89130fbee'}/>
+
+This permission allows a component to read the ACLs it needs to read. The `target` of the permission should be the permission group the service application will request from the Authorisation Component.
 
 ---
 
 <Permission name={'Read Kerberos Mappings'}
-            description={'Grants permission to read Kerberos mappings for the target Principal. To search for a principal by Kerberos principal name this must be granted as a wildcard.'}
-            uuid={'e8c9c0f7-0d54-4db2-b8d6-cd80c45f6a5c'}></Permission>
+    description='Grants permission to read Kerberos mappings for the target Principal'
+    uuid={'e8c9c0f7-0d54-4db2-b8d6-cd80c45f6a5c'}/>
+
+This permission grants the right to look up the Kerberos principal corresponding to the `target`, which also represents a principal.
+
+To search for a principal by Kerberos principal name this must be granted as a wildcard.
 
 ---
 
 <Permission name={'Read Effective Permissions'}
-            description={'Grants permission to read effective permissions. This must always be granted as a wildcard.'}
-            uuid={'35252562-51e5-4dd8-84cd-ba0fafa62669'}></Permission>
+    description='Grants permission to read effective permissions'
+    uuid={'35252562-51e5-4dd8-84cd-ba0fafa62669'}/>
+
+This must always be granted as a wildcard. This is intended only for administrators.
 
 ---
 
 <Permission name={'Manage ACLs'}
-            description={'Grants permission to manage ACL entries affecting the target permission. If this is not granted as a wildcard then the only endpoint that can be used is POST /authz/ace.'}
-            uuid={'3a41f5ce-fc08-4669-9762-ec9e71061168'}></Permission>
+    description='Grants permission to manage ACL entries affecting the target permission'
+    uuid={'3a41f5ce-fc08-4669-9762-ec9e71061168'}/>
+
+The `target` of this permission should be either the UUID of the permission that can be managed, or the wildcard.
+
+
+If this is not granted as a wildcard then the only endpoint that can be used is `POST /authz/ace`.
 
 ---
 
 <Permission name={'Manage Group'}
-            description={'Permits the PUT and DELETE requests to edit group membership on the target group.'}
-            uuid={'be9b6d47-c845-49b2-b9d5-d87b83f11c3b'}></Permission>
+    description={'Grants permission to edit group membership'}
+    uuid={'be9b6d47-c845-49b2-b9d5-d87b83f11c3b'}/>
+
+The `target` of this permission is the group which can be edited. This permission also implicitly grants the right to create the group in the Authorisation Component, as groups exist when and only when they have members.
 
 ---
 
-<Permission name={'Manage Kerberos Mappings'} description={'Permits managing Kerberos mappings for the target principal.'}
-            uuid={'327c4cc8-9c46-4e1e-bb6b-257ace37b0f6'}></Permission>
+<Permission name={'Manage Kerberos Mappings'}
+    description={'Permits managing Kerberos mappings for the target principal'}
+    uuid={'327c4cc8-9c46-4e1e-bb6b-257ace37b0f6'}/>
+
+The `target` of this permission is the UUID of another principal, or the wildcard. This grants permission to add, change or remove the Kerberos principal mapping.
+
+### Class Definitions
+
+These classes are defined by the Authorisation component and provide functionality to the Factory+ framework.
+
+#### Principals
+
+UUIDs under these classes are typically used in the `princpal` slot of an ACE, though sometimes they may be used as `target` representing, for example, the Sparkplug Node address associated with the account.
+
+<WellKnownUUID type='Class Definition' name='Service Account'
+               uuid='e463b4ae-a322-46cc-8976-4ba76838e908'
+               description='Accounts for services'/>
+
+UUIDs under this class represent particular component instances running on particular Factory+ deployments. They are used to grant the component instance permissions appropriate to its role.
+
+Where a component has a Sparkplug interface, the component account UUID also serves as the component instance's Device UUID.
 
 ---
 
-<Permission type={'Permission Group'} name={'Authorisation Permissions'}
-            description={'A permission group that contains all of the above permissions'}
-            uuid={'50b727d4-3faa-40dc-b347-01c99a226c58'}></Permission>
+<WellKnownUUID type='Class Definition' name='User Account'
+               uuid='8b3e8f35-78e5-4f93-bf21-7238bcb2ba9d'
+               description='Accounts for human users'/>
+
+---
+
+<WellKnownUUID type='Class Definition' name='Cell Gateway'
+               uuid='00da3c0b-f62b-4761-a689-39ad0c33f864'
+               description='Accounts for physical edge devices'/>
+
+---
+
+<WellKnownUUID type='Class Definition' name='Soft Gateway'
+               uuid='5bee4d24-32e1-44f8-b953-1f86ff4b3e87'
+               description='Accounts for virtual edge devices'/>
+
+---
+
+#### Permissions
+
+<WellKnownUUID type='Class Definition' name='Permission'
+               uuid='8ae784bb-c4b5-4995-9bf6-799b3c7f21ad'
+               description='Well-known UUIDs used as permissions in the Authorisation Component'/>
+
+UUIDs of this class are used in the `permission` field of ACL entries. They represent particular permissions that can be granted to accounts as
+needed. The meaning of any individual permission UUID is defined by the component that implements that permission.
+
+---
+
+#### Groups
+
+<WellKnownUUID type='Class Definition' name='Permission Group'
+               uuid='ac0d5288-6136-4ced-a372-325fbbcdd70d'
+               description='Well-known UUIDs representing permissions for a particular application'/>
+
+These UUIDs are hardcoded into components, and each one represents the set of permissions that the component needs to query. As part of bootstrapping a component, it is necessary to ensure that the permission group is set up appropriately and contains the permissions documented in the service specification.
+
+---
+
+<WellKnownUUID type='Class Definition' name='Client Role'
+               uuid='1c567e3c-5519-4418-8682-6086f22fbc13'
+               description='Groups of permissions that can be granted to accounts'/>
+
+UUIDs of this class represent groups of permissions. The group UUID will be used in the `permission` field of an ACE, and grants all permissions in that group on the given targets.
+
+---
+
+<WellKnownUUID type='Class Definition' name='User Group'
+               uuid='f1fabdd1-de90-4399-b3da-ccf6c2b2c08b'
+               description='Groups of accounts'/>
+
+These UUIDs represent groups of accounts which need to be granted permissions in common. These appear in the `princpal` field of an ACE.

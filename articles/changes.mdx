@@ -1,0 +1,34 @@
+---
+title: Foreword
+sidebar_label: 2023 Changes
+---
+
+export function Card() {
+  return (
+      <div className="flex mb-10">
+        <div
+            className="flex items-center justify-center">
+          <img className="!h-20 w-20 ring ring-brand-50 ring-offset-2 !rounded-full mr-6" src='/img/alex.png' alt=""/>
+          <div className="flex-1 gap-1">
+            <div className="text-xl font-medium text-brand pb-0!">Alex Godbehere</div>
+            <div className="text-sm truncate text-brand-80">Technical Fellow for Smart Factories</div>
+            <a href={'mailto:alex.godbehere@amrc.co.uk'} className="text-sm text-brand-80 truncate">alex.godbehere@amrc.co.uk</a>
+          </div>
+        </div>
+      </div>
+  )
+}
+
+<Card></Card>
+
+Factory+ was ultimately developed to be a vehicle to help solve manufacturing problems. A project that started out as a small piece of research into current best practices for digital factory architectures quickly evolved into a robust framework that is now adopted as an operational standard across the [AMRC](https://www.amrc.co.uk/), the UK's largest High Value Manufacturing Catapult Centre, and beyond. Because Factory+ defines a scalable, robust approach to architecture, data models, transport protocols, storage strategies, contextualisation and consumption of manufacturing data, we as a research organisation can focus on the things that matter - using the data that we're collecting to impart meaningful changes in the manufacturing sector.
+
+Factory+ has been extremely well received both inside and outside the AMRC and the number of areas where it can be applied to impart real, meaningful change is beyond anything that we could have possibly imagined. The requirements of those using the architecture drove us to do more, make it better and ensure that it can continue to deliver value both as a research platform and as an operational solution for years to come.
+
+#### What's New?
+
+Over the years, Factory has evolved into a diverse mix of concepts, off-the-shelf software, and proprietary developments, making it challenging for anyone other than the AMRC to utilise it effectively.
+
+In 2023, we have not only revamped Factory+ to [outline a comprehensive list of components](docs/framework-components/component-overview) that we deem essential for a state-of-the-art IIoT architecture, but we have also created a complete, MIT-licensed open-source rendition of the framework, dubbed the [AMRC Connectivity Stack](https://github.com/AMRC-FactoryPlus/amrc-connectivity-stack). This stack is provided as a Helm chart for Kubernetes and can be deployed by anyone on any Kubernetes cluster using just a few simple commands.
+
+Our aim is for the AMRC Connectivity Stack to considerably lower the hurdles to adopting Factory+ and for its open-source nature, and that of the framework itself, to encourage collaboration and enhancements.

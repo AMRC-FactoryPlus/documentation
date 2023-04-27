@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
-  title: Factory+ Auth Service
-  description: Factory+ Auth Service
+  title: Factory+ Authorisation Component
+  description: Factory+ Authorisation Component
   version: 0.0.1
 
 servers:
@@ -338,7 +338,7 @@ components:
       items: { type: string, format: uuid }
 
     dump-file:
-      description: Auth service JSON dump
+      description: Authorisation Component JSON dump
       type:
         - object
       required: [ service, version ]

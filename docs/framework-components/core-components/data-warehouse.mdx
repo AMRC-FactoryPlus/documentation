@@ -1,0 +1,69 @@
+---
+sidebar_position: 7
+---
+
+import {OpenSourceExample} from "../../../src/components/OpenSourceExample";
+
+# Data Warehouse
+
+export const ComponentOverview = () => (
+    <div className="mb-10 mx-auto text-center w-full flex justify-center">
+        <div className="p-4 bg-brand-20 dark:bg-brand-90 w-[3vw] flex items-center justify-end dark:text-brand opacity-40" style={{writingMode: "vertical-lr"}}>Identity</div>
+        <div className="flex flex-col">
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-brand h-[3vw] opacity-40"></div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 opacity-40 dark:text-white flex-1 mt-2 ml-2 w-[3vw] flex items-center justify-end text-brand" style={{writingMode: "vertical-lr"}}>Authorisation</div>
+        </div>
+        <div className="grid grid-cols-5 gap-2">
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-brand col-span-full h-[3vw] flex items-center justify-end opacity-40">Identity</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 opacity-40 dark:text-white col-span-full h-[3vw] flex items-center justify-end text-brand">Authorisation</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 ml-2">Directory</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Configuration Store</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Manager</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Commands</div>
+            <div className="p-4 bg-brand-80 dark:bg-brand-40 text-white dark:text-brand flex items-center justify-center">Data Warehouse</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">MQTT</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">Edge Agents</div>
+        </div>
+    </div>
+);
+
+The Data Warehouse component serves as the storage hub for all metrics, listening to all messages transmitted from the edge and persisting them in a structured format according to the appropriate [schema](/docs/schemas).
+
+<OpenSourceExample buttonText={'ACS Data Warehouse Component'} repoUrl={'https://github.com/AMRC-FactoryPlus/influxdb-sparkplug-ingester'}></OpenSourceExample>
+
+## Overview
+
+<ComponentOverview></ComponentOverview>
+
+Similar to the [MQTT Component](/docs/framework-components/core-components/mqtt), Factory+ does not prescribe a particular specification for the Data Warehouse Component; it only necessitates that any chosen solution be Sparkplug-compatible. While future developments may embrace or create a standard for accessing data from the Data Warehouse Component, the current method for data retrieval remains unique to each solution.
+
+Nonetheless, there are several Factory+ specific considerations to bear in mind, such as access control.
+
+## Well-Known UUIDs
+
+These well-known UUIDs are part of the core framework and all **MUST** to be registered with the Configuration Store Component under the appropriate classes.
+
+### Identity
+
+<WellKnownUUID type='Service Function' name='Data Warehouse'
+               uuid='a8e5a73f-2dd1-4cda-8e46-bc6cedb14269'
+               description='The server identity of the Data Warehouse Component that provides the service'/>
+
+---
+
+<WellKnownUUID type='Service Account' name='Data Warehouse'
+               uuid='388ddbdc-4eb4-4ae8-bbd0-9be32f3c31e8'
+               description='The client identity of the Data Warehouse Component used to communicate with other services'/>
+
+### Roles
+
+<Permission type='Role' name='Data Warehouse'
+            description='A Role for the Data Warehouse Component'
+            uuid='6958c812-fbe2-4e6c-b997-6f850b89f679'/>
+
+The `Data Warehouse` role **MUST** be granted to the `Data Warehouse` Service Account (`6958c812-fbe2-4e6c-b997-6f850b89f679`) and have the following Permissions:
+
+| Permission                       | UUID                                   |
+|----------------------------------|----------------------------------------|
+| MQTT: Subscribe & Read Whole Namespace | `81833dbb-1150-4078-b1db-978c646ba73e` |
+| Commands: Rebirth                     | `fbb9c25d-386d-4966-a325-f16471d9f7be` |

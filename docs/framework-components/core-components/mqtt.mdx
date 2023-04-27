@@ -1,0 +1,315 @@
+---
+sidebar_position: 8
+---
+
+import {OpenSourceExample} from "../../../src/components/OpenSourceExample";
+
+# MQTT
+
+export const ComponentOverview = () => (
+    <div className="mb-10 mx-auto text-center w-full flex justify-center">
+        <div className="p-4 bg-brand-20 dark:bg-brand-90 w-[3vw] flex items-center justify-end dark:text-brand opacity-40" style={{writingMode: "vertical-lr"}}>Identity</div>
+        <div className="flex flex-col">
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-brand h-[3vw] opacity-40"></div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 opacity-40 dark:text-white flex-1 mt-2 ml-2 w-[3vw] flex items-center justify-end text-brand" style={{writingMode: "vertical-lr"}}>Authorisation</div>
+        </div>
+        <div className="grid grid-cols-5 gap-2">
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-brand col-span-full h-[3vw] flex items-center justify-end opacity-40">Identity</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 opacity-40 dark:text-white col-span-full h-[3vw] flex items-center justify-end text-brand">Authorisation</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 ml-2">Directory</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Configuration Store</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Manager</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Commands</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Data Warehouse</div>
+            <div className="p-4 bg-brand-80 dark:bg-brand-40 text-white dark:text-brand flex items-center justify-center col-span-full ml-2">MQTT</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">Edge Agents</div>
+        </div>
+    </div>
+);
+
+The MQTT component is the central communication hub through which all MQTT communications between components happen.
+
+<OpenSourceExample buttonText={'ACS MQTT Component'} repoUrl={'https://github.com/AMRC-FactoryPlus/hivemq-krb'}></OpenSourceExample>
+
+## Overview
+
+<ComponentOverview></ComponentOverview>
+
+Similar to the [Data Warehouse Component](/docs/framework-components/core-components/data-warehouse), Factory+ does not prescribe a particular specification for the MQTT Component; it only necessitates that any chosen solution be MQTT 3.1 compatible. There are however a few requirements of any chosen MQTT broker that must be satisfied to ensure compatibility with Factory+.
+
+### Authentication & Authorisation
+Any chosen MQTT broker must be able to authenticate users via Kerberos and enforce fine-grained access control for topic management via rules from the [Authorisation Component](/docs/framework-components/core-components/authorisation).
+
+:::info Using HiveMQ?
+If you are using [HiveMQ](https://www.hivemq.com/), our [Factory+ plugin](https://github.com/AMRC-FactoryPlus/hivemq-krb) will handle this for you.
+:::
+## Well-Known UUIDs
+
+These well-known UUIDs are part of the core framework and all **MUST** to be registered with the [Configuration Store](/docs/framework-components/core-components/configuration-store) component under the appropriate classes.
+
+### Identity
+
+<WellKnownUUID type='Service Function' name='MQTT'
+               uuid='feb27ba3-bd2c-4916-9269-79a61ebc4a47'
+               description='MQTT Component service function'/>
+
+---
+
+<WellKnownUUID type='Service Account' name='MQTT'
+               uuid='2f42daeb-4521-4522-8e19-85dfb73db88e'
+               description='The client identity of the MQTT Component used to communicate with other services'/>
+
+---
+
+### Permission Groups
+
+<WellKnownUUID type='Permission Group' name='MQTT permissions'
+               uuid='a637134a-d06b-41e7-ad86-4bf62fde914a'
+               description='All MQTT permissions need to be in this Group'/>
+
+Any UUIDs created representing MQTT permissions **MUST** be added to this group in the Authorisation Component, otherwise the MQTT component will not be able to see the ACEs.
+
+---
+
+### Permissions
+
+#### Global
+
+<Permission type='Permission' name='Subscribe To Whole Namespace'
+            description='Subscribe to all topics for the whole namespace'
+            uuid='21000098-3a53-48da-8d3e-cc0650603d8e'/>
+
+```json
+{
+    "spBv1.0/#": "s"
+}
+```
+
+---
+
+<Permission type='Permission' name='Subscribe & Read Whole Namespace'
+            description='Subscribe to and read all topics for the whole namespace'
+            uuid='81833dbb-1150-4078-b1db-978c646ba73e'/>
+
+```json
+{
+    "spBv1.0/#": "rs"
+}
+```
+
+---
+
+<Permission type='Permission' name='Issue Global Commands'
+            description='Issue NCMD messages to any Node or Device'
+            uuid='50f1e694-7e18-4930-aa59-97cc90a6a1ec'/>
+
+```json
+{
+    "spBv1.0/+/NCMD/+": "w",
+    "spBv1.0/+/DCMD/+/+": "w"
+}
+```
+
+---
+
+<Permission type='Permission' name='Subscribe & Read All States'
+            description='Read the STATE topic'
+            uuid='8790cf3d-b793-423c-b373-8cfcf9f63529'/>
+
+```json
+{
+    "STATE/+": "rs"
+}
+```
+
+---
+
+<Permission type='Permission' name='Read All Birth Messages'
+            description="Read all BIRTH messages across the entire namespace"
+            uuid='67dc4dd0-0939-42b1-b1f9-9049f4d91d40'/>
+
+```json
+{
+    "spBv1.0/%g/DCMD/%n/#": "rs",
+    "spBv1.0/%g/DDATA/%n/+": "w",
+    "spBv1.0/%g/DBIRTH/%n/+": "w",
+    "spBv1.0/%g/DDEATH/%n/+": "w"
+}
+```
+
+---
+
+#### Group
+
+<Permission type='Permission' name='Update Group State'
+            description="Write to the Group's STATE topic"
+            uuid='9a32f195-a8cc-4562-a87a-d4653279474f'/>
+
+```json
+{
+    "STATE/%g": "w"
+}
+```
+
+---
+
+<Permission type='Permission' name='Publish All From Group'
+            description='Write to any topic under the Node'
+            uuid='64c019f8-6754-4270-8917-6659a5628b86'/>
+
+```json
+{
+    "spBv1.0/%g/#": "w"
+}
+```
+
+---
+
+<Permission type='Permission' name='Subscribe & Read Own Group'
+            description="Subscribe to and read all topics for the specified Group"
+            uuid='d617e37c-3908-41b1-8820-d3f8d41a4280'/>
+
+```json
+{
+    "spBv1.0/%g/#": "rs"
+}
+```
+
+---
+
+<Permission type='Permission' name='Issue Group Commands'
+            description="Issue commands to the specified Group"
+            uuid='cff45682-f2f0-4c72-91f3-7dda20d43509'/>
+
+```json
+{
+    "spBv1.0/%g/NCMD/+": "w",
+    "spBv1.0/%g/DCMD/+/+": "w"
+}
+```
+
+---
+
+#### Node
+
+<Permission type='Permission' name='Participate as Node'
+            description="Write to the NDATA, NBIRTH and NDEATH topics and read and subscribe to the NCMD topic for the Node"
+            uuid='a1314953-8226-44f4-8a3e-e87b09310579'/>
+
+```json
+{
+    "spBv1.0/%g/NDATA/%n": "w",
+    "spBv1.0/%g/NBIRTH/%n": "w",
+    "spBv1.0/%g/NCMD/%n/#": "rs",
+    "spBv1.0/%g/NDEATH/%n": "w"
+}
+```
+
+---
+
+<Permission type='Permission' name='Subscribe & Read Node'
+            description='Subscribe to all relevant topics for a specific Node'
+            uuid='046d6603-fa62-4208-9400-65d61f8b1ec4'/>
+
+```json
+{
+    "spBv1.0/%g/NDATA/%n": "rs",
+    "spBv1.0/DDEATH/%n/+": "rs",
+    "spBv1.0/%g/NBIRTH/%n": "rs",
+    "spBv1.0/%g/NDEATH/%n": "rs",
+    "spBv1.0/%g/DDATA/%n/+": "rs",
+    "spBv1.0/%g/DBIRTH/%n/+": "rs"
+}
+```
+
+---
+
+<Permission type='Permission' name='Update Own State'
+            description="Write to the Node's STATE topic"
+            uuid='bdc96a3e-d6fb-48ed-b790-0aa95cf826f0'/>
+
+```json
+{
+    "STATE/%n": "w"
+}
+```
+
+---
+
+#### Device
+
+<Permission type='Permission' name='Represent Devices'
+            description="Publish to a Device's topics"
+            uuid='e82456b3-a7d9-4971-9d8c-fd0be4545ab4'/>
+
+```json
+{
+    "spBv1.0/%g/DCMD/%n/#": "rs",
+    "spBv1.0/%g/DDATA/%n/+": "w",
+    "spBv1.0/%g/DBIRTH/%n/+": "w",
+    "spBv1.0/%g/DDEATH/%n/+": "w"
+}
+```
+
+---
+
+### Roles
+
+<Permission type='Role' name='Edge Node'
+            description='A Role for all Edge Node principals'
+            uuid='87e4a5b7-9a89-4796-a216-39666a47b9d2'/>
+
+The `Edge Node` role **MUST** be granted to all principals used for edge agents and **MUST** have the following Permissions:
+
+| Permission                        | UUID                                   |
+|-----------------------------------|----------------------------------------|
+| MQTT: Subscribe & Read All States | `8790cf3d-b793-423c-b373-8cfcf9f63529` |
+| MQTT: Participate as Node         | `a1314953-8226-44f4-8a3e-e87b09310579` |
+| MQTT: Represent Devices           | `e82456b3-a7d9-4971-9d8c-fd0be4545ab4` |
+
+
+### Applications
+
+<WellKnownUUID type='Application' name='MQTT Permission Template'
+               uuid='1266ddf1-156c-4266-9808-d6949418b185'
+               description='Expands a permission recognised by the MQTT plugin to an MQTT ACL'/>
+
+UUIDs representing MQTT permissions need to have a Configuration Store entry of
+this type. This entry serves as a template for the MQTT permissions
+granted when the given permission UUID is granted in the Authorisation Component.
+
+The entry **MUST** be a JSON object. Keys represent MQTT topics; values
+represent the access granted to that topic. Values **MUST** be strings,
+as defined below.
+
+Topic names support the normal MQTT `+` and `#` wildcards. In addition,
+if any of the percent sequences below appear in the topic name, the
+`target` of the relevant ACE will be looked up under the 'Sparkplug
+Address' application below. The percent sequence will be expanded to the
+relevant property of the entry returned. If there is no such entry the
+topic will be ignored (no permission will be granted).
+
+| Sequence | Property   |
+|----------|------------|
+| `%g`     | `group_id` |
+| `%n`     | `node_id`  |
+
+The access granted is specified as a string containing one or more of
+the characters below.
+
+| Access | Meaning                                 |
+|--------|-----------------------------------------|
+| `r`    | Read data published to the given topic. |
+| `w`    | Publish to the given topic.             |
+| `s`    | Allow subscription to the given topic.  |
+
+The `s` code is intended for implementations that distinguish between
+'subscribe' and 'read' permissions. A client granted `s` permission
+**SHOULD** be allowed to request subscription to the given topic, but
+**MUST NOT** be sent packets for that topic unless `r` permission is
+also granted.
+
+Not all implementations will implement the `s` permission.
+Implementations that do not **MAY** refuse subscription requests for
+topics that do not have `r` permission. Currently the ACS HiveMQ plugin
+does not implement `s`.

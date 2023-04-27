@@ -1,0 +1,380 @@
+---
+sidebar_position: 4
+---
+
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import OpenAPISpecRenderer from "../../../src/components/OpenAPISpecRenderer";import {OpenSourceExample} from "../../../src/components/OpenSourceExample";
+
+# Configuration Store
+
+export const ComponentOverview = () => (
+    <div className="mb-10 mx-auto text-center w-full flex justify-center">
+        <div className="p-4 bg-brand-20 dark:bg-brand-90 w-[3vw] flex items-center justify-end dark:text-brand opacity-40" style={{writingMode: "vertical-lr"}}>Identity</div>
+        <div className="flex flex-col">
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-brand h-[3vw] opacity-40"></div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 opacity-40 dark:text-white flex-1 mt-2 ml-2 w-[3vw] flex items-center justify-end text-brand" style={{writingMode: "vertical-lr"}}>Authorisation</div>
+        </div>
+        <div className="grid grid-cols-5 gap-2">
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-brand col-span-full h-[3vw] flex items-center justify-end opacity-40">Identity</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 opacity-40 dark:text-white col-span-full h-[3vw] flex items-center justify-end text-brand">Authorisation</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 ml-2">Directory</div>
+            <div className="p-4 bg-brand-80 dark:bg-brand-40 text-white dark:text-brand flex items-center justify-center">Configuration Store</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Manager</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Commands</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Data Warehouse</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">MQTT</div>
+            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">Edge Agents</div>
+        </div>
+    </div>
+);
+
+The Configuration Store component serves as a framework-aware centralised repository for applications utilising Factory+ to store data, settings and other information associated with Factory+ entities. Storing data centrally facilitates the sharing of metadata among applications without duplicating definitions within applications and eliminates the need to incorporate the information in the Sparkplug birth certificate, which would result in size increments with each new metadata addition.
+
+<OpenSourceExample buttonText={'ACS Configuration Store Component'} repoUrl={'https://github.com/AMRC-FactoryPlus/acs-configdb'}></OpenSourceExample>
+
+## Overview
+
+<ComponentOverview></ComponentOverview>
+
+Configuration Store component entries are saved as JSON documents.
+
+Every category of configuration within the database is distinguished by an `Application_UUID`. While these UUIDs typically identify configuration specific to an individual application, they can also represent generic data utilised by multiple applications.
+
+The fundamental design concept for the Configuration Store component stipulates that any entry saved under a specific `Application_UUID` **MUST** adhere to a schema, ensuring that consuming applications can effectively utilise it. Additionally, it is feasible to store these schemas themselves directly in the component, enabling validation and allowing a universal editing application to generate accurate configuration entries.
+
+Within the Configuration Store component, an entry can be stored for any object identified by a UUID specific to a given application. The various object types represented by UUIDs can be configured by the administrator, initially including `Applications`, `Devices`, and `Schemas`.
+
+- **Applications**, as defined above, can store global defaults using their respective `Application_UUID`.
+- **Devices** correspond to Sparkplug Devices; refer to the [Directory component specification](/docs/framework-components/core-components/directory) for information on locating a device's `Instance_UUID`.
+- **Schemas** pertain to Factory+ schemas as outlined in the [Schema specification](/docs/schemas) and are identified by the schema's `Schema_UUID`.
+
+## Application Schema Requirements
+
+* Application schemas **MUST** use the [2020-12](https://json-schema.org/specification-links.html#2020-12) draft version of JSON schema, i.e. the schema itself should have the `"$schema": "https://json-schema.org/draft/2020-12/schema"` top-level property.
+* Schemas **MUST** include an `$id` field with the value `urn:uuid:{Application_UUID}`, (e.g. `"$id": "urn:uuid:64a8bfa9-7772-45c4-9d1a-9e6290690957"`).
+* Schemas should also include a `title` and `description` for the whole schema, and a `description` for every property, as this information may be used in future to build an editing interface for the config information.
+* It is advisable to include `"additionalProperties": false` on object definitions otherwise the schema will allow random extra properties. This will make extending the schema in the future without invalidating existing data much harder.
+
+## MQTT Interface
+
+To conform with the [Component Specification](/docs/framework-components/specification), the Directory component **MUST** publish the following metrics:
+
+| Metric      | Type | A config entry has changed for: |
+|-------------|------|---------------------------------|
+| Application | UUID | An application                  |
+| Device      | UUID | A device                       |
+| Schema      | UUID | A schema                        |
+
+The `Application` metric will have `A` published to it for updates to both `/v1/app/A/...` and `/v1/app/.../app/A`, i.e. both updates to this app's configuration and updates to configuration about this app.
+
+:::caution
+Note that while it is currently the case that an update to `/v1/app/A/device/D` will publish `A` to `Application` and `D` to `Device` in the same Sparkplug packet, this is explicitly not guaranteed. Sparkplug does not allow assumptions to be made about any relationship between metric values published in the same packet.
+:::
+
+## HTTP Interface
+
+Except for the `/ping` endpoint, all endpoints for the Configuration Store component are located under the `/v1` path to allow for forwards compatibility.
+
+### Authentication
+
+All requests **MUST** supply HTTP authentication; the following mechanisms are supported:
+
+| Mechanism | Authentication info required                                   |
+|-----------|----------------------------------------------------------------|
+| Negotiate | A Kerberos GSSAPI token.                                       |
+| Basic     | Username and password for a password-based Kerberos principal. |
+| Bearer    | A token from the `/token` endpoint.                            |
+
+### Specification
+
+<OpenAPISpecRenderer url={useBaseUrl('/spec/configuration-store.yaml')} text={'the Configuration Store component'} />
+
+## Well-Known UUIDs
+
+These well-known UUIDs are part of the core framework and all **MUST** to be registered with the Configuration Store component under the appropriate classes.
+
+### Identity
+
+<WellKnownUUID type='Service Function' name='Configuration Store'
+               uuid='af15f175-78a0-4e05-97c0-2a0bb82b9f3b'
+               description='The server identity of the Configuration Store Component that provides the service'/>
+
+---
+
+<WellKnownUUID type='Service Account' name='Configuration Store'
+               uuid='36861e8d-9152-40c4-8f08-f51c2d7e3c25'
+               description='The client identity of the Configuration Store Component used to communicate with other services'/>
+
+---
+
+### Permission Groups
+
+<Permission type='Permission Group' name='Configuration Store'
+    description='A permission group that contains all of the Configuration Store permissions'
+    uuid='c43c7157-a50b-4d2a-ac1a-86ff8e8e88c1'/>
+
+This group must be set up in the Authorisation Component to contain all the
+permissions below.
+
+---
+
+### Permissions
+
+<Permission type='Permission' name='Read Configuration for Application'
+    description='Permit reading config entries for the given Application'
+    uuid='4a339562-cd57-408d-9d1a-6529a383ea4b'/>
+
+This permission grants the right to read config entries. The `target` specifies an Application; all config entries for that Application can be read.
+
+---
+
+<Permission type='Permission' name='Write Configuration for Application'
+    description='Permits writing config entries for the given Application'
+    uuid='6c799ccb-d2ad-4715-a2a7-3c8728d6c0bf'/>
+
+This permission grants the right to write config entries for a given application. Entries can be created, but only against objects which are already registered with the Configuration Store.
+
+---
+
+<Permission type='Permission' name='Manage Application Schema'
+    description='Upload a JSON schema for a given Application'
+    uuid='95c7cbcb-ce60-49ed-aa81-2fe3eec4559d'/>
+
+This permission allows the `PUT /v1/app/{app}/config-schema` endpoint to be used. This endpoint sets the JSON schema against which an Application's entries are validated.
+
+---
+
+<Permission type='Permission' name='Manage Objects'
+    description='Grants permission to create objects in a given class'
+    uuid='f0b7917b-d475-4888-9d5a-2af96b3c26b6'/>
+
+This permission allows objects to be created. The object must be created in a class which has been granted as target of the permission; or the permission may be granted wildcard to allow any class.
+
+This permission also grants the right to list the classes in question.
+
+This permission does not allow objects to be deleted; that is destructive and is not normally appropriate, so it has a separate permission.
+
+---
+
+<Permission type='Permission' name='Delete Objects'
+    description='Grants permission to delete objects'
+    uuid='6957174b-7b08-45ca-ac5c-c03ab6928a6e'/>
+
+This permission grants the right to delete an object. It should be granted sparingly; normally once a UUID has been allocated to a given object it is worth keeping a permanent record of that fact.
+
+The target of the permission must be the object to be deleted (or an Authorisation Component group containing that object).
+
+---
+
+### Class Definitions
+
+Class definitions are the core building blocks of the Configuration Store component. Every object known to the Store belongs to exactly one class; there is no inheritance. The class indicates what kind of real-world object the UUID represents; often this indicates to applications and services consuming the UUID what operations can be performed on that object.
+
+Some classes of UUID are used internally by the Configuration Store. Some others are also defined here as they are generally useful across all components.
+
+<WellKnownUUID type='Class Definition' name='Class Definition'
+               uuid='04a1c90d-2295-4cbe-b33a-74eded62cbf1'
+               description='Classes of UUID known to the Configuration Store'/>
+
+The class definition for the Class Definition class itself. All other class definitions belong to this class.
+
+---
+
+<WellKnownUUID type='Class Definition' name='Wildcard'
+               uuid='00000000-0000-0000-0000-000000000000'
+               description='The wildcard UUID'/>
+
+It is useful to be able to register configuration against this UUID, even though it doesn't represent any real-world object. As such it is defined as a class definition.
+
+Objects must **NEVER** be created using this class.
+
+---
+
+<WellKnownUUID type='Class Definition' name='Application'
+               uuid='d319bd87-f42b-4b66-be4f-f82ff48b93f0'
+               description='Application UUIDs used by the Configuration Store'/>
+
+UUIDs registered with this class can be used in the `/app/{app}` endpoints to store config information. A UUID of this class represents a particular schema of config information.
+
+---
+
+<WellKnownUUID type='Class Definition' name='Service Function'
+               uuid='265d481f-87a7-4f93-8fc6-53fa64dc11bb'
+               description='Well-known UUIDs representing F+ service definitions'/>
+
+These UUIDs represent the Factory+ Components. Component implementations publish these UUIDs to indicate that they conform to a particular component specification.
+
+---
+
+<WellKnownUUID type='Class Definition' name='Metric Schema'
+               uuid='83ee28d4-023e-4c2c-ab86-12c24e86372c'
+               description='Factory+ Metric Schema'/>
+
+UUIDs of this class represent metric schemas defined under the Factory+ Data Schemas specification.
+
+---
+
+### Applications
+
+<WellKnownUUID type='Application' name='Object Registration'
+               uuid='cb40bed5-49ad-4443-a7f5-08c75009da8f'
+               description='Registration of a UUID within the Configuration Store'/>
+
+These entries are created by the `POST /v1/object` endpoint. They cannot be created directly, as an entry for the object must exist before the `/app/{app}/object` endpoint can be used.
+
+Entries have a single property, `class`, indicating the class of the object.
+
+---
+
+<WellKnownUUID type='Application' name='General Object Information'
+               uuid='64a8bfa9-7772-45c4-9d1a-9e6290690957'
+               description='Information to help human users identify objects'/>
+
+These are intended for display to human users in user interfaces to help the user understand what object is being referred to and should be brief (no more than a few words).
+
+Entries **MUST** have at least the following properties (this is likely to be extended in the future).
+
+| Property   | Type   | Required | Description                         |
+|------------|--------|----------|-------------------------------------|
+| `name`     | string | Yes      | A name for the object               |
+| `location` | string | No       | The physical location of the object |
+| `photo`    | string | No       | A base64-encoded photo              |
+| `contact`  | array  | No       | An array of contact information     |
+
+The `contact` property contains contact information for the people responsible for the object. The array contains objects with these properties:
+
+| Property | Type   | Required | Description                      |
+|----------|--------|----------|----------------------------------|
+| `name`   | string | Yes      | The name of a responsible person |
+| `email`  | string | Yes      | Their email address              |
+
+---
+
+<WellKnownUUID type='Application' name='Sparkplug Address Information'
+               uuid='8e32801b-f35a-4cbf-a5c3-2af64d3debd7'
+               description='The Sparkplug address used by an object'/>
+
+Where an object has a pre-defined Sparkplug address, entries with this application can be used to allow this address to be looked up. Under the current architecture Sparkplug Nodes have fixed addresses and require entries of this type. Sparkplug Devices are discovered via the Directory and do not normally need these entries.
+
+Entries of this type are used by the MQTT component to define ACLs, and by the Commands component to authenticate escalation requests.
+
+Entries have the following properties:
+
+| Property    | Type   | Required | Description             |
+|-------------|--------|----------|-------------------------|
+| `group_id`  | string | Yes      | The Sparkplug Group ID  |
+| `node_id`   | string | Yes      | The Sparkplug Node ID   |
+| `device_id` | string | No       | The Sparkplug Device ID |
+
+---
+
+## Examples
+
+### Global Application Configuration
+
+The global application configuration can be managed via the `/v1/app/{Application_UUID}/config` endpoint. For compatibility reasons. This accepts `GET`, `PUT` and `DELETE` requests and is exactly equivalent to `/v1/app/{Application_UUID}/app/{Application_UUID}`.
+
+### Managing Applications
+
+Before configuration can be stored for a particular application, the `Application_UUID` **MUST** be registered with the service. The following endpoints are available for this purpose.
+
+#### Get All Applications
+```javascript
+// Returns an array listing all the known app UUIDs.
+
+GET /v1/app
+```
+
+#### Registering and Updating Applications
+```javascript
+// Registers a new application or updates an existing registration.
+
+POST /v1/app
+```
+
+When making a `POST` request to register a new application the body should be an object with the following properties:
+
+| Property | Description                                |
+|----------|--------------------------------------------|
+| `uuid`   | The `Application_UUID`.                    |
+| `name`   | A human-readable name for the application. |
+
+#### Get Application Information
+
+```javascript
+// Retrieves information about a particular application.
+// e.g. GET /v1/app/123-456
+
+GET /v1/app/{Application_UUID}
+```
+
+#### Delete Applications
+There is currently no endpoint to delete applications. This is potentially a very destructive operation as it would need to delete all configuration entries stored against that `Application_UUID.`
+
+### Application Configuration Schemas
+
+#### Getting Schemas
+The schema used by an application to store its configuration entries can be accessed by making a request to the following endpoint. This request will return `404` if no configuration schema has been registered for a particular application.
+
+```javascript
+// Get the schema for an application's configuration
+// e.g. GET /v1/app/123-456/config-schema
+
+GET /v1/app/{Application_UUID}/config-schema
+```
+
+#### Creating Schemas
+
+This request will only accept a new schema if all configuration entries currently in the database for that application validate against the new schema. If this validation step fails the endpoint will return a status code of `409 Conflict`, with a JSON array body listing all the `Instance_UUIDs` for which validation failed. This will include the `Application_UUID` itself if validation failed for the application's global configuration.
+
+```javascript
+// Create a new schema for an application's configuration
+// e.g. PUT /v1/app/123-456/config-schema
+
+PUT /v1/app/{Application_UUID}/config-schema
+```
+
+### Per-Object Configuration
+
+The following endpoints for per-object configuration contain a component identifying the kind of object being referred to. This component should be
+
+| Object kind | Component |
+|-------------|-----------|
+| Application | `app`     |
+| Device      | `device`  |
+| Schema      | `schema`  |
+
+
+#### Getting Configuration for All Objects
+
+```javascript
+// Get a list of all the objects which have configuration entries for a particular application
+// e.g. GET /v1/app/123-456/device
+
+GET /v1/app/{Application_UUID}/{object_type}
+```
+
+A request to the above endpoint would return an array of object UUIDs.
+
+#### Managing Configuration for a Specific Object
+
+```javascript
+// Get the configuration for the specified object
+// e.g. GET /v1/app/123-456/device/abc-def
+
+GET /v1/app/{Application_UUID}/{object_type}/{object_uuid}
+```
+```javascript
+// Create a new configuration for the specified object
+// e.g. PUT /v1/app/123-456/device/abc-def
+
+PUT /v1/app/{Application_UUID}/{object_type}/{object_uuid}
+```
+```javascript
+// Delete the configuration for the specified object
+// e.g. DELETE /v1/app/123-456/device/abc-def
+
+DELETE /v1/app/{Application_UUID}/{object_type}/{object_uuid}
+```
+
+If a schema is registered for the application and an entry supplied does not validate then a `403` status code is returned.
