@@ -40,6 +40,8 @@ graph LR
   A[Device] -- "OPC UA (Poll/Response)" --> B[Cell Gateway + Edge Agent]
   B -. "MQTT (Report by Exception)" .-> C[MQTT]
   D[Manager] -- "Configuration" --> B
+```
+
 Implementations of Edge Agents:
 - **MUST** conform to the [Sparkplug V3 specification](https://sparkplug.eclipse.org/specification/version/3.0/) (i.e. they **MUST** utilise the Sparkplug payload model **MUST** publish to the correct Sparkplug topics, they **MUST** encode packets using Protocol Buffers and they **MUST** register/publish `DDEATH`/`NDEATH` and `DBIRTH`/`NBIRTH` messages).
 - **SHOULD** be ephemeral, immutable and idempotent
