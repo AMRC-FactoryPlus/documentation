@@ -3,7 +3,7 @@ FROM nikolaik/python-nodejs
 RUN mkdir /app
 WORKDIR /app
 
-COPY . /app
+COPY .docker /app
 
 RUN yarn
 RUN yarn run build
