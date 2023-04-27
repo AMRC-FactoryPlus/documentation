@@ -37,7 +37,7 @@ Although the Edge Agent plays a crucial role in the framework there are few movi
   
  ```mermaid
 graph LR
-  A[Device] -- "OPC UA (Poll/Response)" --> B[Cell Gateway + Edge Agent]
+  A[Device] -- "OPC UA (Poll/Response)" --> B[Cell Gateway & Edge Agent]
   B -. "MQTT (Report by Exception)" .-> C[MQTT]
   D[Manager] -- "Configuration" --> B
 ```
@@ -49,6 +49,7 @@ Implementations of Edge Agents:
 
 
 Before the configuration is loaded, all sensitive information placeholders **MUST** be replaced with the real values, which **MUST** be made available to the Edge Agent at runtime.
+
 
 :::info Secret Management
 The [AMRC Connectivity Stack](https://github.com/AMRC-FactoryPlus/amrc-connectivity-stack) uses Kubernetes Secrets to manage sensitive information and make it available at the point of consumption.
