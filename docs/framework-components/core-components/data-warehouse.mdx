@@ -35,13 +35,13 @@ The Data Warehouse component serves as the storage hub for all metrics, listenin
 
 <ComponentOverview></ComponentOverview>
 
-Similar to the [MQTT component](/docs/framework-components/core-components/mqtt), Factory+ does not prescribe a particular specification for the Data Warehouse component; it only necessitates that any chosen solution be Sparkplug-compatible. While future developments may embrace or create a standard for accessing data from the Data Warehouse component, the current method for data retrieval remains unique to each solution.
+Similar to the [MQTT Component](/docs/framework-components/core-components/mqtt), Factory+ does not prescribe a particular specification for the Data Warehouse Component; it only necessitates that any chosen solution be Sparkplug-compatible. While future developments may embrace or create a standard for accessing data from the Data Warehouse Component, the current method for data retrieval remains unique to each solution.
 
 Nonetheless, there are several Factory+ specific considerations to bear in mind, such as access control.
 
 ## Well-Known UUIDs
 
-These well-known UUIDs are part of the core framework and all **MUST** to be registered with the Configuration Store component under the appropriate classes.
+These well-known UUIDs are part of the core framework and all **MUST** to be registered with the Configuration Store Component under the appropriate classes.
 
 ### Identity
 
@@ -58,12 +58,12 @@ These well-known UUIDs are part of the core framework and all **MUST** to be reg
 ### Roles
 
 <Permission type='Role' name='Data Warehouse'
-            description='A Role for the Data Warehouse component'
+            description='A Role for the Data Warehouse Component'
             uuid='6958c812-fbe2-4e6c-b997-6f850b89f679'/>
 
 The `Data Warehouse` role **MUST** be granted to the `Data Warehouse` Service Account (`6958c812-fbe2-4e6c-b997-6f850b89f679`) and have the following Permissions:
 
 | Permission                       | UUID                                   |
 |----------------------------------|----------------------------------------|
-| Subscribe & Read Whole Namespace | `81833dbb-1150-4078-b1db-978c646ba73e` |
-| CCL: Rebirth                     | `fbb9c25d-386d-4966-a325-f16471d9f7be` |
+| MQTT: Subscribe & Read Whole Namespace | `81833dbb-1150-4078-b1db-978c646ba73e` |
+| Commands: Rebirth                     | `fbb9c25d-386d-4966-a325-f16471d9f7be` |
