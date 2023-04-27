@@ -15,7 +15,17 @@ const config = {
     markdown: {
         mermaid: true,
     },
-    themes: ['@docusaurus/theme-mermaid'],
+    themes: [
+        [
+            require.resolve('@easyops-cn/docusaurus-search-local'),
+            {
+                hashed: true,
+                indexBlog: false,
+                docsRouteBasePath: ['/docs', '/articles']
+            },
+        ],
+        '@docusaurus/theme-mermaid'
+    ],
 
     // Set the production url of your site here
     url: 'https://factoryplus.app.amrc.co.uk',

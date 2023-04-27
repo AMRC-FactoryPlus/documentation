@@ -2,6 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
+/*Search*/
+.navbar__search-input {
+    @apply rounded-none bg-white text-brand placeholder-brand-40 focus:outline-none focus:ring-2 focus:ring-brand-30 !important;
+}
+
+.searchQueryInput_CFBF {
+    @apply rounded-none bg-white text-brand placeholder-brand-40 focus:outline-none focus:ring-2 focus:ring-brand-30 !important;
+}
+
+.dropdownMenu_qbY6 {
+    @apply rounded-none shadow-none border-solid mt-6 !important;
+}
+
+.suggestion_fB_2 {
+    @apply rounded-none shadow-none dark:bg-brand dark:text-white !important;
+}
+
+.cursor_eG29 {
+    @apply bg-brand dark:bg-brand-90 !important
+}
+
+.navbar__search {
+    @apply ml-0 !important
+}
+
+kbd {
+    @apply rounded-none bg-brand-10 border-none shadow-none text-brand-50 !important
+}
+
+/*Main*/
+
 html {
   @apply dark:bg-brand !important;
 }
