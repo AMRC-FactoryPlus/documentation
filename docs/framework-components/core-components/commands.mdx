@@ -3,30 +3,11 @@ sidebar_position: 6
 ---
 
 import useBaseUrl from "@docusaurus/useBaseUrl";
-import OpenAPISpecRenderer from "../../../src/components/OpenAPISpecRenderer";import {OpenSourceExample} from "../../../src/components/OpenSourceExample";
+import { CentralCluster } from "../../../src/components/Clusters";
+import OpenAPISpecRenderer from "../../../src/components/OpenAPISpecRenderer";
+import {OpenSourceExample} from "../../../src/components/OpenSourceExample";
 
 # Commands
-
-export const ComponentOverview = () => (
-    <div className="mb-10 mx-auto text-center w-full flex justify-center">
-        <div className="p-4 bg-brand-20 dark:bg-brand-90 w-[3vw] flex items-center justify-end dark:text-brand opacity-40" style={{writingMode: "vertical-lr"}}>Identity</div>
-        <div className="flex flex-col">
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-brand h-[3vw] opacity-40"></div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 opacity-40 dark:text-white flex-1 mt-2 ml-2 w-[3vw] flex items-center justify-end text-brand" style={{writingMode: "vertical-lr"}}>Authorisation</div>
-        </div>
-        <div className="grid grid-cols-5 gap-2">
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-brand col-span-full h-[3vw] flex items-center justify-end opacity-40">Identity</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 opacity-40 dark:text-white col-span-full h-[3vw] flex items-center justify-end text-brand">Authorisation</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 ml-2">Directory</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Configuration Store</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Manager</div>
-            <div className="p-4 bg-brand-80 dark:bg-brand-40 text-white dark:text-brand flex items-center justify-center">Commands</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Data Warehouse</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">MQTT</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">Edge Agents</div>
-        </div>
-    </div>
-);
 
 The Commands Component offers a mechanism for clients to request Sparkplug command (`NCMD`/`DCMD`) messages be issued to other clients, given appropriate authorisation. The Sparkplug specification indicates that only the Primary Application is responsible for transmitting commands, but the precise methodology and timing for this process are not explicitly defined. It is inferred that applications must interface with the Primary Application to request commands and as such the Commands Component provides the implementation for this specific aspect of the Primary Application's functionality.
 
@@ -35,7 +16,7 @@ The Commands Component offers a mechanism for clients to request Sparkplug comma
 
 ## Overview
 
-<ComponentOverview></ComponentOverview>
+<CentralCluster hilite="commands"/>
 
 ## MQTT Interface
 

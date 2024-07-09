@@ -3,54 +3,9 @@ sidebar_position: 2
 ---
 
 import useBaseUrl from "@docusaurus/useBaseUrl";
+import { CentralCluster } from "../../../src/components/Clusters";
 
 # Authorisation
-
-export const ComponentOverview = () => (
-    <div className="mb-10 mx-auto text-center w-full flex justify-center">
-        <div className="p-4 bg-brand-20 dark:bg-brand-90 w-[3vw] flex items-center justify-end dark:text-white opacity-40"
-             style={{writingMode: "vertical-lr"}}>Identity
-        </div>
-        <div className="flex flex-col">
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-brand h-[3vw] opacity-40"></div>
-            <div
-                className="p-4 bg-brand-80 dark:bg-brand-40 dark:text-brand flex-1 mt-2 ml-2 w-[3vw] flex items-center justify-end text-white"
-                style={{writingMode: "vertical-lr"}}>Authorisation
-            </div>
-        </div>
-        <div className="grid grid-cols-5 gap-2">
-            <div
-                className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white col-span-full h-[3vw] flex items-center justify-end opacity-40">Identity
-            </div>
-            <div
-                className="p-4 bg-brand-80 dark:bg-brand-40 dark:text-brand col-span-full h-[3vw] flex items-center justify-end text-white">Authorisation
-            </div>
-            <div
-                className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center ml-2 opacity-40">Directory
-            </div>
-            <div
-                className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Configuration
-                Store
-            </div>
-            <div
-                className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Manager
-            </div>
-            <div
-                className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Commands
-            </div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Data
-                Warehouse
-            </div>
-            <div
-                className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">MQTT
-            </div>
-            <div
-                className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">Edge
-                Agent
-            </div>
-        </div>
-    </div>
-);
 
 The Authorisation component is an essential part Factory+, as it ensures that access to resources is controlled and restricted based on the permissions assigned to various principals or actors in the architecture. Access Control Lists (ACLs) are used to manage these permissions and provide a flexible way to define and manage access control policies.
 
@@ -58,7 +13,7 @@ The Authorisation component is an essential part Factory+, as it ensures that ac
 
 ## Overview
 
-<ComponentOverview></ComponentOverview>
+<CentralCluster hilite="authorisation"/>
 
 The Factory+ Authorisation component can be broken down into the following elements:
 

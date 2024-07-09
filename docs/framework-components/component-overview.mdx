@@ -4,43 +4,58 @@ sidebar_position: 1
 
 # Component Overview
 
-export const ComponentOverview = () => (
-<div className="mb-10 mx-auto text-center w-full flex justify-center">
-<div className="p-4 bg-brand dark:bg-brand-10 dark:text-brand w-[3vw] flex items-center justify-end text-white" style={{writingMode: "vertical-lr"}}>Identity</div>
-<div className="flex flex-col">
-<div className="p-4 bg-brand dark:bg-brand-10 dark:text-brand h-[3vw]"></div>
-<div className="p-4 bg-brand-80 dark:bg-brand-40 dark:text-brand flex-1 mt-2 ml-2 w-[3vw] flex items-center justify-end text-white" style={{writingMode: "vertical-lr"}}>Authorisation</div>
-</div>
-<div className="grid grid-cols-5 gap-2">
-<div className="p-4 bg-brand dark:bg-brand-10 dark:text-brand col-span-full h-[3vw] flex items-center justify-end text-white">Identity</div>
-<div className="p-4 bg-brand-80 dark:bg-brand-40 dark:text-brand col-span-full h-[3vw] flex items-center justify-end text-white">Authorisation</div>
-<div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center ml-2">Directory</div>
-<div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center">Configuration Store</div>
-<div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center">Manager</div>
-<div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center">Commands</div>
-<div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center">Data Warehouse</div>
-<div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center col-span-full ml-2">MQTT</div>
-<div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center col-span-full ml-2">Edge Agents</div>
-</div>
-</div>
-);
+import { CentralCluster, EdgeCluster } from "../../src/components/Clusters";
 
+Factory+ identifies a set of interconnected core components that must be
+present for a full implementation of the framework. See
+[Overview](../overview) for the motivation behind these components and
+how they fit into the larger picture of a modern IIoT architecture.
 
-Factory+ identifies a set of interconnected core components that must be present for a full implementation of the framework. See [Overview](../overview) for the motivation behind these components and how they fit into the larger picture of a modern IIoT architecture.
+Since version 2, the ACS implementation of Factory+ has relied heavily
+on Kubernetes to manage the deployment of components. Version 3 of ACS
+takes a further step, requiring that Edge Agents on the shop floor run
+on separate Kubernetes clusters from the central services.
 
-<ComponentOverview/>
+## Central components
+
+These are the components running on the central cluster. This cluster
+provides the central MQTT broker, long-term data storage and control of
+the edge clusters.
+
+<CentralCluster/>
 
 | Function            | Description                                                                                        |
 |---------------------|----------------------------------------------------------------------------------------------------|
 | Identity            | Ensuring unique identification of devices, users, and applications across the architecture         |
 | Authorisation       | Managing access control and permissions for devices, users, and applications across all components |
 | Directory           | Maintaining a registry of services and devices, complete with their status, schemas and endpoints  |
-| MQTT                | Handling communication and data exchange between devices, applications, and services               |
-| Edge Agent          | Managing edge data capture, schema mapping, encoding, and transmission                             |
-| Configuration Store | Storing and managing shared metadata data for devices, applications, and services                  |
-| Manager             | Centralise device onboarding, configuration and management                                         |
+| Config DB           | Storing and managing shared metadata data for devices, applications, and services                  |
 | Commands            | Handling the escalation of commands and alerts across the architecture                             |
+| Git server          | Providing control of the configuration of the edge clusters                                        |
+| Manager             | Centralise device onboarding, configuration and management                                         |
 | Data Warehouse      | Ingesting, decoding, storing and  managing collected data from devices and applications            |
+| Cluster Manager     | Handling creation of edge clusters and passing secrets securely                                    |
+| Central Monitor     | Monitoring the Edge Monitors to ensure clusters do not go offline                                  |
+| MQTT                | Handling communication and data exchange between devices, applications, and services               |
+
+## Edge components
+
+These are the components running at the edge. Moving the components out
+to their own Kubernetes cluster isolates the central services from any
+security problems caused by devices needing to be physically present on
+the shop floor. This also means that different Kubernetes
+implementations can be used for the different clusters, for example the
+central cluster could use a cloud cluster provider and the edge clusters
+an edge-focussed Kubernetes distribution.
+
+<EdgeCluster/>
+
+| Function            | Description                                                                                        |
+|---------------------|----------------------------------------------------------------------------------------------------|
+| Flux                | Managing the deployment of containers to edge clusters                                             |
+| Edge Sync           | Updating the central services on the state of the edge cluster                                     |
+| Edge Monitor        | Monitoring Edge Agents to ensure they are running correctly                                        |
+| Edge Agent          | Managing edge data capture, schema mapping, encoding, and transmission                             |
 
 ## Plugin Components
 
