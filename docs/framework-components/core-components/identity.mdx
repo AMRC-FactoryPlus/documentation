@@ -41,7 +41,28 @@ The key features of Kerberos include:
 - **Single Sign-On (SSO)**: Once a user has authenticated with Kerberos, they can access multiple services and applications within the network without having to re-authenticate, simplifying the user experience and reducing the need for multiple sets of credentials.
 - **Symmetric Key Cryptography**: Kerberos uses symmetric key cryptography for encrypting and decrypting messages between clients and servers, ensuring the confidentiality and integrity of data.
 - **Ticket-Based Authentication**: The core concept of Kerberos is the use of "tickets" to grant access to services. When a user authenticates with the Kerberos Key Distribution Center (KDC), they receive a Ticket Granting Ticket (TGT), which can then be used to request service-specific tickets without requiring further authentication.
-- **Scalability**: Kerberos is designed to support large-scale networks with numerous clients and services, making it suitable for
-various organisational sizes and structures.
+- **Scalability**: Kerberos is designed to support large-scale networks with numerous clients and services, making it suitable for various organisational sizes and structures.
+- **Cross-realm authentication**: Kerberos allows different authentication realms (potentially in different organisations) to set up limited trust arrangements, such that clients from one realm can be granted access to services in another.
 
 For more information on Kerberos, [view the documentation](https://web.mit.edu/kerberos/) on the MIT website.
+
+## Kubernetes integration
+
+In order to ease the management of a Kerberos KDC located within a Kubernetes cluster, we have implemented a k8s operator that allows Kerberos principals to be managed via k8s objects. A Kubernetes object is created requesting that a certain principal should exist in the KDC, and the operator ensures that the principal exists and synchronises the secret key for the principal with Kubernetes secrets.
+
+## Cross-realm authentication
+
+### Basic concepts
+
+Setting up a cross-realm trust in Kerberos is conceptually very simple: a Kerberos ticket-granting principal is created, with a name linking the two realms, and the password for that principal is shared between the two KDCs. The trust is one-way: a given cross-realm ticket-granting principal will allow clients from one realm to authenticate to servers from the other, but not the other way around. If two-way trust is desired then two trust relationships must be created.
+
+One very important point to note here is that all the cross-realm trust allows a client to do is to prove its identity to the server. Whether the client is actually allowed to do anything is the responsibility of the service concerned, and remains entirely under the control of the service's local administration.
+
+Suppose a client in the `ALICE` realm, `alice@ALICE`, wishes to communicate with the MQTT server `mqtt.bob`, which is in the `BOB` realm and has server principal name `mqtt/mqtt.bob@BOB`. The sequence of events goes like this:
+
+* Alice makes an initial-ticket request to the `ALICE` KDC, requesting a ticket for the `krbtgt/ALICE@ALICE` ticket-granting principal. This request is authenticated (by password or keytab) and Alice gets a TGT for `ALICE`.
+* Alice makes a ticket-based request to the `ALICE` KDC, supplying the previous ticket and requesting a ticket for the principal `krbtgt/BOB@ALICE`. This is the cross-realm principal which allows clients from the `ALICE` realm to get tickets for services in the `BOB` realm.
+* Alice makes a ticket-based request to the `BOB` KDC, supplying the cross-realm ticket and requesting a ticket for `mqtt/mqtt.bob@BOB`. Because the password for the cross-realm ticket is shared between the two KDCs, the `BOB` KDC can verify that Alice's identity has been vouched for by the `ALICE` KDC, and can issue a ticket for the MQTT server.
+* Alice now uses the service ticket to authenticate to the MQTT server. The MQTT server checks its ACLs for `alice@ALICE` and grants Alice appropriate access.
+
+The process becomes more complicated when `ALICE` and `BOB` do not share a key in common, but trust can be established via `CHARLIE`. Such situations need to be carefully considered; allowing `CHARLIE` to vouch for clients in `ALICE` places a very large amount of trust in the `CHARLIE` administrators.
