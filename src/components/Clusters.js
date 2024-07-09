@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { createContext, useContext } from 'react';
+import useBaseUrl from "@docusaurus/useBaseUrl";
 
 const Colours = {
     dark:   "bg-brand text-white dark:bg-brand-10 dark:text-brand",
@@ -15,25 +16,36 @@ const Justify = {
     end:    "justify-end",
 };
 
+const Ctx = createContext({});
+
 function FpCpt (props) {
-    const { layout, name, style, justify, vertical, hilite, children } = props;
+    const { layout, name, style, justify, vertical, children } = props;
+
+    const { base, hilite } = useContext(Ctx);
 
     const hidden = (hilite && name != hilite);
     const colour = hidden ? `${Colours.light} opacity-40` : Colours[style ?? "light"];
     const classes = `p-4 items-center flex ${Justify[justify]} ${layout} ${colour}`;
     const direct = vertical ? { writingMode: "vertical-lr" } : {};
 
-    return <div className={classes} style={direct}>{children}</div>;
+    const content = base 
+        ? <a href={useBaseUrl(`${base}/${name}`)} style={{ color: "inherit" }}>{children}</a>
+        : children;
+
+    return <div className={classes} style={direct}>{content}</div>;
 }
 
 function Cluster (props) {
-    const { title, children } = props;
+    const { title, path, hilite, children } = props;
+
+    const base = `docs/framework-components/${path}`;
+    const ctx = { hilite, base };
 
     return <div className="mb-10 mx-auto text-center w-full flex justify-center">
         <div className="flex flex-col">
             <FpCpt style="white" justify="start" layout="mb-2 h-[3vw] w-full">{title}</FpCpt>
             <div className="flex">
-                {children}
+                <Ctx.Provider value={ctx}>{children}</Ctx.Provider>
             </div>
         </div>
     </div>;
@@ -42,25 +54,25 @@ function Cluster (props) {
 export function CentralCluster (props) {
     const { hilite } = props;
 
-    return <Cluster title="Central cluster">
-        <FpCpt name="identity" vertical style="dark" hilite={hilite} justify="end" layout="w-[3vw]">Identity</FpCpt>
+    return <Cluster title="Central cluster" path="central" hilite={hilite}>
+        <FpCpt name="identity" vertical style="dark" justify="end" layout="w-[3vw]">Identity</FpCpt>
         <div className="flex flex-col">
-            <FpCpt name="identity" hilite={hilite} style="dark" layout="h-[3vw]"></FpCpt>
-            <FpCpt name="authorisation" hilite={hilite} style="mid" vertical justify="end" 
+            <FpCpt name="identity" style="dark" layout="h-[3vw]"></FpCpt>
+            <FpCpt name="authorisation" style="mid" vertical justify="end" 
                 layout="flex-1 mt-2 ml-2 w-[3vw]">Authorisation</FpCpt>
         </div>
         <div className="grid grid-cols-4 gap-2">
-            <FpCpt name="identity" hilite={hilite} style="dark" justify="end" layout="col-span-full h-[3vw]">Identity</FpCpt>
-            <FpCpt name="authorisation" hilite={hilite} style="mid" justify="end" layout="col-span-full h-[3vw]">Authorisation</FpCpt>
-            <FpCpt name="directory" hilite={hilite} layout="ml-2">Directory</FpCpt>
-            <FpCpt name="configdb" hilite={hilite}>Config DB</FpCpt>
-            <FpCpt name="commands" hilite={hilite}>Commands</FpCpt>
-            <FpCpt name="git" hilite={hilite}>Git server</FpCpt>
-            <FpCpt name="manager" hilite={hilite} layout="ml-2">Manager</FpCpt>
-            <FpCpt name="warehouse" hilite={hilite}>Data Warehouse</FpCpt>
-            <FpCpt name="cluster-manager" hilite={hilite}>Cluster Manager</FpCpt>
-            <FpCpt name="monitor" hilite={hilite}>Central Monitor</FpCpt>
-            <FpCpt name="mqtt" hilite={hilite} layout="col-span-full ml-2">MQTT</FpCpt>
+            <FpCpt name="identity" style="dark" justify="end" layout="col-span-full h-[3vw]">Identity</FpCpt>
+            <FpCpt name="authorisation" style="mid" justify="end" layout="col-span-full h-[3vw]">Authorisation</FpCpt>
+            <FpCpt name="directory" layout="ml-2">Directory</FpCpt>
+            <FpCpt name="configuration-store">Config DB</FpCpt>
+            <FpCpt name="commands">Commands</FpCpt>
+            <FpCpt name="git">Git server</FpCpt>
+            <FpCpt name="manager" layout="ml-2">Manager</FpCpt>
+            <FpCpt name="data-warehouse">Data Warehouse</FpCpt>
+            <FpCpt name="cluster-manager">Cluster Manager</FpCpt>
+            <FpCpt name="monitor">Central Monitor</FpCpt>
+            <FpCpt name="mqtt" layout="col-span-full ml-2">MQTT</FpCpt>
         </div>
     </Cluster>;
 };
@@ -68,13 +80,13 @@ export function CentralCluster (props) {
 export function EdgeCluster (props) {
     const { hilite } = props;
 
-    return <Cluster title="Edge clusters">
-        <FpCpt name="flux" hilite={hilite} style="mid" vertical justify="end" layout="w-[3vw]">Flux</FpCpt>
+    return <Cluster title="Edge clusters" path="edge" hilite={hilite}>
+        <FpCpt name="flux" style="mid" vertical justify="end" layout="w-[3vw]">Flux</FpCpt>
         <div className="grid grid-cols-3 gap-2">
-            <FpCpt name="flux" hilite={hilite} style="mid" justify="end" layout="col-span-full h-[3vw]">Flux</FpCpt>
-            <FpCpt name="edge-sync" hilite={hilite} layout="ml-2">Edge Sync</FpCpt>
-            <FpCpt name="monitor" hilite={hilite}>Edge Monitor</FpCpt>
-            <FpCpt name="edge-agent" hilite={hilite}>Edge Agents</FpCpt>
+            <FpCpt name="flux" style="mid" justify="end" layout="col-span-full h-[3vw]">Flux</FpCpt>
+            <FpCpt name="edge-sync" layout="ml-2">Edge Sync</FpCpt>
+            <FpCpt name="monitor">Edge Monitor</FpCpt>
+            <FpCpt name="edge-agent">Edge Agents</FpCpt>
         </div>
     </Cluster>;
 }
