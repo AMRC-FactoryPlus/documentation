@@ -7,13 +7,20 @@ const Colours = {
     white:  "bg-white text-brand dark:bg-brand dark:text-white",
 };
 
+/* Looking these up works. Building a class name using string
+ * interpolation doesn't. Don't ask me. */
+const Justify = {
+    start:  "justify-start",
+    center: "justify-center",
+    end:    "justify-end",
+};
+
 function FpCpt (props) {
     const { layout, name, style, justify, vertical, hilite, children } = props;
 
     const hidden = (hilite && name != hilite);
     const colour = hidden ? `${Colours.light} opacity-40` : Colours[style ?? "light"];
-    const just = `justify-${justify ?? "center"}`;
-    const classes = `p-4 items-center flex ${just} ${layout} ${colour}`;
+    const classes = `p-4 items-center flex ${Justify[justify]} ${layout} ${colour}`;
     const direct = vertical ? { writingMode: "vertical-lr" } : {};
 
     return <div className={classes} style={direct}>{children}</div>;
@@ -24,7 +31,7 @@ function Cluster (props) {
 
     return <div className="mb-10 mx-auto text-center w-full flex justify-center">
         <div className="flex flex-col">
-            <FpCpt style="white" justify="left" layout="mb-2 h-[3vw] w-full">{title}</FpCpt>
+            <FpCpt style="white" justify="start" layout="mb-2 h-[3vw] w-full">{title}</FpCpt>
             <div className="flex">
                 {children}
             </div>
