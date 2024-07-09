@@ -1,0 +1,141 @@
+---
+sidebar_position: 6
+---
+
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import { CentralCluster } from "../../../src/components/Clusters";
+import OpenAPISpecRenderer from "../../../src/components/OpenAPISpecRenderer";
+import { OpenSourceExample } from "../../../src/components/OpenSourceExample";
+
+# Git server
+
+The Git server provides a set of Git repositories hosted on the central
+cluster of the Factory+ installation and integrated with the Factory+
+framework. Creating and removing repositories is managed via the
+ConfigDB, and authentication against the Git server is integrated with
+the Factory+ identity and authorisation framework.
+
+<OpenSourceExample buttonText={'ACS Git server Component'}
+                   repoUrl={'https://github.com/AMRC-FactoryPlus/acs-git'}></OpenSourceExample>
+
+## Overview
+
+<CentralCluster hilite="git"/>
+
+The Git server registers itself with the Factory+ Directory at startup.
+The service endpoints can be found via a Directory query for the Git
+service function UUID.
+
+Git repositories are managed through the ConfigDB, by creating entries
+under the 'Git repository' application. If a repository is closely
+associated with another object (for example, an edge cluster) the UUID
+of that object can be used to identify the repo as well, otherwise a new
+object should be created under the 'Git repository' ConfigDB class.
+
+Creating an Application entry causes the repo to exist; removing it
+again will remove all access to the repo. The history will not be lost,
+and recreating the repo with the same UUID will cause the previous
+history to reappear. It is possible to request that a particular repo
+automatically synchronises a branch from an external repo; this can be
+useful when the central cluster has external Internet access but the
+edge clusters do not.
+
+## HTTP interface
+
+The Git server supports the standard Git protocol over HTTP, in addition
+to certain Factory+-specific endpoints. Authentication follows the
+normal Factory+ conventions: Basic or Negotiate will be accepted, or a
+Bearer token retrieved from the `/token` endpoint. Credentials are
+checked against the Factory+ Identity service and authorised via the
+Authorisation service.
+
+Git repos are accessible by two different URLs. Access by UUID, normally
+used by machines, uses the URL path `/uuid/{UUID}`. Access by path,
+intended for human users and not used by the Factory+ components
+internally, uses the path `/git/{path}`, where `{path}` is the `path`
+property from the ConfigDB entry governing this repository. These two
+URLs will access the same repo, with the same history.
+
+## MQTT Interface
+
+The Git server provides push change-notify over Sparkplug. The Git
+server does not use the Service Schema_UUID as service discovery over
+MQTT is deprecated. Instead, the top-level Node uses the 'Git server'
+schema, and the metric folders representing individual repos use 'Git
+repository'.
+
+The Git server provides the following metrics:
+
+| Metric           | Type   | Description                                             |
+|------------------|--------|---------------------------------------------------------|
+| `Schema_UUID`    | UUID   | Identifies this as a Git server                         |
+| `Instance_UUID`  | UUID   | The UUID of this server instance                        |
+| `Repositories`   | Folder | Metrics for the repositories on this server             |
+
+The `Repositories` folder contains another folder for each available
+repo, named by the UUID of the repo. These folders have these metrics:
+
+| Metric                | Type   | Description                                             |
+|-----------------------|--------|---------------------------------------------------------|
+| `Schema_UUID`         | UUID   | Identifies this as a Git repo                           |
+| `Instance_UUID`       | UUID   | The UUID of this repository                             |
+| `Branches`            | Folder | Metrics named for the branches on the repo              |
+| `Branches/{branch}`   | String | SHA-1 of the commit at the head of the branch           |
+
+The Git server will publish an NDATA packet every time a branch on a
+repository moves, whether as a result of auto-pull or as a result of a
+push from an authenticated client. The server will also rebirth every
+time a repo is created or removed.
+
+## Well-Known UUIDs
+
+These well-known UUIDs are part of the core framework and all **MUST**
+to be registered with the Configuration Store component under the
+appropriate classes.
+
+### Configuration and discovery
+
+<WellKnownUUID type='Service Function' name='Git server'
+               uuid='7adf4db0-2e7b-4a68-ab9d-376f4c5ce14b'
+               description='The Service UUID used for locating the Git server endpoints'/>
+
+<WellKnownUUID type='Application' name='Git repository'
+               uuid='38d62a93-b6b4-4f63-bad4-d433e3eaff29'
+               description='Configuration for a Git repository'/>
+
+<WellKnownUUID type='Class' name='Git repository'
+               uuid='d25f2afc-1ab8-4d27-b51b-d02314624e3e'
+               description='Stand-alone Git repository'/>
+
+### Permissions
+
+<Permission name={'Pull from repo'}
+            description='Permission to pull from a given Git repo'
+            uuid={'12ecb694-b4b9-4d2a-927e-d100019f7ebe'}></Permission>
+
+<Permission name={'Push to repo'}
+            description='Permission to push to a given Git repo'
+            uuid={'b2d8d437-5060-4202-bcc2-bd2beda09651'}></Permission>
+
+<Permission name={'Manage storage'}
+            description='Permission to permanently delete Git repos including all history'
+            uuid={'7fd8a8c1-6050-4950-97bd-a35bb83ff750'}></Permission>
+
+---
+
+<Permission type={'Permission Group'} name={'Git Permissions'}
+            description={'Permissions recognised by the Git server'}
+            uuid={'c0c55c78-116e-4526-8ff4-e4595251f76c'}></Permission>
+
+This group must be created in the Authorisation Component containing the permission UUIDs listed above.
+
+### Metric Schemas
+
+<WellKnownUUID type='Metric schema' name='Git server'
+               uuid='ee115c26-2ad6-4846-a771-da0cf6401399'
+               description='Git server Sparkplug Node'/>
+
+<WellKnownUUID type='Metric schema' name='Git repository'
+               uuid='1bc8b1c1-e5e6-4777-814b-67bc58aaad62'
+               description='Change-notify for a particular repository'/>
+
