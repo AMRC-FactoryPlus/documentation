@@ -1,0 +1,50 @@
+---
+sidebar_position: 9
+---
+
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import { CentralCluster } from "../../../src/components/Clusters";
+import OpenAPISpecRenderer from "../../../src/components/OpenAPISpecRenderer";
+import { OpenSourceExample } from "../../../src/components/OpenSourceExample";
+
+# Cluster Manager
+
+The Cluster Manager commissions new clusters, and allows central
+services to encrypt secret information for transfer to the edge
+clusters.
+
+<OpenSourceExample buttonText={'ACS Cluster Manager Component'}
+                   repoUrl={'https://github.com/AMRC-FactoryPlus/acs-cluster-manager'}></OpenSourceExample>
+
+## Overview
+
+<CentralCluster hilite="cluster-manager"/>
+
+## HTTP interface
+
+The Git server supports the standard Git protocol over HTTP, in addition
+to certain Factory+-specific endpoints. Authentication follows the
+normal Factory+ conventions: Basic or Negotiate will be accepted, or a
+Bearer token retrieved from the `/token` endpoint. Credentials are
+checked against the Factory+ Identity service and authorised via the
+Authorisation service.
+
+Git repos are accessible by two different URLs. Access by UUID, normally
+used by machines, uses the URL path `/uuid/{UUID}`. Access by path,
+intended for human users and not used by the Factory+ components
+internally, uses the path `/git/{path}`, where `{path}` is the `path`
+property from the ConfigDB entry governing this repository. These two
+URLs will access the same repo, with the same history.
+
+## Well-Known UUIDs
+
+These well-known UUIDs are part of the core framework and all **MUST**
+to be registered with the Configuration Store component under the
+appropriate classes.
+
+### Configuration and discovery
+
+<WellKnownUUID type='Service Function' name='Cluster Manager'
+               uuid=''
+               description='The Service UUID used for locating the Cluster Manager endpoints'/>
+

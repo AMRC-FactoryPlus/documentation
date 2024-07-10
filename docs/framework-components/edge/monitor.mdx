@@ -1,0 +1,21 @@
+---
+sidebar_position: 2
+---
+
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import { EdgeCluster } from "../../../src/components/Clusters";
+import OpenAPISpecRenderer from "../../../src/components/OpenAPISpecRenderer";
+import { OpenSourceExample } from "../../../src/components/OpenSourceExample";
+
+# Edge Monitor
+
+The Edge Monitor monitors the status of the Edge Agents running on its cluster. It raises alerts over Sparkplug if an Edge Agent does not appear to be running correctly. It is also responsible for ensuring an Edge Agent reloads its configuration when an updated version becomes available from the ConfigDB.
+
+<OpenSourceExample buttonText={'ACS Monitor Component'}
+                   repoUrl={'https://github.com/AMRC-FactoryPlus/acs-monitor'}></OpenSourceExample>
+
+## Overview
+
+<EdgeCluster hilite="monitor"/>
+
+## MQTT interface

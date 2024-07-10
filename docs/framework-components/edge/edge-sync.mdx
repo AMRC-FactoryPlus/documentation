@@ -1,0 +1,23 @@
+---
+sidebar_position: 2
+---
+
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import { EdgeCluster } from "../../../src/components/Clusters";
+import OpenAPISpecRenderer from "../../../src/components/OpenAPISpecRenderer";
+import { OpenSourceExample } from "../../../src/components/OpenSourceExample";
+
+# Edge Sync
+
+The Edge Sync operator is the counterpart to the Cluster Manager running
+at the edge. It keeps the central cluster updated regarding the status
+of the edge cluster and is responsible for deploying Edge Agents and
+other code required at the edge.
+
+<OpenSourceExample buttonText={'ACS Edge Sync Component'}
+                   repoUrl={'https://github.com/AMRC-FactoryPlus/acs-edge-sync'}></OpenSourceExample>
+
+## Overview
+
+<EdgeCluster hilite="edge-sync"/>
+

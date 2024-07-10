@@ -1,0 +1,38 @@
+---
+sidebar_position: 10
+---
+
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import { CentralCluster } from "../../../src/components/Clusters";
+import OpenAPISpecRenderer from "../../../src/components/OpenAPISpecRenderer";
+import { OpenSourceExample } from "../../../src/components/OpenSourceExample";
+
+# Central Monitor
+
+The Monitor code runs on every cluster, both the central cluster and the
+edge clusters. The instance on the central cluster operates a little
+differently from the instances on the edge.
+
+<OpenSourceExample buttonText={'ACS Monitor Component'}
+                   repoUrl={'https://github.com/AMRC-FactoryPlus/acs-monitor'}></OpenSourceExample>
+
+## Overview
+
+<CentralCluster hilite="monitor"/>
+
+## HTTP interface
+
+## MQTT interface
+
+## Well-Known UUIDs
+
+These well-known UUIDs are part of the core framework and all **MUST**
+to be registered with the Configuration Store component under the
+appropriate classes.
+
+### Configuration and discovery
+
+<WellKnownUUID type='Service Function' name='Cluster Manager'
+               uuid=''
+               description='The Service UUID used for locating the Cluster Manager endpoints'/>
+
