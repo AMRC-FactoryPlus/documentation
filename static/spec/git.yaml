@@ -1,0 +1,80 @@
+openapi: 3.0.0
+
+info:
+  title: Factory+ Git server component
+  version: 1.0.0
+  description: This service provides Git repositories
+
+servers:
+  -   url: /
+      description: Git server API
+
+security:
+  - basic: []
+  - gssapi: []
+  - token: []
+
+paths:
+  /git/{path}:
+    summary: Access to repositories by path name
+    parameters:
+      - name: path
+        description: >
+          The path property of the Git repo to access. Note that
+          OpenAPI is unable to represent this parameter correctly; the
+          path property may contain multiple segments, which must not
+          be URI-encoded.
+        in: path
+        required: true
+        schema: { type: string }
+    description: >
+      These paths provide access to the Git repositories via
+      human-friendly path names. The protocol is the standard Git HTTP
+      protocol, so requests are not made directly to these endpoints.
+
+  /uuid/{uuid}:
+    summary: Access to repositories by UUID
+    parameters:
+      - name: uuid
+        description: The UUID of the repo to access
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+    description: >
+        These paths provide access to the Git repositories by UUID. The
+        protocol is the standard Git HTTP protocol, so requests are not
+        made directly to these endpoints.
+
+  /v1/storage:
+    get:
+      summary: List repos using disk storage
+      description: >
+          Returns a list of UUIDs identifying all the repositories which
+          currently have storage allocated on disk.
+  /v1/storage/{uuid}:
+    delete:
+      summary: Delete repo storage
+      parameters:
+        - name: uuid
+          description: The UUID of the repo to delete
+          in: path
+          schema: { type: string, format: uuid }
+      description: >
+        This will delete the storage associated with a repo. If the repo
+        is still configured, or if it is reconfigured later, it will be
+        recreated as an empty repo on next access.
+
+components:
+  securitySchemes:
+    basic:
+      type: http
+      description: User/password HTTP Basic auth
+      scheme: Basic
+    gssapi:
+      type: http
+      description: HTTP Negotiate auth (Kerberos)
+      scheme: Negotiate
+    token:
+      type: http
+      description: HTTP bearer token auth
+      scheme: Bearer

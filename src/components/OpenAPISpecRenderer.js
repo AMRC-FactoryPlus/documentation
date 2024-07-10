@@ -1,10 +1,54 @@
-import React, {useState, useEffect} from 'react';
+import React, {createContext, useContext, useState, useEffect} from 'react';
 import yaml from 'js-yaml';
 import {RestParameters, RestRequest, RestResponse} from "./RestUtils";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faGithub} from "@fortawesome/free-brands-svg-icons/faGithub";
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons";
 import {OpenAPISpec} from "./OpenAPISpec";
+
+const NotMethod = new Set(["summary", "description", "servers", "parameters"]);
+
+const Path = createContext({});
+
+function Methods (props) {
+    const { methods } = props;
+    return Object.entries(methods)
+        .filter(([m]) => !NotMethod.has(m))
+        .map(([m, inf]) => <Method method={m} info={inf}/>);
+}
+
+function Method (props) {
+    const { method, info } = props;
+    const { servers, path } = useContext(Path);
+
+    return <div className={'flex flex-col-rev'} key={method}>
+        <div>
+            <RestRequest key={path+'-req-'+method} type={method} url={servers+path} 
+                summary={info.summary} description={info.description}/>
+        </div>
+    </div>;
+}
+
+function Parameters (props) {
+    const { params } = props;
+    if (!params) return null;
+
+    const { path, refs } =  useContext(Path);
+
+    return <div className={'flex flex-col-rev'} key="parameters">
+        <div>
+            <RestParameters key={path+'-params'} details={params} refs={refs}></RestParameters>
+        </div>
+    </div>;
+}
+
+function Summary (props) {
+    const { summary, description } = props;
+    if (!summary && !description) return null;
+    
+    // XXX This is not right but just get something displayed for now
+    return <Method method="path" info={props}/>;
+}
 
 const OpenAPISpecRenderer = ({url, text}) => {
     const [paths, setPaths] = useState(null);
@@ -32,28 +76,13 @@ const OpenAPISpecRenderer = ({url, text}) => {
             <OpenAPISpec url={url} text={text}></OpenAPISpec>
 
             {Object.entries(paths).map(([path, methods]) => (
-                <div key={path}>
+                <div key={path}><Path.Provider value={{ path, servers, refs }}>
                     <div className={'border-solid border-transparent border-b-brand-10 mb-3'}>
-                        {Object.entries(methods).filter(([method, methodInfo]) => method !== 'parameters').map(([method, methodInfo]) => (
-                            <div className={'flex flex-col-rev'} key={method}>
-                                <div>
-                                    {(
-                                        <RestRequest key={path+'-req-'+method} type={method} url={servers+path} description={methodInfo.summary}></RestRequest>
-                                    )}
-                                </div>
-                            </div>
-                        ))}
-                        {Object.entries(methods).filter(([method, methodInfo]) => method === 'parameters').map(([method, methodInfo]) => (
-                            <div className={'flex flex-col-rev'} key={method}>
-                                <div>
-                                    {(
-                                        <RestParameters key={path+'-params-'+method} details={methodInfo} refs={refs}></RestParameters>
-                                    )}
-                                </div>
-                            </div>
-                        ))}
+                        <Summary summary={methods.summary} description={methods.description}/>
+                        <Methods methods={methods}/>
+                        <Parameters params={methods.parameters}/>
                     </div>
-                </div>
+                </Path.Provider></div>
             ))}
         </div>
     ) : (

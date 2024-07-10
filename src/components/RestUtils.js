@@ -1,18 +1,21 @@
 import React from 'react';
 
-export const RestRequest = ({type, url, description}) => (
-    <div className={'flex flex-col flex-1 mb-3'}>
+export const RestRequest = ({type, url, summary, description}) => {
+    const desc = description ? <div
+        className="rounded-none border-none text-brand flex items-center flex-1 w-full bg-brand-10 dark:bg-brand-90 dark:text-white h-4 p-4">
+        {description}
+    </div> : null;
+
+    return <div className={'flex flex-col flex-1 mb-3'}>
         <div className="rounded-none border-none text-brand flex items-center">
             <div
                 className={'bg-brand-90 dark:bg-brand-20 dark:text-brand text-white px-2 py-1 font-bold tracking-wide uppercase'}>{type}</div>
             <div className={'bg-brand-70 dark:bg-brand-30 text-white dark:text-brand px-2 py-1 font-bold'}>{url}</div>
         </div>
-        <div
-            className="rounded-none border-none text-brand flex items-center flex-1 w-full bg-brand-10 dark:bg-brand-90 dark:text-white h-4 p-4">
-            {description}
-        </div>
-    </div>
-);
+        <div className="text-brand bg-brand-10 dark:text-white dark:bg-brand-90 items-center px-4 py-1 font-bold">{summary}</div>
+        {desc}
+    </div>;
+};
 
 export const RestParameters = ({details, refs}) => (
     <div className={'flex flex-col flex-1 mb-3'}>
