@@ -1,0 +1,115 @@
+openapi: 3.0.0
+
+info:
+  title: Factory+ Cluster Manager component
+  version: 1.0.0
+  description: This service provisions Edge Clusters
+
+servers:
+  -   url: /
+
+security:
+  - basic: []
+  - gssapi: []
+  - token: []
+
+paths:
+  /cluster/{cluster}/bootstrap-url:
+    post:
+      summary: Fetch bootstrap script URL for a cluster
+      description: >
+        This endpoint is used to fetch the URL to a script to use to
+        bootstrap the edge cluster. The URL returned may contain
+        authentication and may only be valid for a certain length of
+        time. The script needs to be fetched from the returned URL using
+        GET and run using a Bourne shell, with `kubectl` in the PATH and
+        configured to access the edge cluster.
+      parameters:
+        - { $ref: "#/components/parameters/cluster" }
+      responses:
+        200:
+          content:
+            application/json:
+              schema: { type: string }
+
+  /cluster/{cluster}/status:
+    get:
+      summary: Fetch cluster setup status
+      description: >
+        The _Edge cluster setup status_ ConfigDB entries should not
+        normally be accessible except to the Cluster Manager itself.
+        This endpoint is suitable for polling to find out when a cluster
+        is ready to be bootstrapped. Do not rely on any fields other
+        than those documented in the response.
+      parameters:
+        - { $ref: "#/components/parameters/cluster" }
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ready:
+                    type: boolean
+                    description: >
+                      Indicates whether the cluster is ready to be
+                      bootstrapped.
+
+  /cluster/{cluster}/secret/{namespace}/{name}/{key}:
+    summary: Manage secret information for an edge cluster
+    parameters:
+      - { $ref: "#/components/parameters/cluster" }
+      - name: namespace
+        in: path
+        description: Kubernetes namespace of Secret to modify
+        schema: { type: string }
+      - name: name
+        in: path
+        description: Kubernetes name of Secret to modify
+        schema: { type: string }
+      - name: key
+        description: Key to modify within Kubernetes Secret
+        schema: { type: string }
+    put:
+      summary: Update a secret value on an edge cluster
+      description: >
+        This endpoint accepts secret information, as a binary blob, and
+        arranges to securely make it available as a Kubernetes Secret on
+        the edge cluster. Once encrypted there is no way to retrieve the
+        information without access to the private key on the edge
+        cluster.
+      requestBody:
+        description: The secret information to encrypt, as a binary blob.
+        content:
+          application/octet-stream:
+            schema: { type: string, format: binary }
+    delete:
+      summary: Delete a secret value from an edge cluster
+      description: >
+        The requested key will be removed from the Secret. If the Secret
+        is now empty, the entire Secret will be removed. A successful
+        response from this endpoint does not indicate that the key has
+        actually been removed on the edge cluster yet.
+
+components:
+  parameters:
+    cluster:
+      name: cluster
+      in: path
+      description: Cluster UUID
+      schema: { type: string, format: uuid }
+
+  securitySchemes:
+    basic:
+      type: http
+      description: User/password HTTP Basic auth
+      scheme: Basic
+    gssapi:
+      type: http
+      description: HTTP Negotiate auth (Kerberos)
+      scheme: Negotiate
+    token:
+      type: http
+      description: HTTP bearer token auth
+      scheme: Bearer

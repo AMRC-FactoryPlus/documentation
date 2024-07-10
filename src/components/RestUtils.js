@@ -17,6 +17,24 @@ export const RestRequest = ({type, url, summary, description}) => {
     </div>;
 };
 
+function Parameter ({ param, refs }) {
+
+    const ref = "$ref" in param
+        ? getNestedValue(refs, param['$ref'].replace(/^#\/components\//, ''))
+        : {};
+    const e = { ...ref, ...param };
+
+    return <div className="
+            grid grid-cols-6 items-baseline gap-2 even:bg-brand-3 dark:even:bg-brand-80 odd:bg-brand-5
+            dark:odd:bg-brand-70 p-2 border-solid border-0
+            border-b border-brand-10 dark:border-brand-80 border-l border-r">
+        <code className="mr-auto">{e.name}</code>
+        <div>{e.in}</div>
+        <div>{JSON.stringify(e.required) ? 'Yes' : 'No'}</div>
+        <div className="col-span-3">{e.description}</div>
+    </div>
+}
+
 export const RestParameters = ({details, refs}) => (
     <div className={'flex flex-col flex-1 mb-3'}>
         <div className={'text-brand dark:text-white font-bold tracking-wide uppercase'}>Parameters</div>
@@ -28,38 +46,7 @@ export const RestParameters = ({details, refs}) => (
                     <div className={'font-bold'}>Required</div>
                     <div className={'font-bold'}>Description</div>
                 </div>
-                {
-                    details && details.some(e => '$ref' in e) && (
-                        Object.values(details).map(e => (
-                            <div className={'grid grid grid-cols-6 items-baseline gap-2 even:bg-brand-3 dark:even:bg-brand-80 odd:bg-brand-5' +
-                                ' dark:odd:bg-brand-70' +
-                                ' p-2' +
-                                ' border-solid border-0' +
-                                ' border-b border-brand-10 dark:border-brand-80 border-l border-r'}>
-                                <code className={'mr-auto'}>{getNestedValue(refs, e['$ref'].replace(/^#\/components\//, '')).name}</code>
-                                <div>{getNestedValue(refs, e['$ref'].replace(/^#\/components\//, '')).in}</div>
-                                <div>{JSON.stringify(getNestedValue(refs, e['$ref'].replace(/^#\/components\//, '')).required) ? 'Yes' : 'No'}</div>
-                                <div className={'col-span-3'}>{getNestedValue(refs, e['$ref'].replace(/^#\/components\//, '')).description ?? 'NONE'}</div>
-                            </div>
-                        ))
-                    )}
-
-
-                {
-                    details && !details.some(e => '$ref' in e) && (
-                        Object.values(details).map(e => (
-                            <div className={'grid grid-cols-6 items-baseline gap-2 even:bg-brand-3 dark:even:bg-brand-80 odd:bg-brand-5' +
-                                ' dark:odd:bg-brand-70' +
-                                ' p-2' +
-                                ' border-solid border-0' +
-                                ' border-b border-brand-10 dark:border-brand-80 border-l border-r'}>
-                                <code className={'mr-auto'}>{e.name}</code>
-                                <div>{e.in}</div>
-                                <div>{JSON.stringify(e.required) ? 'Yes' : 'No'}</div>
-                                <div className={'col-span-3'}>{e.description}</div>
-                            </div>
-                        ))
-                    )}
+                { details.map(p => <Parameter refs={refs} param={p}/>) }
             </div>
         </div>
     </div>

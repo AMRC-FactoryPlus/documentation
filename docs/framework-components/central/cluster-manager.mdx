@@ -20,21 +20,41 @@ clusters.
 
 <CentralCluster hilite="cluster-manager"/>
 
+The Cluster Manager mainly operates autonomously, acting on requests in
+the form of ConfigDB entries. To create a new cluster, first a UUID must
+be allocated under the _Edge cluster_ class. Then an _Edge cluster
+configuration_ ConfigDB entry must be created for this object,
+specifying the details for the new cluster.
+
+The Cluster Manager will pick up the new ConfigDB entry automatically
+and will commission the new cluster; this consists of creating and
+populating a Git repo within the local Git server to drive the new
+cluster. The status of this process is recorded in the corresponding
+_Edge cluster setup status_ entry; once that entry has the property
+`ready: true` the cluster is created and ready to be deployed. At this
+point the URL of a bootstrap script for the new cluster can be fetched
+from the Cluster Manager via its HTTP API.
+
+This bootstrap script will attach the new cluster to the Factory+
+installation as an edge cluster, create credentials for the cluster, and
+install the edge cluster infrastructure. Once it has been run the Edge
+Sync operator will be running on the edge cluster and this will keep the
+_Edge cluster status_ ConfigDB entry up to date. One of the items in
+this entry is a public key which can be used to encrypt secrets such
+that only the edge cluster can decrypt them.
+
+The Cluster Manager has an API endpoint to make use of this facility.
+This endpoint will accept secret information, encrypt it, and construct
+a Kubernetes SealedSecret resource containing the encrypted data. This
+will then be committed to the cluster's driving Git repo from where Flux
+running on the edge cluster will retrieve it. The Sealed Secrets
+operator running on the edge will decrypt the secret information and
+make it available on the edge cluster as a Kubernetes Secret.
+
 ## HTTP interface
 
-The Git server supports the standard Git protocol over HTTP, in addition
-to certain Factory+-specific endpoints. Authentication follows the
-normal Factory+ conventions: Basic or Negotiate will be accepted, or a
-Bearer token retrieved from the `/token` endpoint. Credentials are
-checked against the Factory+ Identity service and authorised via the
-Authorisation service.
-
-Git repos are accessible by two different URLs. Access by UUID, normally
-used by machines, uses the URL path `/uuid/{UUID}`. Access by path,
-intended for human users and not used by the Factory+ components
-internally, uses the path `/git/{path}`, where `{path}` is the `path`
-property from the ConfigDB entry governing this repository. These two
-URLs will access the same repo, with the same history.
+<OpenAPISpecRenderer url={useBaseUrl('/spec/cluster-manager.yaml')}
+    text={'the Cluster Manager component'}/>
 
 ## Well-Known UUIDs
 
@@ -45,6 +65,17 @@ appropriate classes.
 ### Configuration and discovery
 
 <WellKnownUUID type='Service Function' name='Cluster Manager'
-               uuid=''
+               uuid='2706aa43-a826-441e-9cec-cd3d4ce623c2'
                description='The Service UUID used for locating the Cluster Manager endpoints'/>
 
+<WellKnownUUID type="Class" name="Edge cluster"
+    uuid="f24d354d-abc1-4e32-98e1-0667b3e40b61"
+    description="ConfigDB Class used for edge cluster UUIDs"/>
+
+<WellKnownUUID type="Application" name="Edge cluster configuration"
+    uuid="bdb13634-0b3d-4e38-a065-9d88c12ee78d"
+    description="Requested configuration for an edge cluster"/>
+
+<WellKnownUUID type="Application" name="Edge cluster setup status"
+    uuid="747a62c9-1b66-4a2e-8dd9-0b70a91b6b75"
+    description="Private status entry used by the Cluster Manager"/>

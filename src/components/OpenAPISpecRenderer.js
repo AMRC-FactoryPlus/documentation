@@ -79,8 +79,8 @@ const OpenAPISpecRenderer = ({url, text}) => {
                 <div key={path}><Path.Provider value={{ path, servers, refs }}>
                     <div className={'border-solid border-transparent border-b-brand-10 mb-3'}>
                         <Summary summary={methods.summary} description={methods.description}/>
-                        <Methods methods={methods}/>
                         <Parameters params={methods.parameters}/>
+                        <Methods methods={methods}/>
                     </div>
                 </Path.Provider></div>
             ))}

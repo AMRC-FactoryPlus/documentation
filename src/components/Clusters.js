@@ -25,7 +25,7 @@ function FpCpt (props) {
 
     const hidden = (hilite && name != hilite);
     const colour = hidden ? `${Colours.light} opacity-40` : Colours[style ?? "light"];
-    const classes = `p-4 items-center flex ${Justify[justify]} ${layout} ${colour}`;
+    const classes = `p-4 items-center flex ${Justify[justify ?? "center"]} ${layout} ${colour}`;
     const direct = vertical ? { writingMode: "vertical-lr" } : {};
 
     const content = base 
@@ -84,9 +84,10 @@ export function EdgeCluster (props) {
         <FpCpt name="flux" style="mid" vertical justify="end" layout="w-[3vw]">Flux</FpCpt>
         <div className="grid grid-cols-3 gap-2">
             <FpCpt name="flux" style="mid" justify="end" layout="col-span-full h-[3vw]">Flux</FpCpt>
-            <FpCpt name="edge-sync" layout="ml-2">Edge Sync</FpCpt>
+            <FpCpt name="sealed-secrets" layout="ml-2">Sealed Secrets</FpCpt>
+            <FpCpt name="edge-sync">Edge Sync</FpCpt>
             <FpCpt name="monitor">Edge Monitor</FpCpt>
-            <FpCpt name="edge-agent">Edge Agents</FpCpt>
+            <FpCpt name="edge-agent" layout="ml-2 col-span-full">Edge Agents</FpCpt>
         </div>
     </Cluster>;
 }
