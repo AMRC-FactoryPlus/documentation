@@ -9,13 +9,77 @@ import { OpenSourceExample } from "../../../src/components/OpenSourceExample";
 
 # Edge Monitor
 
-The Edge Monitor monitors the status of the Edge Agents running on its cluster. It raises alerts over Sparkplug if an Edge Agent does not appear to be running correctly. It is also responsible for ensuring an Edge Agent reloads its configuration when an updated version becomes available from the ConfigDB.
+The Edge Monitor monitors the status of the Edge Agents running on its
+cluster. It raises alerts over Sparkplug if an Edge Agent does not
+appear to be running correctly. It is also responsible for ensuring an
+Edge Agent reloads its configuration when an updated version becomes
+available from the ConfigDB.
 
-<OpenSourceExample buttonText={'ACS Monitor Component'}
-                   repoUrl={'https://github.com/AMRC-FactoryPlus/acs-monitor'}></OpenSourceExample>
+<OpenSourceExample buttonText="ACS Monitor Component"
+    repoUrl="https://github.com/AMRC-FactoryPlus/amrc-connectivity-stack/tree/main/acs-monitor"/>
 
 ## Overview
 
 <EdgeCluster hilite="monitor"/>
 
+The edge monitors are driven by Kubernetes resources deployed from the
+Helm charts which deploy the Edge Agents. These SparkplugNode resources
+identify an Edge Agent or other Sparkplug Node which should be monitored
+by UUID. The monitor looks up the Sparkplug address of the Node in the
+ConfigDB and observes its output. If a Node does not publish any packets
+for several minutes, the monitor will send a rebirth request to check
+the Node is still active. If a response is not received the monitor will
+raise an alert over its own Sparkplug interface.
+
+If the Node is expected to be an Edge Agent (as specified in the
+SparkplugNode resource) the monitor will additionally verify that the
+Edge Agent is running with the current version of its configuration. The
+Edge Agent fetches its configuration from the ConfigDB at startup; along
+with the configuration, the ConfigDB returns an HTTP Etag identifying
+this particular revision of the config entry. The Edge Agent publishes
+this information in its Node birth certificate.
+
+The edge monitor watches for change-notify messages from the ConfigDB
+and when an Edge Agent configuration entry changes so that the Edge
+Agent is not using the most recent version, the monitor will send a CMD
+to the Edge Agent instructing it to reload its configuration. If the
+Edge Agent does not respond appropriately an alert is raised.
+
 ## MQTT interface
+
+The Monitor publishes as a Sparkplug Node, and should be configured to
+use the `Monitor` Node address under its cluster's Sparkplug Group. The
+monitor creates a Device under this Node for each Node it is monitoring.
+These Devices publish DBIRTH and DDEATH when the set of SparkplugNode
+resources on the cluster changes; the monitor devices do not go offline
+when the Nodes they are monitoring do.
+
+The Node publishes using the _Monitor Node_ schema UUID. An edge monitor
+publishes Link metrics linking the monitor Node to the UUID of the
+cluster it is responsible for. The Devices also publish Links, to the
+UUIDs of the devices they are monitoring. They also publish alert
+metrics for the alerts they can raise.
+
+## Well-known UUIDs
+
+These well-known UUIDs are part of the core framework and all **MUST**
+to be registered with the Configuration Store component under the
+appropriate classes.
+
+### Metrics
+
+<WellKnownUUID type="Metric schema" name="Monitor Node"
+   uuid="e3ef732b-ee69-46f0-8d1d-8a9cec432d83"
+   description="The schema UUID for a Monitor Node"/>
+<WellKnownUUID type="Metric schema" name="Monitor Device"
+    uuid="ab6c58b0-efe9-4e55-bde5-eaa4fd7c95b0"
+    description="The schema UUID for a Monitor Device"/>
+<WellKnownUUID type="Link relation" name="Monitor for device"
+    uuid="ec916189-f4f9-4fc7-af7e-724cc216e9e9"
+    description="Links to the Device UUID this monitor Device is monitoring"/>
+<WellKnownUUID type="Link relation" name="Monitor for cluster"
+    uuid="422d47e0-8761-43da-abd4-4f2adaef0d4a"
+    description="Links to the Cluster UUID this monitor Node is responsible for"/>
+<WellKnownUUID type="Alert" name="Device offline"
+    uuid="e6eff8b6-7b16-4827-9136-ac5202c0df59"
+    description="The monitored Node is offline or not responding"/>
