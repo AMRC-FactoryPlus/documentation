@@ -13,7 +13,7 @@ The Edge Monitor monitors the status of the Edge Agents running on its
 cluster. It raises alerts over Sparkplug if an Edge Agent does not
 appear to be running correctly. It is also responsible for ensuring an
 Edge Agent reloads its configuration when an updated version becomes
-available from the ConfigDB.
+available from the Config Store.
 
 <OpenSourceExample buttonText="ACS Monitor Component"
     repoUrl="https://github.com/AMRC-FactoryPlus/amrc-connectivity-stack/tree/main/acs-monitor"/>
@@ -26,7 +26,7 @@ The edge monitors are driven by Kubernetes resources deployed from the
 Helm charts which deploy the Edge Agents. These SparkplugNode resources
 identify an Edge Agent or other Sparkplug Node which should be monitored
 by UUID. The monitor looks up the Sparkplug address of the Node in the
-ConfigDB and observes its output. If a Node does not publish any packets
+Config Store and observes its output. If a Node does not publish any packets
 for several minutes, the monitor will send a rebirth request to check
 the Node is still active. If a response is not received the monitor will
 raise an alert over its own Sparkplug interface.
@@ -34,12 +34,12 @@ raise an alert over its own Sparkplug interface.
 If the Node is expected to be an Edge Agent (as specified in the
 SparkplugNode resource) the monitor will additionally verify that the
 Edge Agent is running with the current version of its configuration. The
-Edge Agent fetches its configuration from the ConfigDB at startup; along
-with the configuration, the ConfigDB returns an HTTP Etag identifying
+Edge Agent fetches its configuration from the Config Store at startup; along
+with the configuration, the Config Store returns an HTTP Etag identifying
 this particular revision of the config entry. The Edge Agent publishes
 this information in its Node birth certificate.
 
-The edge monitor watches for change-notify messages from the ConfigDB
+The edge monitor watches for change-notify messages from the Config Store
 and when an Edge Agent configuration entry changes so that the Edge
 Agent is not using the most recent version, the monitor will send a CMD
 to the Edge Agent instructing it to reload its configuration. If the

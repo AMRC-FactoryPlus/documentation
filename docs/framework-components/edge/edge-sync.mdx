@@ -22,8 +22,8 @@ other code required at the edge.
 <EdgeCluster hilite="edge-sync"/>
 
 The Edge Sync operator has no HTTP or MQTT API. It communicates with the
-central cluster via the ConfigDB. The operator has two roles: updating
-the status of the cluster in the ConfigDB, and arranging to deploy edge
+central cluster via the Config Store. The operator has two roles: updating
+the status of the cluster in the Config Store, and arranging to deploy edge
 deployments when requested.
 
 The status information about the cluster consists of these things:
@@ -40,10 +40,10 @@ edge cluster. The 'specialised host' taints are taints with the key
 should not be used for general-purpose workloads. The Helm charts used
 to deploy to the edge will avoid running workloads on these hosts unless
 they are specifically targetted to a particular host. The value of the
-taint is made available in the ConfigDB and can be used to provide
+taint is made available in the Config Store and can be used to provide
 information in user interfaces about the status of a host.
 
 The public key certificate is generated and kept up to date by the
 Sealed Secrets operator running on the edge. The Edge Sync operator
-pushes the certificate up to the ConfigDB so that the Cluster Manager
+pushes the certificate up to the Config Store so that the Cluster Manager
 can use it to encrypt secret information for this cluster.

@@ -36,7 +36,7 @@ paths:
     get:
       summary: Fetch cluster setup status
       description: >
-        The _Edge cluster setup status_ ConfigDB entries should not
+        The _Edge cluster setup status_ Config Store entries should not
         normally be accessible except to the Cluster Manager itself.
         This endpoint is suitable for polling to find out when a cluster
         is ready to be bootstrapped. Do not rely on any fields other

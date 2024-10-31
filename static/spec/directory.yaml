@@ -464,7 +464,7 @@ components:
                     description: >
                         A UUID identifying the category of alert this
                         represents. These UUIDs should be registered in
-                        the ConfigDB with at least a human-readable name
+                        the Config Store with at least a human-readable name
                         in the General Info app.
                     type: string
                     format: uuid

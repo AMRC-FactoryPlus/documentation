@@ -12,7 +12,7 @@ import { OpenSourceExample } from "../../../src/components/OpenSourceExample";
 The Git server provides a set of Git repositories hosted on the central
 cluster of the Factory+ installation and integrated with the Factory+
 framework. Creating and removing repositories is managed via the
-ConfigDB, and authentication against the Git server is integrated with
+Config Store, and authentication against the Git server is integrated with
 the Factory+ identity and authorisation framework.
 
 <OpenSourceExample buttonText={'ACS Git server Component'}
@@ -26,11 +26,11 @@ The Git server registers itself with the Factory+ Directory at startup.
 The service endpoints can be found via a Directory query for the Git
 service function UUID.
 
-Git repositories are managed through the ConfigDB, by creating entries
+Git repositories are managed through the Config Store, by creating entries
 under the 'Git repository' application. If a repository is closely
 associated with another object (for example, an edge cluster) the UUID
 of that object can be used to identify the repo as well, otherwise a new
-object should be created under the 'Git repository' ConfigDB class.
+object should be created under the 'Git repository' Config Store class.
 
 Creating an Application entry causes the repo to exist; removing it
 again will remove all access to the repo. The history will not be lost,
@@ -53,7 +53,7 @@ Git repos are accessible by two different URLs. Access by UUID, normally
 used by machines, uses the URL path `/uuid/{UUID}`. Access by path,
 intended for human users and not used by the Factory+ components
 internally, uses the path `/git/{path}`, where `{path}` is the `path`
-property from the ConfigDB entry governing this repository. These two
+property from the Config Store entry governing this repository. These two
 URLs will access the same repo, with the same history.
 
 <OpenAPISpecRenderer url={useBaseUrl('/spec/git.yaml')} text={'the Git server component'}/>

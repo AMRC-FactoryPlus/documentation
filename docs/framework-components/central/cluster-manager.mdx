@@ -21,12 +21,12 @@ clusters.
 <CentralCluster hilite="cluster-manager"/>
 
 The Cluster Manager mainly operates autonomously, acting on requests in
-the form of ConfigDB entries. To create a new cluster, first a UUID must
+the form of Config Store entries. To create a new cluster, first a UUID must
 be allocated under the _Edge cluster_ class. Then an _Edge cluster
-configuration_ ConfigDB entry must be created for this object,
+configuration_ Config Store entry must be created for this object,
 specifying the details for the new cluster.
 
-The Cluster Manager will pick up the new ConfigDB entry automatically
+The Cluster Manager will pick up the new Config Store entry automatically
 and will commission the new cluster; this consists of creating and
 populating a Git repo within the local Git server to drive the new
 cluster. The status of this process is recorded in the corresponding
@@ -39,7 +39,7 @@ This bootstrap script will attach the new cluster to the Factory+
 installation as an edge cluster, create credentials for the cluster, and
 install the edge cluster infrastructure. Once it has been run the Edge
 Sync operator will be running on the edge cluster and this will keep the
-_Edge cluster status_ ConfigDB entry up to date. One of the items in
+_Edge cluster status_ Config Store entry up to date. One of the items in
 this entry is a public key which can be used to encrypt secrets such
 that only the edge cluster can decrypt them.
 
@@ -70,7 +70,7 @@ appropriate classes.
 
 <WellKnownUUID type="Class" name="Edge cluster"
     uuid="f24d354d-abc1-4e32-98e1-0667b3e40b61"
-    description="ConfigDB Class used for edge cluster UUIDs"/>
+    description="Config Store Class used for edge cluster UUIDs"/>
 
 <WellKnownUUID type="Application" name="Edge cluster configuration"
     uuid="bdb13634-0b3d-4e38-a065-9d88c12ee78d"
