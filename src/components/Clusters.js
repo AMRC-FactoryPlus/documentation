@@ -54,7 +54,10 @@ function Cluster (props) {
 export function CentralCluster (props) {
     const { hilite } = props;
 
-    return <Cluster title="Central cluster" path="central" hilite={hilite}>
+    return <Cluster
+      title="Central Cluster"
+      path="central"
+      hilite={hilite}>
         <FpCpt name="identity" vertical style="dark" justify="end" layout="w-[3vw]">Identity</FpCpt>
         <div className="flex flex-col">
             <FpCpt name="identity" style="dark" layout="h-[3vw]"></FpCpt>
@@ -67,7 +70,7 @@ export function CentralCluster (props) {
             <FpCpt name="directory" layout="ml-2">Directory</FpCpt>
             <FpCpt name="configuration-store">Config Store</FpCpt>
             <FpCpt name="commands">Commands</FpCpt>
-            <FpCpt name="git">Git server</FpCpt>
+            <FpCpt name="git">Git Server</FpCpt>
             <FpCpt name="manager" layout="ml-2">Manager</FpCpt>
             <FpCpt name="data-warehouse">Data Warehouse</FpCpt>
             <FpCpt name="cluster-manager">Cluster Manager</FpCpt>
