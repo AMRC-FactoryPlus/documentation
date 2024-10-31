@@ -15,17 +15,17 @@ The MQTT component is the central communication hub through which all MQTT commu
 
 <CentralCluster hilite="mqtt"/>
 
-Similar to the [Data Warehouse Component](/docs/framework-components/core-components/data-warehouse), Factory+ does not prescribe a particular specification for the MQTT Component; it only necessitates that any chosen solution be MQTT 3.1 compatible. There are however a few requirements of any chosen MQTT broker that must be satisfied to ensure compatibility with Factory+.
+Similar to the [Data Warehouse Component](/docs/framework-components/central/data-warehouse), Factory+ does not prescribe a particular specification for the MQTT Component; it only necessitates that any chosen solution be MQTT 3.1 compatible. There are however a few requirements of any chosen MQTT broker that must be satisfied to ensure compatibility with Factory+.
 
 ### Authentication & Authorisation
-Any chosen MQTT broker must be able to authenticate users via Kerberos and enforce fine-grained access control for topic management via rules from the [Authorisation Component](/docs/framework-components/core-components/authorisation).
+Any chosen MQTT broker must be able to authenticate users via Kerberos and enforce fine-grained access control for topic management via rules from the [Authorisation Component](/docs/framework-components/central/authorisation).
 
 :::info Using HiveMQ?
 If you are using [HiveMQ](https://www.hivemq.com/), our [Factory+ plugin](https://github.com/AMRC-FactoryPlus/hivemq-krb) will handle this for you.
 :::
 ## Well-Known UUIDs
 
-These well-known UUIDs are part of the core framework and all **MUST** to be registered with the [Configuration Store](/docs/framework-components/core-components/configuration-store) component under the appropriate classes.
+These well-known UUIDs are part of the core framework and all **MUST** to be registered with the [Configuration Store](/docs/framework-components/central/configuration-store) component under the appropriate classes.
 
 ### Identity
 

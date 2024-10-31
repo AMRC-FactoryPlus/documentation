@@ -6,7 +6,7 @@ import { EdgeCluster } from "../../../src/components/Clusters";
 
 # Edge Agent
 
-The Edge Agent is the workhorse of Factory+, operating at the periphery, gathering data from devices, normalising it into [Data Schemas](/docs/schemas), converting the packets into Sparkplug messages, and transmitting them to the [MQTT Component](/docs/framework-components/core-components/mqtt).
+The Edge Agent is the workhorse of Factory+, operating at the periphery, gathering data from devices, normalising it into [Data Schemas](/docs/schemas), converting the packets into Sparkplug messages, and transmitting them to the [MQTT Component](/docs/framework-components/central/mqtt).
 
 <OpenSourceExample buttonText={'ACS Edge Agent Component'} repoUrl={'https://github.com/AMRC-FactoryPlus/acs-edge'}></OpenSourceExample>
 
@@ -14,7 +14,7 @@ The Edge Agent is the workhorse of Factory+, operating at the periphery, gatheri
 
 <EdgeCluster hilite="edge-agent"/>
 
-Although the Edge Agent plays a crucial role in the framework there are few moving parts because all configuration is authored in the [Manager Component](/docs/framework-components/core-components/manager); the Edge Agent simply follows orders.
+Although the Edge Agent plays a crucial role in the framework there are few moving parts because all configuration is authored in the [Manager Component](/docs/framework-components/central/manager); the Edge Agent simply follows orders.
   
  ```mermaid
 graph LR
@@ -26,7 +26,7 @@ graph LR
 Implementations of Edge Agents:
 - **MUST** conform to the [Sparkplug V3 specification](https://sparkplug.eclipse.org/specification/version/3.0/) (i.e. they **MUST** utilise the Sparkplug payload model **MUST** publish to the correct Sparkplug topics, they **MUST** encode packets using Protocol Buffers and they **MUST** register/publish `DDEATH`/`NDEATH` and `DBIRTH`/`NBIRTH` messages).
 - **SHOULD** be ephemeral, immutable and idempotent
-- **MUST** immediately request their configuration from the [Manager Component](/docs/framework-components/core-components/manager) using the `/api/edge-agent-config` endpoint when it starts. The configuration returned will have been validated by the Manager to ensure that it conforms to the [Edge Agent Configuration Schema](https://github.com/AMRC-FactoryPlus/schemas/blob/main/Edge_Agent_Config.json), but Edge Agents **SHOULD** also validate that this is the case before they load the configuration.
+- **MUST** immediately request their configuration from the [Manager Component](/docs/framework-components/central/manager) using the `/api/edge-agent-config` endpoint when it starts. The configuration returned will have been validated by the Manager to ensure that it conforms to the [Edge Agent Configuration Schema](https://github.com/AMRC-FactoryPlus/schemas/blob/main/Edge_Agent_Config.json), but Edge Agents **SHOULD** also validate that this is the case before they load the configuration.
 
 
 Before the configuration is loaded, all sensitive information placeholders **MUST** be replaced with the real values, which **MUST** be made available to the Edge Agent at runtime.

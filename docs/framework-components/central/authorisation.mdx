@@ -17,14 +17,14 @@ The Authorisation component is an essential part Factory+, as it ensures that ac
 
 The Factory+ Authorisation component can be broken down into the following elements:
 
-- **Principals**: Principals are the entities (users, services, or applications) that interact with the architecture and request access to its resources. Each principal is identified using a unique ID, referred to as a UUID (Universally Unique Identifier) that conforms to RFC4122. The [Identity](/docs/framework-components/core-components/identity) component is responsible for managing the principals.
+- **Principals**: Principals are the entities (users, services, or applications) that interact with the architecture and request access to its resources. Each principal is identified using a unique ID, referred to as a UUID (Universally Unique Identifier) that conforms to RFC4122. The [Identity](/docs/framework-components/central/identity) component is responsible for managing the principals.
 - **Access Control Lists (ACLs)**: ACLs are data structures that specify the access permissions for resources in the architecture. Each entry in an ACL defines a particular action that a principal is allowed or denied to perform on a specific resource. ACLs use UUIDs to reference both the principals and the resources.
 - **Resource Management**: The resources in the architecture are managed by different components, and each component is responsible for defining its own ACLs. This allows for a decentralised approach to access control, where each component can define its own rules based on its unique requirements.
 - **Access Control Enforcement**: When a principal attempts to access a resource, the Authorisation component checks the corresponding ACLs to determine if the action is allowed. If the principal's UUID is found in the ACL with the appropriate permissions, access is granted; otherwise, access is denied.
 
 
 ### Linking Identity
-The Authorisation component in Factory+ plays a crucial role in managing the relationship between internal Principal UUIDs and [Identities](/docs/framework-components/core-components/identity). The Authorisation component maintains a mapping table that links each Principal UUID to its corresponding Kerberos principal, ensuring that access control requests from authenticated entities can be resolved. With the Principal UUID and the associated ACL information, the Authorisation component can evaluate the user's permissions on the requested resources, ensuring that only authorised actions are allowed.
+The Authorisation component in Factory+ plays a crucial role in managing the relationship between internal Principal UUIDs and [Identities](/docs/framework-components/central/identity). The Authorisation component maintains a mapping table that links each Principal UUID to its corresponding Kerberos principal, ensuring that access control requests from authenticated entities can be resolved. With the Principal UUID and the associated ACL information, the Authorisation component can evaluate the user's permissions on the requested resources, ensuring that only authorised actions are allowed.
 
 ### Access Control Entries (ACEs)
 

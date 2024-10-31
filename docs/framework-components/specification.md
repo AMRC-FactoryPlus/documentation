@@ -19,7 +19,7 @@ In order for a component to establish contact with another component, it must be
 Factory+ components **SHOULD** provide a Sparkplug interface and a HTTP interface where appropriate.
 
 The Sparkplug interface allows components to:
-- Register themselves with the [Directory](/docs/framework-components/core-components/directory) component, enabling clients to discover and interact with the components.
+- Register themselves with the [Directory](/docs/framework-components/central/directory) component, enabling clients to discover and interact with the components.
 - Provide asynchronous notifications to clients, which is particularly useful for real-time updates, status changes, or event-driven communication. As MQTT is a lightweight and low-latency protocol, it's well-suited for this purpose.
 
 The HTTP interface is designed to handle bulk request-response communication that may not be suitable for transmission over multicast mediums like MQTT. This interface is particularly useful for:
@@ -48,7 +48,7 @@ The HTTP interface is designed to handle bulk request-response communication tha
 
 * The HTTP interface URL does not have to point to the root of a server. When clients use component API paths, they must ensure that they properly incorporate any path components included in the published component URL. This consideration is crucial for accurately accessing and interacting with the component's resources and functionalities.
 
-* All requests **SHOULD** require and **MUST** accept HTTP Basic Auth, utilising the [Identity](/docs/framework-components/core-components/identity) component to authenticate.
+* All requests **SHOULD** require and **MUST** accept HTTP Basic Auth, utilising the [Identity](/docs/framework-components/central/identity) component to authenticate.
 
 * Component API endpoints **SHOULD** use JSON for request and response bodies, unless there is a compelling reason to choose an alternative format.
 
