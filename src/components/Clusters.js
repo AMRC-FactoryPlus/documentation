@@ -24,7 +24,7 @@ function FpCpt (props) {
     const { base, hilite } = useContext(Ctx);
 
     const hidden = (hilite && name != hilite);
-    const colour = hidden ? `${Colours.light} opacity-40` : Colours[style ?? "light"];
+    const colour = hidden ? `${Colours.light} opacity-30` : Colours[style ?? "light"];
     const classes = `p-4 items-center flex ${Justify[justify ?? "center"]} ${layout} ${colour}`;
     const direct = vertical ? { writingMode: "vertical-lr" } : {};
 
