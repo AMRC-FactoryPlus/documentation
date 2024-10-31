@@ -65,7 +65,7 @@ export function CentralCluster (props) {
             <FpCpt name="identity" style="dark" justify="end" layout="col-span-full h-[3vw]">Identity</FpCpt>
             <FpCpt name="authorisation" style="mid" justify="end" layout="col-span-full h-[3vw]">Authorisation</FpCpt>
             <FpCpt name="directory" layout="ml-2">Directory</FpCpt>
-            <FpCpt name="configuration-store">Config DB</FpCpt>
+            <FpCpt name="configuration-store">Config Store</FpCpt>
             <FpCpt name="commands">Commands</FpCpt>
             <FpCpt name="git">Git server</FpCpt>
             <FpCpt name="manager" layout="ml-2">Manager</FpCpt>
