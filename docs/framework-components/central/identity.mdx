@@ -1,0 +1,28 @@
+---
+sidebar_position: 1
+---
+
+import { CentralCluster } from "../../../src/components/Clusters";
+
+# Identity
+
+Factory+ utilises [Kerberos](https://web.mit.edu/kerberos/) as its identity provider to enhance the security and authentication processes within the architecture. By utilising Kerberos, Factory+ ensures that users and services can authenticate themselves in a secure and reliable manner, while also allowing for seamless integration with external systems that rely on the same authentication mechanism and/or other Factory+ deployments.
+
+<OpenSourceExample buttonText={'ACS Identity Component'} repoUrl={'https://github.com/AMRC-FactoryPlus/acs-identity'}></OpenSourceExample>
+
+## Overview
+
+<CentralCluster hilite="identity"/>
+
+Kerberos is a network authentication protocol designed to provide strong, secure authentication for client-server applications. It was developed at the Massachusetts Institute of Technology (MIT) in the 1980s and has become a widely adopted standard for secure authentication in various systems, including Windows domains and Unix environments.
+
+The key features of Kerberos include:
+
+- **Mutual Authentication**: Kerberos ensures that both the client and server can verify each other's identity, preventing potential attacks like eavesdropping, man-in-the-middle, and impersonation.
+- **Single Sign-On (SSO)**: Once a user has authenticated with Kerberos, they can access multiple services and applications within the network without having to re-authenticate, simplifying the user experience and reducing the need for multiple sets of credentials.
+- **Symmetric Key Cryptography**: Kerberos uses symmetric key cryptography for encrypting and decrypting messages between clients and servers, ensuring the confidentiality and integrity of data.
+- **Ticket-Based Authentication**: The core concept of Kerberos is the use of "tickets" to grant access to services. When a user authenticates with the Kerberos Key Distribution Center (KDC), they receive a Ticket Granting Ticket (TGT), which can then be used to request service-specific tickets without requiring further authentication.
+- **Scalability**: Kerberos is designed to support large-scale networks with numerous clients and services, making it suitable for
+various organisational sizes and structures.
+
+For more information on Kerberos, [view the documentation](https://web.mit.edu/kerberos/) on the MIT website.

@@ -1,0 +1,73 @@
+---
+sidebar_position: 10
+---
+
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import { CentralCluster } from "../../../src/components/Clusters";
+import OpenAPISpecRenderer from "../../../src/components/OpenAPISpecRenderer";
+import { OpenSourceExample } from "../../../src/components/OpenSourceExample";
+
+# Central Monitor
+
+The Monitor code runs on every cluster, both the central cluster and the
+edge clusters. The instance on the central cluster operates a little
+differently from the instances on the edge.
+
+<OpenSourceExample buttonText={'ACS Monitor Component'}
+                   repoUrl={'https://github.com/AMRC-FactoryPlus/acs-monitor'}></OpenSourceExample>
+
+## Overview
+
+<CentralCluster hilite="monitor"/>
+
+The central Monitor relies on the Config Store to find the list of clusters
+to monitor. The monitor monitors every cluster which has a _Cluster
+status_ entry, indicating that the cluster has been successfully
+bootstrapped and the Edge Sync operator on the cluster was operating
+correctly at some point.
+
+Having determined the list of clusters to monitor, the central monitor
+then watches for the Sparkplug output of the edge monitor on each
+cluster. The Node address of the edge monitor Node is currently
+determined by a fixed rule: the cluster has a Sparkplug Group associated
+with it, and the edge monitor must always use the `Monitor` Node address
+within that group. If an edge monitor node goes offline or will not
+respond to CMDs then the central monitor raises an alert.
+
+## MQTT interface
+
+The Monitor publishes as a Node. The Node metrics currently hold no
+useful information beyond identifying the Node as a monitor node. For
+each cluster monitored, a Device is created under the Node. This Device
+publishes Link metrics linking to the edge monitor Node being monitored.
+Cluster monitor devices publish DBIRTH and DDEATH when the list of
+monitored clusters changes; the monitor device does not go offline when
+the cluster becomes inaccessible.
+
+If an edge monitor on a cluster has not published any packets in several
+minutes a rebirth CMD will be sent. If the edge monitor does not respond
+then the central monitor Device will raise an alert indicating that the
+cluster is offline. The current set of alerts can be accessed via the
+alerts API on the Directory.
+
+## Well-Known UUIDs
+
+These well-known UUIDs are part of the core framework and all **MUST**
+to be registered with the Configuration Store component under the
+appropriate classes.
+
+### Metrics
+
+<WellKnownUUID type="Metric schema" name="Monitor Node"
+   uuid="e3ef732b-ee69-46f0-8d1d-8a9cec432d83"
+   description="The schema UUID for a Monitor Node"/>
+<WellKnownUUID type="Metric schema" name="Monitor Device"
+    uuid="ab6c58b0-efe9-4e55-bde5-eaa4fd7c95b0"
+    description="The schema UUID for a Monitor Device"/>
+<WellKnownUUID type="Link relation" name="Monitor for device"
+    uuid="ec916189-f4f9-4fc7-af7e-724cc216e9e9"
+    description="Links to the Device UUID this monitor Device is monitoring"/>
+<WellKnownUUID type="Alert" name="Device offline"
+    uuid="e6eff8b6-7b16-4827-9136-ac5202c0df59"
+    description="The monitored Node is offline or not responding"/>
+

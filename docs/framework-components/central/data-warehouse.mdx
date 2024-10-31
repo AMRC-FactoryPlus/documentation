@@ -1,0 +1,49 @@
+---
+sidebar_position: 8
+---
+
+import { CentralCluster } from "../../../src/components/Clusters";
+import {OpenSourceExample} from "../../../src/components/OpenSourceExample";
+
+# Data Warehouse
+
+The Data Warehouse component serves as the storage hub for all metrics, listening to all messages transmitted from the edge and persisting them in a structured format according to the appropriate [schema](/docs/schemas).
+
+<OpenSourceExample buttonText={'ACS Data Warehouse Component'} repoUrl={'https://github.com/AMRC-FactoryPlus/influxdb-sparkplug-ingester'}></OpenSourceExample>
+
+## Overview
+
+<CentralCluster hilite="data-warehouse"/>
+
+Similar to the [MQTT Component](/docs/framework-components/central/mqtt), Factory+ does not prescribe a particular specification for the Data Warehouse Component; it only necessitates that any chosen solution be Sparkplug-compatible. While future developments may embrace or create a standard for accessing data from the Data Warehouse Component, the current method for data retrieval remains unique to each solution.
+
+Nonetheless, there are several Factory+ specific considerations to bear in mind, such as access control.
+
+## Well-Known UUIDs
+
+These well-known UUIDs are part of the core framework and all **MUST** to be registered with the Configuration Store Component under the appropriate classes.
+
+### Identity
+
+<WellKnownUUID type='Service Function' name='Data Warehouse'
+               uuid='a8e5a73f-2dd1-4cda-8e46-bc6cedb14269'
+               description='The server identity of the Data Warehouse Component that provides the service'/>
+
+---
+
+<WellKnownUUID type='Service Account' name='Data Warehouse'
+               uuid='388ddbdc-4eb4-4ae8-bbd0-9be32f3c31e8'
+               description='The client identity of the Data Warehouse Component used to communicate with other services'/>
+
+### Roles
+
+<Permission type='Role' name='Data Warehouse'
+            description='A Role for the Data Warehouse Component'
+            uuid='6958c812-fbe2-4e6c-b997-6f850b89f679'/>
+
+The `Data Warehouse` role **MUST** be granted to the `Data Warehouse` Service Account (`6958c812-fbe2-4e6c-b997-6f850b89f679`) and have the following Permissions:
+
+| Permission                       | UUID                                   |
+|----------------------------------|----------------------------------------|
+| MQTT: Subscribe & Read Whole Namespace | `81833dbb-1150-4078-b1db-978c646ba73e` |
+| Commands: Rebirth                     | `fbb9c25d-386d-4966-a325-f16471d9f7be` |

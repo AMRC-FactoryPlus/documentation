@@ -3,30 +3,11 @@ sidebar_position: 4
 ---
 
 import useBaseUrl from "@docusaurus/useBaseUrl";
-import OpenAPISpecRenderer from "../../../src/components/OpenAPISpecRenderer";import {OpenSourceExample} from "../../../src/components/OpenSourceExample";
+import { CentralCluster } from "../../../src/components/Clusters";
+import OpenAPISpecRenderer from "../../../src/components/OpenAPISpecRenderer";
+import {OpenSourceExample} from "../../../src/components/OpenSourceExample";
 
 # Configuration Store
-
-export const ComponentOverview = () => (
-    <div className="mb-10 mx-auto text-center w-full flex justify-center">
-        <div className="p-4 bg-brand-20 dark:bg-brand-90 w-[3vw] flex items-center justify-end dark:text-brand opacity-40" style={{writingMode: "vertical-lr"}}>Identity</div>
-        <div className="flex flex-col">
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-brand h-[3vw] opacity-40"></div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 opacity-40 dark:text-white flex-1 mt-2 ml-2 w-[3vw] flex items-center justify-end text-brand" style={{writingMode: "vertical-lr"}}>Authorisation</div>
-        </div>
-        <div className="grid grid-cols-5 gap-2">
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-brand col-span-full h-[3vw] flex items-center justify-end opacity-40">Identity</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 opacity-40 dark:text-white col-span-full h-[3vw] flex items-center justify-end text-brand">Authorisation</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 ml-2">Directory</div>
-            <div className="p-4 bg-brand-80 dark:bg-brand-40 text-white dark:text-brand flex items-center justify-center">Configuration Store</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Manager</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Commands</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Data Warehouse</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">MQTT</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">Edge Agents</div>
-        </div>
-    </div>
-);
 
 The Configuration Store component serves as a framework-aware centralised repository for applications utilising Factory+ to store data, settings and other information associated with Factory+ entities. Storing data centrally facilitates the sharing of metadata among applications without duplicating definitions within applications and eliminates the need to incorporate the information in the Sparkplug birth certificate, which would result in size increments with each new metadata addition.
 
@@ -34,9 +15,9 @@ The Configuration Store component serves as a framework-aware centralised reposi
 
 ## Overview
 
-<ComponentOverview></ComponentOverview>
+<CentralCluster hilite="configuration-store"/>
 
-Configuration Store component entries are saved as JSON documents.
+Config Store component entries are saved as JSON documents.
 
 Every category of configuration within the database is distinguished by an `Application_UUID`. While these UUIDs typically identify configuration specific to an individual application, they can also represent generic data utilised by multiple applications.
 
@@ -45,7 +26,7 @@ The fundamental design concept for the Configuration Store component stipulates 
 Within the Configuration Store component, an entry can be stored for any object identified by a UUID specific to a given application. The various object types represented by UUIDs can be configured by the administrator, initially including `Applications`, `Devices`, and `Schemas`.
 
 - **Applications**, as defined above, can store global defaults using their respective `Application_UUID`.
-- **Devices** correspond to Sparkplug Devices; refer to the [Directory component specification](/docs/framework-components/core-components/directory) for information on locating a device's `Instance_UUID`.
+- **Devices** correspond to Sparkplug Devices; refer to the [Directory component specification](/docs/framework-components/central/directory) for information on locating a device's `Instance_UUID`.
 - **Schemas** pertain to Factory+ schemas as outlined in the [Schema specification](/docs/schemas) and are identified by the schema's `Schema_UUID`.
 
 ## Application Schema Requirements

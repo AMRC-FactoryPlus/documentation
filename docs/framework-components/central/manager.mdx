@@ -1,31 +1,11 @@
 ---
-sidebar_position: 5
+sidebar_position: 7
 ---
 
 import useBaseUrl from "@docusaurus/useBaseUrl";
+import { CentralCluster } from "../../../src/components/Clusters";
 
 # Manager
-
-export const ComponentOverview = () => (
-    <div className="mb-10 mx-auto text-center w-full flex justify-center">
-        <div className="p-4 bg-brand-20 dark:bg-brand-90 w-[3vw] flex items-center justify-end dark:text-brand opacity-40" style={{writingMode: "vertical-lr"}}>Identity</div>
-        <div className="flex flex-col">
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-brand h-[3vw] opacity-40"></div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 opacity-40 dark:text-white flex-1 mt-2 ml-2 w-[3vw] flex items-center justify-end text-brand" style={{writingMode: "vertical-lr"}}>Authorisation</div>
-        </div>
-        <div className="grid grid-cols-5 gap-2">
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-brand col-span-full h-[3vw] flex items-center justify-end opacity-40">Identity</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 opacity-40 dark:text-white col-span-full h-[3vw] flex items-center justify-end text-brand">Authorisation</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 ml-2">Directory</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Configuration Store</div>
-            <div className="p-4 bg-brand-80 dark:bg-brand-40 text-white dark:text-brand flex items-center justify-center">Manager</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Commands</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Data Warehouse</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">MQTT</div>
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">Edge Agents</div>
-        </div>
-    </div>
-);
 
 The primary function of the Factory+ Manager component is to offer an interface for configuring, storing, and delivering edge agent configurations to the respective edge agents. Despite its straightforward API specification, implementations of the Manager component are great places to incorporate user-friendly controls for interacting with other framework components, thereby acting as a central hub for user engagement with the overall architecture. For example, although not required by the specification, Managers may provide a web interface to add and manage roles and permissions for the Authorisation component or a way to manage files via the Files plugin component API.
 
@@ -33,7 +13,7 @@ The primary function of the Factory+ Manager component is to offer an interface 
 
 ## Overview
 
-<ComponentOverview></ComponentOverview>
+<CentralCluster hilite="manager"/>
 
 - The Manager **MUST** offer a user interface enabling device configuration, including general information, connectivity, and schema mapping.
 - The Manager **MUST** ensure compliance with the [Edge Agent Configuration Schema](https://github.com/AMRC-FactoryPlus/schemas/blob/main/Edge_Agent_Config.json) prior to considering a configuration valid and being served to an edge agent.

@@ -3,60 +3,12 @@ sidebar_position: 2
 ---
 
 import useBaseUrl from "@docusaurus/useBaseUrl";
-import OpenAPISpecRenderer from "../../../src/components/OpenAPISpecRenderer";import {
-    OpenSourceExample
-} from "../../../src/components/OpenSourceExample";
+import { CentralCluster } from "../../../src/components/Clusters";
+import OpenAPISpecRenderer from "../../../src/components/OpenAPISpecRenderer";
+import { OpenSourceExample } from "../../../src/components/OpenSourceExample";
 
 # Directory
 
-
-export const ComponentOverview = () => (
-    <div className="mb-10 mx-auto text-center w-full flex justify-center">
-        <div
-            className="p-4 bg-brand-20 dark:bg-brand-90 w-[3vw] flex items-center justify-end dark:text-brand opacity-40"
-            style={{writingMode: "vertical-lr"}}>Identity
-        </div>
-        <div className="flex flex-col">
-            <div className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-brand h-[3vw] opacity-40"></div>
-            <div
-                className="p-4 bg-brand-20 dark:bg-brand-90 opacity-40 dark:text-white flex-1 mt-2 ml-2 w-[3vw] flex items-center justify-end text-brand"
-                style={{writingMode: "vertical-lr"}}>Authorisation
-            </div>
-        </div>
-        <div className="grid grid-cols-5 gap-2">
-            <div
-                className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-brand col-span-full h-[3vw] flex items-center justify-end opacity-40">Identity
-            </div>
-            <div
-                className="p-4 bg-brand-20 dark:bg-brand-90 opacity-40 dark:text-white col-span-full h-[3vw] flex items-center justify-end text-brand">Authorisation
-            </div>
-            <div
-                className="p-4 bg-brand-80 dark:bg-brand-40 text-white dark:text-brand flex items-center justify-center ml-2 ">Directory
-            </div>
-            <div
-                className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Configuration
-                Store
-            </div>
-            <div
-                className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Manager
-            </div>
-            <div
-                className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Commands
-            </div>
-            <div
-                className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40">Data
-                Warehouse
-            </div>
-            <div
-                className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">MQTT
-            </div>
-            <div
-                className="p-4 bg-brand-20 dark:bg-brand-90 dark:text-white text-brand flex items-center justify-center opacity-40 col-span-full ml-2">Edge
-                Agent
-            </div>
-        </div>
-    </div>
-);
 
 The Directory component is designed to help applications, users, and other components find the devices and services they require. By monitoring Sparkplug birth and death messages, it keeps a comprehensive registry of devices and services, including their current status, schemas, and endpoints, making it easier for consuming applications to locate them. Instructions on how consuming applications should locate and connect to the Directory is outlined in the [examples](#examples) section.
 
@@ -65,7 +17,7 @@ The Directory component is designed to help applications, users, and other compo
 
 ## Overview
 
-<ComponentOverview></ComponentOverview>
+<CentralCluster hilite="directory"/>
 
 As described in the Factory+ Schemas specification, every device participating in the Factory+ architecture, [including those nested within a physical device](/docs/schemas#reusability), is assigned a persistent `Instance_UUID` for identification purposes. This UUID is positioned alongside the `Schema_UUID` at all birth certificate levels, allowing devices to establish their identity and the schemas that they are conforming to. The Directory component monitors the namespace for birth certificates issued by devices and uses this information to track schema usage and the current Sparkplug topic (group, node, device) on which devices are publishing, allowing clients to locate specific devices or devices conforming to specific schemas. By maintaining the link between `Instance_UUIDs` and Sparkplug topics, devices can be physically moved, altering their Sparkplug address, whilst preserving their identity throughout the architecture.
 
