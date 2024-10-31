@@ -28,7 +28,7 @@ function FpCpt (props) {
     const classes = `p-4 items-center flex ${Justify[justify ?? "center"]} ${layout} ${colour}`;
     const direct = vertical ? { writingMode: "vertical-lr" } : {};
 
-    const content = base 
+    const content = base
         ? <a href={useBaseUrl(`${base}/${name}`)} style={{ color: "inherit" }}>{children}</a>
         : children;
 
@@ -43,9 +43,19 @@ function Cluster (props) {
 
     return <div className="mb-10 mx-auto text-center w-full flex justify-center">
         <div className="flex flex-col">
-            <FpCpt style="white" justify="start" layout="mb-2 h-[3vw] w-full">{title}</FpCpt>
-            <div className="flex">
-                <Ctx.Provider value={ctx}>{children}</Ctx.Provider>
+            <div
+              className="p-2 ring ring-brand-20 bg-brand-5 rounded-lg">
+                <div className="uppercase font-bold tracking-wider text-brand-60">
+                    {title}
+                </div>
+                <div
+                  className="p-2 border border-3 border-red">
+                    <div
+                      className="flex">
+                        <Ctx.Provider
+                          value={ctx}>{children}</Ctx.Provider>
+                    </div>
+                </div>
             </div>
         </div>
     </div>;
@@ -53,15 +63,16 @@ function Cluster (props) {
 
 export function CentralCluster (props) {
     const { hilite } = props;
-
+    
     return <Cluster
       title="Central Cluster"
       path="central"
       hilite={hilite}>
-        <FpCpt name="identity" vertical style="dark" justify="end" layout="w-[3vw]">Identity</FpCpt>
+        <FpCpt
+          name="identity" vertical style="dark" justify="end" layout="w-[3vw]">Identity</FpCpt>
         <div className="flex flex-col">
             <FpCpt name="identity" style="dark" layout="h-[3vw]"></FpCpt>
-            <FpCpt name="authorisation" style="mid" vertical justify="end" 
+            <FpCpt name="authorisation" style="mid" vertical justify="end"
                 layout="flex-1 mt-2 ml-2 w-[3vw]">Authorisation</FpCpt>
         </div>
         <div className="grid grid-cols-4 gap-2">
