@@ -22,15 +22,20 @@ non-industrial IoT(IIOT) Factory+ data producers and consumers.
 
 The UNS is one of two namespaces Factory+ components publish and subscribe to. The Sparkplug namespace facilitates data
 collection in levels 1 and 2 of the [ISA-95 functional model](https://www.isa.org/intech-home/2021/october-2021/features/beyond-the-pyramid-using-isa95-for-industry-4-0-an),
-while the UNS serves as a means of communication for components at levels 3 and 4 (MES and ERP systems). Data from
-the edge is published to the Sparkplug namespace and then republished to the UNS by the UNS ingester component complying
+while the UNS serves as a means of communication for components at levels 3 and above (MES and ERP systems). Data from
+the edge is published to the Sparkplug namespace and then republished to the UNS by the UNS Ingester component, complying
 with the UNS topic and data structure specification.
+
+### Schema
+The ISA-95 hierarchy for a device is defined by the [Device Information Schema](https://github.com/AMRC-FactoryPlus/schemas/blob/main/Common/Device_Information-v1.json)
+under `"ISA95_Hierarchy"` published on `DBRITH`.
+* The ISA-95 hierarchy **MUST** be populated in order for the Sparkplug UNS Ingester to republish packets to the UNS.
 
 
 ### Topic Structure
 The UNS Topic structure must follow the standard: `<ISA-95>/<Source>/<SchemaPath>`.
 
-* All topics **MUST** be prefixed with the ISA-95 structure.
+* All topics **MUST** be prefixed with the ISA-95 hierarchy.
 
 | Name                        | Optional |
 |-----------------------------|----------|
