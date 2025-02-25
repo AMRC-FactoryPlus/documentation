@@ -1,0 +1,104 @@
+---
+sidebar_position: 12
+---
+
+import {CentralCluster} from "../../../src/components/Clusters";
+import {OpenSourceExample} from "../../../src/components/OpenSourceExample";
+
+# UNS
+
+The UNS (Unified Namespace) is the human-readable "single source of truth" for real-time communication between
+non-industrial IoT (IIoT) Factory+ data producers and consumers.
+
+<OpenSourceExample buttonText={'ACS UNS Component'}
+                   repoUrl={'https://github.com/AMRC-FactoryPlus/amrc-connectivity-stack/tree/main/uns-ingester-sparkplug'}>
+</OpenSourceExample>
+
+## Overview
+
+<CentralCluster hilite="UNS"/>
+
+The UNS is one of two namespaces that Factory+ components use for publishing and subscribing. The Sparkplug namespace facilitates data
+collection in levels 1 and 2 of the [ISA-95 functional model](https://www.isa.org/intech-home/2021/october-2021/features/beyond-the-pyramid-using-isa95-for-industry-4-0-an),
+while the UNS serves as a means of communication for components at levels 3 and above (MES and ERP systems). Data from
+the edge is published to the Sparkplug namespace and then republished to the UNS by the UNS Ingester component, complying
+with the UNS topic and data structure specification.
+
+### Schema
+The ISA-95 hierarchy for a device is defined by the [Device Information Schema](https://github.com/AMRC-FactoryPlus/schemas/blob/main/Common/Device_Information-v1.json)
+under `"ISA95_Hierarchy"` published on `DBRITH`.
+* The ISA-95 hierarchy **MUST** be populated for the Sparkplug UNS Ingester to republish packets to the UNS.
+
+### Topic Structure
+The UNS Topic structure must follow the standard: `<ISA-95>/<Source>/<SchemaPath>`.
+
+* All topics **MUST** be prefixed with the ISA-95 hierarchy.
+
+| Name          | Optional |
+|--------------|----------|
+| `Enterprise` | No       |
+| `Site`       | Yes      |
+| `Area`       | Yes      |
+| `Work Centre`| Yes      |
+| `Work Unit`  | Yes      |
+
+* Topics **MUST** specify their source (Edge, MES, etc.).
+* Topics **MUST** contain the schema path to the value being published.
+
+**Example:** `CompanyA/SiteB/Machining/Edge/Power/Voltage`
+
+### Packet Structure
+
+:::caution MQTT Version
+The MQTT broker **MUST** support MQTTv5 to enable custom properties defined in the payload specification.
+:::
+
+#### Payload
+The UNS packet structure consists of the latest value and timestamp. The structure also supports
+batched metrics, with the "Batch" property containing an array of values and timestamps.
+
+| Property    | Type   | Description                                        |
+|------------|--------|----------------------------------------------------|
+| `Value`    | string | The value to publish                               |
+| `Timestamp`| string | The timestamp of the value at source              |
+| `Batch`    | array  | Array of values and timestamps to publish         |
+
+#### Custom Properties
+The packet utilises MQTTv5 custom properties to send metadata relating to the value. These values are parsed from the
+Sparkplug payload when republishing to the UNS.
+
+| Property           | Type    | Description                                    |
+|--------------------|---------|------------------------------------------------|
+| `InstanceUUIDPath` | UUID    | The full instance UUID path of the device      |
+| `InstanceUUID`     | UUID    | The top level instance UUID of the device      |
+| `SchemaUUIDPath`   | string  | The full schema UUID path the value relates to |
+| `SchemaUUID`       | UUID    | The top-level UUID of the utilised schema      |
+| `Type`            | string  | The Sparkplug type of the value                |
+| `Unit`            | string  | The measurement unit of the value              |
+| `Transient`       | boolean | Record the value to the historian              |
+
+### Permissions
+
+#### Global
+
+<Permission type='Permission' name='Write to entire UNS'
+            description='Write to all topics for the whole UNS'
+            uuid='9fa6ff20-9d2a-4444-960c-40ebcf56f5b4'/>
+
+```json
+{
+    "UNS/v1/#": "w"
+}
+```
+
+---
+
+<Permission type='Permission' name='Read entire UNS'
+            description='Subscribe to and read all topics for the whole UNS'
+            uuid='ffa40b36-3a61-4545-832a-2d1e8b860d63'/>
+
+```json
+{
+    "UNS/v1/#": "rs"
+}
+```

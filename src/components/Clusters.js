@@ -75,17 +75,19 @@ export function CentralCluster (props) {
             <FpCpt name="authorisation" style="mid" vertical justify="end"
                 layout="flex-1 mt-2 ml-2 w-[3vw]">Authorisation</FpCpt>
         </div>
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-5 gap-2">
             <FpCpt name="identity" style="dark" justify="end" layout="col-span-full h-[3vw]">Identity</FpCpt>
             <FpCpt name="authorisation" style="mid" justify="end" layout="col-span-full h-[3vw]">Authorisation</FpCpt>
             <FpCpt name="directory" layout="ml-2">Directory</FpCpt>
             <FpCpt name="configuration-store">Config Store</FpCpt>
             <FpCpt name="commands">Commands</FpCpt>
             <FpCpt name="git">Git Server</FpCpt>
-            <FpCpt name="manager" layout="ml-2">Manager</FpCpt>
-            <FpCpt name="data-warehouse">Data Warehouse</FpCpt>
+            <FpCpt name="manager">Manager</FpCpt>
+            <FpCpt name="data-warehouse" layout="ml-2">Data Warehouse</FpCpt>
             <FpCpt name="cluster-manager">Cluster Manager</FpCpt>
             <FpCpt name="monitor">Central Monitor</FpCpt>
+            <FpCpt name="UNS">UNS</FpCpt>
+            <FpCpt name=""></FpCpt>
             <FpCpt name="mqtt" layout="col-span-full ml-2">MQTT</FpCpt>
         </div>
     </Cluster>;
