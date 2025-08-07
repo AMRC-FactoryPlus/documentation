@@ -8,4 +8,4 @@ COPY . /app
 RUN yarn
 RUN yarn run build
 
-ENTRYPOINT yarn run serve --port 80 --host 0Z.0.0.0
+ENTRYPOINT yarn run serve --port 80 --host 0.0.0.0
